@@ -1,0 +1,1816 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>AÇILIN BEN DOKTORUM! v0.9 — 16-Bit Klinik & Hayat Simülasyonu</title>
+<meta name="description" content="16-Bit Retro Tıp, Acil Servis, TıpBank, WhatsDoc & Hayat Simülasyonu. developer=kurtulustas">
+<style>
+  :root {
+    --bg-deep: #090c14;
+    --panel-dark: #111625;
+    --panel-mid: #192238;
+    --gold: #f5b942;
+    --gold-dim: #946b1e;
+    --amber: #ffd175;
+    --teal: #38d9a9;
+    --crimson: #ff4d5e;
+    --sky: #5cc8ff;
+    --text-main: #f4f1ea;
+    --text-muted: #9aa6c4;
+    --font-pixel: ui-monospace, 'Cascadia Mono', 'SFMono-Regular', Menlo, Monaco, Consolas, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; user-select: none; }
+  html, body {
+    width: 100%; height: 100dvh; overflow: hidden;
+    background: #05070c; color: var(--text-main);
+    font-family: var(--font-pixel);
+    display: flex; justify-content: center; align-items: center;
+  }
+  #app {
+    width: 100%; max-width: 680px; height: 100dvh;
+    background: var(--bg-deep);
+    border-left: 3px solid var(--gold-dim);
+    border-right: 3px solid var(--gold-dim);
+    display: flex; flex-direction: column;
+    position: relative; overflow: hidden;
+    box-shadow: 0 0 45px rgba(0,0,0,0.9);
+  }
+  .rpg-box {
+    background: var(--panel-dark);
+    border: 3px solid var(--gold);
+    box-shadow: inset 0 0 0 2px #090c14, 0 4px 0 #04060a;
+    position: relative;
+  }
+  .rpg-box::before, .rpg-box::after {
+    content: ""; position: absolute; width: 6px; height: 6px;
+    background: var(--amber); pointer-events: none;
+  }
+  .rpg-box::before { top: -3px; left: -3px; }
+  .rpg-box::after { bottom: -3px; right: -3px; }
+
+  /* START SCREEN */
+  #startScreen {
+    position: absolute; inset: 0; z-index: 60;
+    background: radial-gradient(circle at 50% 18%, #1d294a 0%, #090c14 78%);
+    display: flex; flex-direction: column; justify-content: space-between;
+    padding: 14px; overflow-y: auto;
+  }
+  .title-banner {
+    text-align: center; padding: 12px 10px;
+    background: linear-gradient(180deg, #1e2a4a 0%, #101524 100%);
+  }
+  .title-badge {
+    display: inline-block; background: var(--crimson); color: #fff;
+    font-size: 10px; font-weight: 800; padding: 3px 8px; letter-spacing: 1px;
+    margin-bottom: 5px; border: 1px solid #fff;
+  }
+  .game-title {
+    font-size: clamp(20px, 5vw, 27px); font-weight: 900;
+    color: var(--amber); text-shadow: 2px 2px 0 #7a2323, 4px 4px 0 #000;
+  }
+  .game-sub { font-size: 11px; color: var(--teal); margin-top: 4px; }
+  .setup-card { padding: 11px; display: flex; flex-direction: column; gap: 9px; margin: 8px 0; }
+  .field-row { display: flex; flex-direction: column; gap: 4px; }
+  .field-row label { font-size: 11px; color: var(--gold); font-weight: 700; }
+  .pixel-input, .pixel-select {
+    width: 100%; padding: 8px 10px; background: #080b12;
+    border: 2px solid var(--gold-dim); color: var(--text-main);
+    font-family: var(--font-pixel); font-size: 13px; outline: none;
+  }
+  .avatar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .av-btn {
+    padding: 7px 4px; background: #0e1320; border: 2px solid #2c3859;
+    color: var(--text-main); font-family: var(--font-pixel); font-size: 11px; cursor: pointer;
+  }
+  .av-btn.active { border-color: var(--teal); background: #142b2b; color: var(--teal); font-weight: 700; }
+  .start-btn {
+    width: 100%; padding: 13px; background: linear-gradient(180deg, #38d9a9 0%, #1ca37c 100%);
+    border: 3px solid #fff; color: #05140f; font-family: var(--font-pixel);
+    font-size: 15px; font-weight: 900; cursor: pointer; letter-spacing: 1px;
+  }
+  .dev-footer { text-align: center; font-size: 11px; color: var(--text-muted); padding-top: 6px; }
+  .dev-footer a {
+    color: var(--amber); text-decoration: none; font-weight: 800;
+    padding: 2px 7px; border: 1px solid var(--gold-dim); background: #141a2b;
+  }
+
+  /* HUD */
+  #hud {
+    height: 44px; min-height: 44px; padding: 0 6px;
+    background: #0c111d; border-bottom: 2px solid var(--gold-dim);
+    display: flex; align-items: center; justify-content: space-between; gap: 3px; font-size: 10px;
+  }
+  .hud-stats { display: flex; align-items: center; gap: 4px; overflow: hidden; }
+  .stat-pill {
+    background: #171f33; border: 1px solid #2e3b5e; padding: 3px 5px;
+    white-space: nowrap; font-weight: 700;
+  }
+  .hud-btns { display: flex; gap: 3px; }
+  .icon-btn {
+    background: #1c253d; border: 2px solid var(--gold-dim); color: var(--amber);
+    padding: 3px 6px; font-size: 12px; cursor: pointer; font-family: var(--font-pixel);
+    position: relative;
+  }
+  .badge-dot {
+    position: absolute; top: -4px; right: -4px; width: 9px; height: 9px;
+    background: var(--crimson); border: 1px solid #fff; border-radius: 50%; display: none;
+  }
+
+  /* TOP SCENE */
+  #sceneWrap {
+    position: relative; width: 100%; height: 45%; min-height: 205px;
+    background: #0e1424; border-bottom: 3px solid var(--gold); overflow: hidden;
+  }
+  #gameCanvas { width: 100%; height: 100%; display: block; image-rendering: pixelated; }
+  .crt-overlay {
+    position: absolute; inset: 0; pointer-events: none;
+    background: repeating-linear-gradient(0deg, rgba(0,0,0,0.13) 0px, rgba(0,0,0,0.13) 1px, transparent 1px, transparent 3px);
+  }
+  .scene-tag {
+    position: absolute; top: 7px; left: 7px;
+    background: rgba(9,12,20,0.9); border: 1px solid var(--gold);
+    padding: 3px 7px; font-size: 10px; color: var(--amber); font-weight: 700;
+  }
+  .clock-tag {
+    position: absolute; top: 7px; right: 7px;
+    background: rgba(9,12,20,0.9); border: 1px solid var(--sky);
+    padding: 3px 7px; font-size: 10px; color: var(--sky); font-weight: 700;
+  }
+  .zoom-hint {
+    position: absolute; bottom: 7px; right: 7px;
+    background: rgba(16,42,35,0.94); border: 1px solid var(--teal);
+    padding: 4px 8px; font-size: 10px; color: var(--teal); cursor: pointer; display: none; font-weight: 800;
+  }
+
+  /* BOTTOM ZONE */
+  #bottomZone {
+    flex: 1; display: flex; flex-direction: column;
+    background: var(--panel-dark); padding: 7px; gap: 7px; overflow: hidden;
+  }
+  #dialogueBox {
+    flex: 1; padding: 9px; display: flex; flex-direction: column;
+    justify-content: space-between; overflow-y: auto; background: #0a0e18;
+  }
+  .speaker-header {
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid #26314f; padding-bottom: 4px; margin-bottom: 5px;
+  }
+  .speaker-name { color: var(--amber); font-weight: 800; font-size: 12px; }
+  .triage-badge { font-size: 10px; padding: 2px 6px; font-weight: 800; }
+  .t-red { background: #5c141d; color: #ff8591; border: 1px solid #ff4d5e; }
+  .t-yellow { background: #523d0d; color: #ffd666; border: 1px solid #f5b942; }
+  .t-green { background: #104233; color: #63e6be; border: 1px solid #38d9a9; }
+
+  #dialogueText { font-size: 12.5px; line-height: 1.45; color: var(--text-main); min-height: 40px; }
+  #subPanel { display: flex; flex-direction: column; gap: 5px; margin-top: 6px; }
+  .choice-btn {
+    width: 100%; text-align: left; padding: 8px 9px;
+    background: #161e33; border: 2px solid #35446e;
+    color: var(--text-main); font-family: var(--font-pixel); font-size: 11.5px;
+    cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 6px;
+  }
+  .choice-btn:active { border-color: var(--amber); background: #222d4a; color: var(--amber); }
+  .choice-btn.danger { border-color: #8f2430; color: #ff99a3; }
+  .choice-btn.success { border-color: #217a5f; color: #7ef2ce; }
+
+  #mainActions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; height: 48px; min-height: 48px; }
+  .act-btn {
+    background: linear-gradient(180deg, #222c47 0%, #141b2e 100%);
+    border: 2px solid var(--gold); color: var(--amber);
+    font-family: var(--font-pixel); font-size: 11px; font-weight: 800;
+    cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  }
+  .act-btn.active, .act-btn:active { background: var(--gold); color: #090c14; }
+
+  /* MODAL & SMARTPHONE */
+  #modal {
+    position: absolute; inset: 0; z-index: 45;
+    background: rgba(5, 7, 13, 0.95);
+    display: none; flex-direction: column; padding: 10px;
+  }
+  .modal-card { flex: 1; display: flex; flex-direction: column; padding: 10px; overflow: hidden; }
+  .modal-head {
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 2px solid var(--gold-dim); padding-bottom: 7px; margin-bottom: 8px;
+  }
+  .modal-title { font-size: 13px; font-weight: 900; color: var(--amber); }
+  .close-btn {
+    background: var(--crimson); color: #fff; border: 2px solid #fff;
+    padding: 3px 9px; font-family: var(--font-pixel); font-weight: 800; cursor: pointer;
+  }
+  .modal-body { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 7px; font-size: 12px; }
+
+  /* PHONE UI */
+  .phone-frame {
+    border: 4px solid #495057; border-radius: 14px; background: #0b101d;
+    padding: 10px; flex: 1; display: flex; flex-direction: column; justify-content: space-between;
+    box-shadow: inset 0 0 18px rgba(56,217,169,0.12);
+  }
+  .phone-status {
+    display: flex; justify-content: space-between; font-size: 10px; color: var(--teal);
+    border-bottom: 1px solid #23304d; padding-bottom: 5px; margin-bottom: 8px;
+  }
+  .app-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 6px 0; }
+  .app-icon {
+    background: #162038; border: 2px solid #354770; padding: 10px 4px;
+    text-align: center; cursor: pointer; display: flex; flex-direction: column; gap: 4px; align-items: center;
+    font-size: 11px; color: var(--text-main); font-weight: 700; position: relative;
+  }
+  .app-icon:active { border-color: var(--amber); background: #223052; }
+  .app-icon span.ico { font-size: 22px; }
+  .bank-card {
+    background: linear-gradient(135deg, #134e4a 0%, #0f172a 100%);
+    border: 2px solid var(--teal); padding: 10px; color: #fff;
+  }
+  .tx-row {
+    display: flex; justify-content: space-between; font-size: 11px;
+    padding: 5px 6px; background: #121829; border-left: 3px solid var(--gold);
+  }
+  .tx-row.neg { border-left-color: var(--crimson); color: #ffa8b0; }
+  .tx-row.pos { border-left-color: var(--teal); color: #8ce99a; }
+  #zoomCanvas, #photoCanvas {
+    width: 100%; max-height: 220px; background: #04070d;
+    border: 2px solid var(--teal); image-rendering: pixelated;
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <!-- START SCREEN -->
+  <div id="startScreen">
+    <div class="title-banner rpg-box">
+      <div class="title-badge">16-BIT RETRO KLİNİK RPG • v0.9</div>
+      <div class="game-title">AÇILIN BEN DOKTORUM!</div>
+      <div class="game-sub">160+ Vaka • TıpBank & Borç Sistemi • WhatsDoc • Hayat Simülasyonu</div>
+    </div>
+
+    <div class="setup-card rpg-box">
+      <div class="field-row">
+        <label>HEKİM ADI SOYADI</label>
+        <input id="inpDocName" class="pixel-input" type="text" value="Dr. Muhammed Kurtuluş Taş" maxlength="32">
+      </div>
+      <div class="field-row">
+        <label>GÖREV YERİ / HASTANE</label>
+        <input id="inpHospName" class="pixel-input" type="text" value="Aydın Merkez Acil Eğitim Hast." maxlength="34">
+      </div>
+      <div class="field-row">
+        <label>DOKTOR TARZI</label>
+        <div class="avatar-grid" id="avatarGrid">
+          <button type="button" class="av-btn active" data-av="0">🩺 Klasik</button>
+          <button type="button" class="av-btn" data-av="1">👓 Gözlüklü</button>
+          <button type="button" class="av-btn" data-av="2">☕ Uykusuz</button>
+          <button type="button" class="av-btn" data-av="3">⚡ Karizmatik</button>
+        </div>
+      </div>
+      <div class="field-row">
+        <label>NÖBET MODU</label>
+        <select id="inpDiff" class="pixel-select">
+          <option value="normal">Standart Nöbet (160+ Vaka Havuzu + Dengeli Kaos)</option>
+          <option value="hard">Cuma Gece Acili (Yüksek Beyaz Kod, Rüşvet & Borç Talebi)</option>
+        </select>
+      </div>
+    </div>
+
+    <button id="btnStartGame" class="start-btn">▶ NÖBETİ DEVRAL</button>
+
+    <div class="dev-footer">
+      <div>TıpBank • WhatsDoc • FotoGram • BetTıp • Canlı İntörn Eğitimi</div>
+      <div style="margin-top:5px;">
+        <a href="https://github.com/kurtulustas" target="_blank" rel="noopener noreferrer">developer=kurtulustas</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- HUD -->
+  <div id="hud">
+    <div class="hud-stats">
+      <span class="stat-pill" style="color:var(--amber)" id="hudDay">G1 0/5</span>
+      <span class="stat-pill" style="color:var(--teal)" id="hudMoney">1.500₺</span>
+      <span class="stat-pill" style="color:var(--sky)" id="hudRep">⭐50</span>
+      <span class="stat-pill" style="color:#ff922b" id="hudStress">🧠10%</span>
+      <span class="stat-pill" style="color:var(--crimson)" id="hudWarn">⚠️0/3</span>
+    </div>
+    <div class="hud-btns">
+      <button class="icon-btn" onclick="openPhone()" title="Akıllı Telefon">📱<span class="badge-dot" id="phoneDot"></span></button>
+      <button class="icon-btn" onclick="openModal('guide')" title="Cep Rehberi">📖</button>
+      <button class="icon-btn" onclick="openModal('map')" title="Hastane ve Şehir">🗺️</button>
+      <button class="icon-btn" onclick="openModal('shop')" title="Masa Dükkânı">🛒</button>
+      <button class="icon-btn" id="btnSound" onclick="toggleSound()" title="Ses">🔊</button>
+    </div>
+  </div>
+
+  <!-- TOP SCENE -->
+  <div id="sceneWrap">
+    <canvas id="gameCanvas" width="340" height="210"></canvas>
+    <div class="crt-overlay"></div>
+    <div class="scene-tag" id="sceneTag">🏥 ACİL SERVİS — MUAYENE ODASI 1</div>
+    <div class="clock-tag" id="clockTag">🕒 20:00</div>
+    <div class="zoom-hint" id="zoomHint" onclick="openModal('radiology')">🔍 RADYOLOJİ / EKG YAKINLAŞTIR</div>
+  </div>
+
+  <!-- BOTTOM RPG ZONE -->
+  <div id="bottomZone">
+    <div id="dialogueBox" class="rpg-box">
+      <div>
+        <div class="speaker-header">
+          <span class="speaker-name" id="speakerName">SİSTEM</span>
+          <span class="triage-badge t-green" id="triageBadge">HAZIR</span>
+        </div>
+        <div id="dialogueText">Nöbet başladı. Sıradaki hastayı çağırmak için aşağıdaki menüyü kullan.</div>
+      </div>
+      <div id="subPanel"></div>
+    </div>
+
+    <div id="mainActions">
+      <button class="act-btn active" id="tabTalk" onclick="setTab('talk')"><span>🗣️</span><span>KONUŞ</span></button>
+      <button class="act-btn" id="tabExam" onclick="setTab('exam')"><span>🩺</span><span>MUAYENE</span></button>
+      <button class="act-btn" id="tabFile" onclick="setTab('file')"><span>📋</span><span>DOSYA/PC</span></button>
+      <button class="act-btn" id="tabDecide" onclick="setTab('decide')"><span>⚖️</span><span>KARAR</span></button>
+    </div>
+  </div>
+
+  <!-- MODAL -->
+  <div id="modal">
+    <div class="modal-card rpg-box">
+      <div class="modal-head">
+        <span class="modal-title" id="modalTitle">BAŞLIK</span>
+        <button class="close-btn" onclick="closeModal()">KAPAT ✕</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ================= AUDIO ENGINE ================= */
+let audioCtx = null, soundOn = true;
+function initAudio() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+}
+function toggleSound() {
+  soundOn = !soundOn;
+  document.getElementById('btnSound').textContent = soundOn ? '🔊' : '🔇';
+}
+function playBlip(pitch = 320, type = 'square', dur = 0.045, vol = 0.035) {
+  if (!soundOn) return;
+  try {
+    initAudio();
+    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+    o.type = type;
+    o.frequency.setValueAtTime(pitch + (Math.random() * 22 - 11), audioCtx.currentTime);
+    g.gain.setValueAtTime(vol, audioCtx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+    o.connect(g); g.connect(audioCtx.destination);
+    o.start(); o.stop(audioCtx.currentTime + dur);
+  } catch (e) {}
+}
+function playSfx(kind) {
+  if (!soundOn) return;
+  if (kind === 'stamp') playBlip(120, 'sawtooth', 0.14, 0.08);
+  else if (kind === 'alarm') { playBlip(780, 'square', 0.16, 0.07); setTimeout(() => playBlip(620, 'square', 0.16, 0.07), 150); }
+  else if (kind === 'coin') { playBlip(660, 'triangle', 0.08, 0.07); setTimeout(() => playBlip(990, 'triangle', 0.14, 0.07), 80); }
+  else if (kind === 'heart') { playBlip(95, 'sine', 0.11, 0.11); setTimeout(() => playBlip(80, 'sine', 0.13, 0.09), 135); }
+  else if (kind === 'msg') { playBlip(520, 'sine', 0.07, 0.06); setTimeout(() => playBlip(780, 'sine', 0.09, 0.06), 75); }
+}
+
+/* ================= GAME STATE ================= */
+const state = {
+  docName: 'Dr. Muhammed Kurtuluş Taş',
+  hospName: 'Aydın Merkez Acil Eğitim Hast.',
+  avatar: 0,
+  diff: 'normal',
+  day: 1,
+  hour: 20,
+  seenToday: 0,
+  money: 1500,
+  bankDebt: 0,
+  rep: 50,
+  stress: 10,
+  warnings: 0,
+  location: 'er',
+  tab: 'talk',
+  currentPatient: null,
+  usedCaseIds: new Set(),
+  examDone: { vitals: false, lung: false, pupil: false, rad: false, labs: false, enabiz: false },
+  ppeOn: false,
+  doorThreat: false,
+  bribePending: false,
+  internIdx: 0,
+  internTrust: 50,
+  coffeeGivenToday: false,
+  upgrades: { thermos: false, cactus: false, littmann: false, dualMonitor: false },
+  assets: { car: 'Yok (Belediye Otobüsü)', phone: 'Standart Akıllı Telefon', homeLevel: 1 },
+  iban: 'TR42 0006 1000 1907 2026 0001 09',
+  transactions: [
+    { desc: 'Nöbet Avansı Açılış Bakiyesi', amt: 1500, type: 'pos' }
+  ],
+  loanRequests: [],
+  activeLoansOut: [],
+  chats: [
+    { id: 'grp', name: '🏥 Acil Nöbet Grubu', unread: true, msgs: [
+      { from: 'Başhemşire Zeynep', text: 'Arkadaşlar 2. ambulans yolda, Kırmızı Alanı boş tutalım.' },
+      { from: 'Uzm. Dr. Mert', text: 'BT cihazı kalibre edildi, acil beyin ve toraks çekimleri açık.' }
+    ], replies: ['Anlaşıldı, Kırmızı Alan hazır!', 'İntörnle birlikte bekliyoruz, kolay gelsin.'] },
+    { id: 'chief', name: '👔 Başhekimlik Duyuru', unread: false, msgs: [
+      { from: 'Başhekim', text: 'Gereksiz antibiyotik reçeteleri ve adli vaka bildirimleri denetlenmektedir.' }
+    ], replies: ['Protokollere tam uyumla çalışıyoruz hocam.'] },
+    { id: 'elif', name: '🩺 Asistan Dr. Elif', unread: true, msgs: [
+      { from: 'Dr. Elif', text: 'Nöbet nasıl gidiyor? Kahve molası verirsen kantindeyim ☕' }
+    ], replies: ['Birazdan uğrayacağım, kahveler benden!', 'Acil çok yoğun ama aklımdasın 😊'] }
+  ],
+  posts: [
+    { author: 'Dr. Muhammed Kurtuluş Taş', caption: 'Gece 02:00 acil nöbeti, ince belli çay ve epikrizler... ☕🩺', likes: 34, filter: 'night', comment: 'Başhemşire Zeynep: Eline sağlık hocam!' }
+  ],
+  staff: [
+    { id: 'elif', name: 'Asistan Dr. Elif', role: 'Dahiliye Asistanı', love: 25, stage: 0, stories: [
+      'Nöbetten çıktım, 3. kahvemdeyim. Acildeki soğukkanlılığın serviste konuşuluyor.',
+      'Dün gece gönderdiğin DKA hastasını tam vaktinde yakalamışsın, hayatını kurtardın.',
+      'Hafta sonu nöbetimiz çakışmazsa sahilde gerçek bir kahve içelim mi?',
+      'Seninle çalışmak bu hastanedeki en güzel tesadüf oldu...',
+      'Artık nöbet listelerinde ilk senin adını arıyorum.'
+    ]},
+    { id: 'zeynep', name: 'Başhemşire Zeynep', role: 'Acil Sorumlu Hemşiresi', love: 25, stage: 0, stories: [
+      'Hoş geldin hocam, damar yolları hazır. Yeni intörnü gözünden ayırma derim.',
+      'Beyaz Kod çıktığında arkamızda durmanı ekip asla unutmaz.',
+      'Senin gibi pratik düşünen hekimle acil tıkır tıkır işliyor.',
+      'Nöbet çıkışı çorba içmeye gidersen bana da haber ver.',
+      'Bu acilin gerçek kahramanı sensin.'
+    ]},
+    { id: 'mert', name: 'Uzm. Dr. Mert', role: 'Radyoloji Uzmanı', love: 15, stage: 0, stories: [
+      'Röntgen ve BT istemlerini nokta atışı yapıyorsun, gereksiz çekim yok.',
+      'O kılçık vakasını röntgende nasıl fark ettin helal olsun!',
+      'Tıp teknolojileri ve retro oyunlara meraklıymışsın, kafa dengiyiz.',
+      'Yakında birlikte vaka sunumu yazalım.',
+      'En güvenilir dostum oldun.'
+    ]},
+    { id: 'kerem', name: 'Op. Dr. Kerem', role: 'Genel Cerrahi', love: 15, stage: 0, stories: [
+      'Apandisitleri patlamadan yakalayıp gönderdiğin sürece dostuz.',
+      'Ameliyathanede bile senin ön tanılarını övüyoruz.',
+      'Sana bir gün laparoskopi dersi vereceğim.',
+      'Cerrahinin kapısı sana hep açık.',
+      'Kardeşim gibisin doktor.'
+    ]},
+    { id: 'selin', name: 'Eczacı Selin', role: 'Klinik Eczacı', love: 15, stage: 0, stories: [
+      'Penisilin alerjisi olan hastaya antibiyotik yazmaman beni çok mutlu etti.',
+      'Reçete etkileşimlerine dikkat eden nadir doktorlardansın.',
+      'Sana özel bitki çayı karışımı hazırladım, stresi alır.',
+      'Nöbet aralarında uğramana alıştım.',
+      'Seninle her nöbet çok daha aydınlık.'
+    ]},
+    { id: 'burak', name: 'ATT Burak', role: '112 Ambulans Ekibi', love: 20, stage: 0, stories: [
+      'Hocam vakayı kapıda devralışın bize hayat veriyor.',
+      'Geçen otobüste yaptığın kalp masajı 112 grubunda viral oldu!',
+      'Kırmızı alan sirenini duyunca gözündeki ışığı görüyorum.',
+      'Yolun düşerse istasyona bekleriz.',
+      'Sırtımız yere gelmez.'
+    ]},
+    { id: 'deniz', name: 'Dr. Deniz', role: 'Pediatri Asistanı', love: 15, stage: 0, stories: [
+      'Çocuk hastalara yaklaşımın çok yumuşak, hiç ağlamıyorlar.',
+      'Küçük bir hastanın çizdiği doktor resmini masana bıraktım.',
+      'Pediatri nöbetleri zor ama senin enerjin moral veriyor.',
+      'Birlikte gönüllü sağlık taramasına katılalım mı?',
+      'İyi ki aynı hastanedeyiz.'
+    ]},
+    { id: 'kaan', name: 'Dr. Kaan', role: 'Psikiyatri Asistanı', love: 15, stage: 0, stories: [
+      'Acil servisteki stresi nasıl bu kadar iyi yönetiyorsun?',
+      'Sahte rapor isteyen bağımlıları kırmadan ama net reddetmen harika.',
+      'Seninle felsefe ve insan psikolojisi konuşmak çok keyifli.',
+      'Kendi ruh sağlığını da ihmal etme dostum.',
+      'Her zaman bir telefon uzağındayım.'
+    ]}
+  ]
+};
+
+const INTERNS = [
+  { name: 'İntörn Berk', trait: 'Hızlı ama epikriz okumadan antibiyotik yazar!', color: '#4dabf7', flaw: 'allergy' },
+  { name: 'İntörn Selin', trait: 'Uykusuz; çay verilmezse stetoskopu yanlış tutar.', color: '#da77f2', flaw: 'sleepy' },
+  { name: 'İntörn Emre', trait: 'Teorik dehası ama hastaya kaba davranıp kavga çıkarır.', color: '#ffd43b', flaw: 'rude' },
+  { name: 'İntörn Zeynep', trait: 'İlk günü, çok heyecanlı ama doğru yönlendirilirse süper.', color: '#69db7c', flaw: 'nervous' }
+];
+
+/* ================= BORROW / LOAN STORIES FROM COLLEAGUES ================= */
+const BORROW_SCENARIOS = [
+  {
+    id: 'loan_berk', from: 'İntörn Berk', role: 'Acil İntörnü',
+    iban: 'TR18 0001 0023 4512 8890 01',
+    amount: 600, returnAmt: 750, payChance: 0.92, loveGain: 15,
+    story: 'Hocam KYK bursum bitti, ev sahibi kapıya dayandı! 600₺ ateşler misin, haftaya burs yatar yatmaz 750₺ olarak geri atayım?'
+  },
+  {
+    id: 'loan_burak', from: 'ATT Burak', role: '112 Paramedik',
+    iban: 'TR84 0006 2001 9981 4410 02',
+    amount: 1200, returnAmt: 1450, payChance: 0.95, loveGain: 18,
+    story: 'Abi yarın kuzenin düğünü var çeyrek altın uçmuş, 1.200₺ eksiğim kaldı! Nöbet parası yatınca 1.450₺ geri göndereyim.'
+  },
+  {
+    id: 'loan_kerem', from: 'Op. Dr. Kerem', role: 'Genel Cerrahi',
+    iban: 'TR55 0004 6008 7712 3300 03',
+    amount: 2000, returnAmt: 3200, payChance: 0.50, loveGain: 10,
+    story: 'Kardeşim içeriden kesin borsa/kripto haberi aldım! 2.000₺ atarsan akşam katlayıp 3.200₺ geri yolluyorum, risk yok!'
+  },
+  {
+    id: 'loan_elif', from: 'Asistan Dr. Elif', role: 'Dahiliye Asistanı',
+    iban: 'TR71 0001 5009 1122 6655 04',
+    amount: 850, returnAmt: 1000, payChance: 1.0, loveGain: 25,
+    story: 'Nöbetteyim servisten çıkamıyorum, kedim hastalandı veterinere 850₺ lazım. IBAN atsam halleder misin? Akşam geri atarım 🙏'
+  },
+  {
+    id: 'loan_mert', from: 'Uzm. Dr. Mert', role: 'Radyoloji Uzmanı',
+    iban: 'TR33 0006 7004 5531 9088 05',
+    amount: 1500, returnAmt: 1800, payChance: 0.88, loveGain: 15,
+    story: 'Hocam arabanın muayenesi ve sigortası aynı güne denk geldi, kart limiti dolmuş. 1.500₺ atabilir misin, döner yatınca 1.800₺ atayım?'
+  },
+  {
+    id: 'loan_selin', from: 'Eczacı Selin', role: 'Klinik Eczacı',
+    iban: 'TR90 0001 2007 6643 2190 06',
+    amount: 500, returnAmt: 650, payChance: 0.96, loveGain: 20,
+    story: 'Nöbetçi eczane için kuryeye nakit ödeme çıktı, POS arızalı. 500₺ gönderir misin, sabah ilk iş 650₺ olarak geri göndereyim?'
+  }
+];
+
+function triggerRandomLoanRequest() {
+  if (state.loanRequests.length >= 2) return;
+  const available = BORROW_SCENARIOS.filter(s => !state.loanRequests.some(r => r.id === s.id));
+  if (!available.length) return;
+  const pick = available[Math.floor(Math.random() * available.length)];
+  state.loanRequests.push({ ...pick });
+  document.getElementById('phoneDot').style.display = 'block';
+  playSfx('msg');
+  // Also add to WhatsDoc chat
+  state.chats.unshift({
+    id: 'chat_' + pick.id + '_' + Date.now(),
+    name: `💸 ${pick.from} (Borç Talebi)`,
+    unread: true,
+    msgs: [{ from: pick.from, text: `${pick.story}\nIBAN: ${pick.iban}` }],
+    replies: ['TıpBank uygulamasından hemen bakıyorum.', 'Şu an nöbetteyim birazdan kontrol edeyim.']
+  });
+}
+
+function resolveLoan(reqId, accept) {
+  const idx = state.loanRequests.findIndex(r => r.id === reqId);
+  if (idx === -1) return;
+  const req = state.loanRequests[idx];
+  if (!accept) {
+    state.loanRequests.splice(idx, 1);
+    addTx(`Borç Talebi Reddedildi (${req.from})`, 0, 'neg');
+    openPhoneApp('bank');
+    return;
+  }
+  if (state.money < req.amount) {
+    alert('TıpBank Bakiyesi Yetersiz!');
+    return;
+  }
+  state.money -= req.amount;
+  state.loanRequests.splice(idx, 1);
+  addTx(`FAST Havale -> ${req.from}`, -req.amount, 'neg');
+  state.activeLoansOut.push({ ...req, dueInPatients: 2 });
+  const st = state.staff.find(s => s.name.includes(req.from.split(' ').pop()));
+  if (st) st.love = Math.min(100, st.love + req.loveGain);
+  playSfx('coin');
+  updateHud();
+  openPhoneApp('bank');
+}
+
+function checkLoanRepayments() {
+  for (let i = state.activeLoansOut.length - 1; i >= 0; i--) {
+    const loan = state.activeLoansOut[i];
+    loan.dueInPatients--;
+    if (loan.dueInPatients <= 0) {
+      state.activeLoansOut.splice(i, 1);
+      if (Math.random() < loan.payChance) {
+        state.money += loan.returnAmt;
+        addTx(`FAST Gelen Borç İadesi <- ${loan.from}`, loan.returnAmt, 'pos');
+        document.getElementById('phoneDot').style.display = 'block';
+        playSfx('coin');
+        state.chats.unshift({
+          id: 'repay_' + Date.now(),
+          name: `✅ ${loan.from}`,
+          unread: true,
+          msgs: [{ from: loan.from, text: `Hocam çok sağ ol hızır gibi yetiştin! Söz verdiğim gibi ${loan.returnAmt}₺ hesabına attım.` }],
+          replies: ['Rica ederim, her zaman!', 'Güle güle kullan dostum.']
+        });
+      } else {
+        addTx(`Geciken Alacak (${loan.from} Erteledi)`, 0, 'neg');
+        document.getElementById('phoneDot').style.display = 'block';
+        state.chats.unshift({
+          id: 'delay_' + Date.now(),
+          name: `😅 ${loan.from}`,
+          unread: true,
+          msgs: [{ from: loan.from, text: `Kanka piyasa fena terste bıraktı, senin ${loan.amount}₺ biraz içeride kaldı haftaya mutlaka halledeceğim!` }],
+          replies: ['Sağlık olsun dikkat et kendine.', 'Bir daha tüyo işine girme!']
+        });
+      }
+      updateHud();
+    }
+  }
+}
+
+function addTx(desc, amt, type) {
+  state.transactions.unshift({ desc, amt, type });
+  if (state.transactions.length > 15) state.transactions.pop();
+}
+
+/* ================= 160+ UNIQUE CASES ================= */
+const HANDCRAFTED_CASES = [
+  {
+    id: 'c1', name: 'Rıza Amca (68)', triage: 'yellow', pitch: 180,
+    appearance: { skin: '#e8b496', hair: '#d0d7de', shirt: '#495057', flush: true, sweat: true, pupils: 'normal' },
+    complaint: 'Evladım üç gündür üşütmüşüm, öksürüyorum. Bir iğne yap da eve gideyim.',
+    vitals: 'Ateş: 38.9°C | Nabız: 108 | TA: 125/80 | SpO2: %91',
+    lung: 'Sağ alt lobda belirgin krepitan raller ve solunum seslerinde azalma!',
+    pupil: 'Pupiller izokorik, ışık refleksi doğal (+/+).',
+    radType: 'chest', radTitle: 'AKCİĞER GRAFİSİ (PA)', radFinding: 'Sağ alt zonda lober pnömoni (zatürre) infiltrasyonu.',
+    labs: 'WBC: 18.400 | CRP: 142 mg/L | Prokalsitonin: Yüksek',
+    enabiz: 'DİKKAT! CİDDİ PENİSİLİN ALERJİSİ KAYDI VAR (Anafilaksi öyküsü)!',
+    correctAction: 'admit', targetService: 'Göğüs Hastalıkları', targetReason: 'Lober Pnömoni + Hipoksi (SpO2 %91)',
+    hint: 'Akciğer dinle ve E-Nabız alerjisine bak; SpO2 %91 olduğu için yatırılmalı!'
+  },
+  {
+    id: 'c2', name: 'Berkcan (21)', triage: 'red', pitch: 380,
+    appearance: { skin: '#f1c2a5', hair: '#212529', shirt: '#e03131', flush: false, sweat: true, pupils: 'normal' },
+    complaint: 'Hocam sabaha kadar bilgisayar oynadım, 6 kutu enerji içeceği + pre-workout içtim kalbim ağzımdan çıkacak!',
+    vitals: 'Ateş: 36.8°C | Nabız: 194/dk! | TA: 105/65 | SpO2: %98',
+    lung: 'Akciğer sesleri doğal, taşikardik kalp sesleri.',
+    pupil: 'Pupiller midriyatik (kafein/sempatomimetik etki).',
+    radType: 'ecg', radTitle: '12-DERİVASYON EKG', radFinding: 'Dar QRS düzenli taşikardi — 194 bpm Supraventriküler Taşikardi (SVT)!',
+    labs: 'Troponin: Normal | Potasyum: 3.4 | Yüksek doz kafein',
+    enabiz: 'Bilinen kalp hastalığı yok.',
+    correctAction: 'treat', treatLabel: 'Vagal Manevra + IV Adenozin Uygula',
+    hint: 'EKG çek! 194 bpm SVT var; acil müdahale edip ritmi düşür.'
+  },
+  {
+    id: 'c3', name: 'Gülşen Teyze (59)', triage: 'red', pitch: 240,
+    appearance: { skin: '#e6b89c', hair: '#868e96', shirt: '#7048e8', flush: false, sweat: true, pupils: 'normal' },
+    complaint: 'Oğlum sabahtan beri alt dişlerim ve midem yanıyor, sırtıma soğuk ter bastı...',
+    vitals: 'Ateş: 36.4°C | Nabız: 54/dk | TA: 90/55 | SpO2: %95',
+    lung: 'Akciğer bazallerde hafif raller.',
+    pupil: 'Pupiller izokorik.',
+    radType: 'ecg', radTitle: '12-DERİVASYON EKG', radFinding: 'DII, DIII, aVF derivasyonlarında belirgin ST ELEVASONU (İnferior MI)!',
+    labs: 'Troponin-I: 4.85 ng/mL (KRİTİK YÜKSEK!)',
+    enabiz: 'Hipertansiyon ve Tip 2 Diyabet mevcut.',
+    correctAction: 'admit', targetService: 'Kardiyoloji', targetReason: 'Akut İnferior Miyokard İnfarktüsü (STEMI)',
+    hint: 'Mide yanması sanılan gizli Kalp Krizi! EKG ve Troponin ile Kardiyolojiye yatır.'
+  },
+  {
+    id: 'c4', name: 'Kamil (34)', triage: 'yellow', pitch: 290,
+    appearance: { skin: '#dfb195', hair: '#343a40', shirt: '#2b2d42', flush: false, sweat: true, pupils: 'miosis' },
+    complaint: 'Doktor bey böbrek taşım düştü ölüyorum, bana hemen kırmızı reçeteli morfin/dolantin yaz, çorbana bakarız...',
+    vitals: 'Ateş: 36.5°C | Nabız: 62/dk | TA: 110/70 | SpO2: %96',
+    lung: 'Solunum yüzeysel ve yavaş (10/dk).',
+    pupil: 'TOPLU İĞNE BAŞI PUPILLA (MİYOZİS)! Opioid kullanımı bulgusu!',
+    radType: 'leg', radTitle: 'BATIN / ÜRİNER GRAFİ', radFinding: 'Radyoopak böbrek taşı saptanmadı.',
+    labs: 'İdrar: Tamamen temiz (Eritrosit negatif!)',
+    enabiz: 'SON 1 AYDA 7 FARKLI ACİL SERVİSTEN NARKOTİK İLAÇ TALEBİ!',
+    bribe: { amount: 2500, text: 'Masanın altına 2.500₺ zarf uzattı: "Yaz şu ilacı hocam ikimiz de kazanalım."' },
+    correctAction: 'police',
+    hint: 'Göz feneri tut (miyozis) + E-Nabız geçmişine bak! Sahte ağrı ve rüşvet var.'
+  },
+  {
+    id: 'c5', name: 'Mertcan (19)', triage: 'yellow', pitch: 350,
+    appearance: { skin: '#f3c6ab', hair: '#5c3c24', shirt: '#1971c2', flush: false, sweat: false, pupils: 'normal' },
+    complaint: 'Halı sahada topa vurayım derken kaval kemiğimden çatırt diye ses geldi hocam!',
+    vitals: 'Ateş: 36.7°C | Nabız: 96/dk | TA: 130/80 | SpO2: %99',
+    lung: 'Solunum doğal.',
+    pupil: 'Pupiller izokorik.',
+    radType: 'leg', radTitle: 'SAĞ KRURİS (BACAK) RÖNTGENİ', radFinding: 'Tibia distal diyafizinde deplase oblik kırık hattı!',
+    labs: 'Pre-op hemogram normal.',
+    enabiz: 'Bilinen hastalık yok.',
+    correctAction: 'admit', targetService: 'Ortopedi', targetReason: 'Deplase Tibia Kırığı (Cerrahi/Atel)',
+    hint: 'Bacak röntgeni iste ve yakınlaştırıp kırık hattını gör -> Ortopedi.'
+  },
+  {
+    id: 'c6', name: 'Zeliha (29)', triage: 'red', pitch: 410,
+    appearance: { skin: '#f5ccb2', hair: '#4a2511', shirt: '#d6336c', flush: true, sweat: true, pupils: 'normal' },
+    complaint: 'Doktor bey 38 haftalık hamileyim, suyum geldi ve sancılarım 2 dakikada bir vuruyor!',
+    vitals: 'Ateş: 36.9°C | Nabız: 112/dk | TA: 120/75 | SpO2: %98',
+    lung: 'Solunum hızlı ama temiz.',
+    pupil: 'Pupiller izokorik.',
+    radType: 'ecg', radTitle: 'NST / FETAL MONİTÖR', radFinding: 'Fetal kalp atımı 145 bpm, aktif doğum kontraksiyonları mevcut.',
+    labs: 'Hgb: 11.4 | Kan Grubu: A Rh(+)',
+    enabiz: 'Düzenli gebelik takibi mevcut.',
+    correctAction: 'admit', targetService: 'Kadın Doğum', targetReason: 'Aktif Doğum Eylemi (38 Hafta Gebelik)',
+    hint: 'Acil doğum eylemi başlamış! Vakayı Kadın Doğum servisine yatır.'
+  },
+  {
+    id: 'c7', name: 'Hakan (42)', triage: 'red', pitch: 260,
+    appearance: { skin: '#e0ac8b', hair: '#2b2d42', shirt: '#2f9e44', flush: true, sweat: true, pupils: 'normal' },
+    complaint: 'Yurt dışı iş seyahatinden dün döndüm; 40 derece ateş, kanlı öksürük ve döküntüm var!',
+    vitals: 'Ateş: 40.1°C | Nabız: 124/dk | TA: 95/60 | SpO2: %89',
+    lung: 'Bilateral yaygın kaba raller.',
+    pupil: 'Pupiller izokorik.',
+    radType: 'chest', radTitle: 'AKCİĞER GRAFİSİ (PA)', radFinding: 'Bilateral buzlu cam opasiteleri ve diffüz infiltrasyon.',
+    labs: 'Lenfopeni + Yüksek Ferritin + PCR Pozitif',
+    enabiz: 'Endemik bölgeden uluslararası uçuş kaydı.',
+    correctAction: 'quarantine',
+    hint: 'ÖNCE N95 MASKE TAK! Sonra yüksek bulaşıcılık nedeniyle Karantina İzolasyonu ver.'
+  },
+  {
+    id: 'c8', name: 'Şakir (47)', triage: 'red', pitch: 210,
+    appearance: { skin: '#d8a488', hair: '#1a1b1e', shirt: '#343a40', flush: false, sweat: true, pupils: 'anisocoria' },
+    complaint: 'İnşaatta başıma kalas düştü, önce iyiyim dedim ama şimdi sağ tarafım tutmuyor, kusuyorum...',
+    vitals: 'Ateş: 36.6°C | Nabız: 50/dk | TA: 175/100 | SpO2: %94',
+    lung: 'Solunum düzensiz.',
+    pupil: 'ANİZOKORİ! Sağ pupilla dilate ve ışığa yanıtsız!',
+    radType: 'brain', radTitle: 'BEYİN BT (KRANİYAL)', radFinding: 'Sol temporoparietal bölgede bikonveks EPİDURAL HEMATOM ve orta hat kayması!',
+    labs: 'INR: 1.0 | Acil Nöroşirürji hazırlığı',
+    enabiz: 'Travma sonrası lucid interval öyküsü.',
+    correctAction: 'admit', targetService: 'Nöroloji / Beyin Cerrahi', targetReason: 'Epidural Hematom + KİBAS (Anizokori)',
+    hint: 'Göz feneriyle anizokoriyi ve Beyin BT ile kanamayı yakala!'
+  },
+  {
+    id: 'c9', name: 'Serdar (31)', triage: 'yellow', pitch: 315,
+    appearance: { skin: '#f1c2a5', hair: '#212529', shirt: '#e67700', flush: false, sweat: true, pupils: 'normal' },
+    complaint: 'Hocam 90+6 da son penaltı kaçtı, arabanın parasını basmıştım göğsüm sıkışıyor ölüyorum! Bana 3 gün rapor ver karıma göstermem lazım...',
+    vitals: 'Ateş: 36.7°C | Nabız: 118/dk | TA: 145/90 | SpO2: %99',
+    lung: 'Hiperventilasyon dışında akciğerler temiz.',
+    pupil: 'Pupiller izokorik.',
+    radType: 'ecg', radTitle: '12-DERİVASYON EKG', radFinding: 'Sinüs taşikardisi; ST-T değişikliği veya iskemi YOK!',
+    labs: 'Troponin-I: 0.01 ng/mL (Tamamen Normal!)',
+    enabiz: 'Panik bozukluk öyküsü mevcut.',
+    bribe: { amount: 1500, text: 'Cebinden buruşuk 1.500₺ çıkardı: "Hocam eşime hastanede yattım diyeyim rapor yaz..."' },
+    correctAction: 'discharge',
+    hint: 'EKG ve Troponin normal — kumar kaybı sonrası Panik Atak! Rüşveti reddet ve taburcu et.'
+  },
+  {
+    id: 'c10', name: 'Oğuzhan (26)', triage: 'red', pitch: 330,
+    appearance: { skin: '#eab99b', hair: '#3b281e', shirt: '#1864ab', flush: false, sweat: true, pupils: 'anisocoria' },
+    complaint: 'Berberde boynumu sertçe kıtlattırdım, 10 dakika sonra başım döndü, çift görmeye ve dengemi kaybetmeye başladım!',
+    vitals: 'Ateş: 36.6°C | Nabız: 78/dk | TA: 155/95 | SpO2: %97',
+    lung: 'Solunum doğal, nörolojik muayenede dismetri ve nistagmus!',
+    pupil: 'Hafif anizokori + Horner bulguları!',
+    radType: 'brain', radTitle: 'BEYİN BT ANJİYO', radFinding: 'Sol VERTEBRAL ARTER DİSEKSİYONU ve posterior sirkülasyon iskemisi!',
+    labs: 'D-Dimer yüksek, koagülasyon normal.',
+    enabiz: 'Öncesinde sağlıklı genç erkek.',
+    correctAction: 'admit', targetService: 'Nöroloji / Beyin Cerrahi', targetReason: 'Vertebral Arter Diseksiyonu (Akut İnme)',
+    hint: 'Boyun manipülasyonu sonrası inme! Nöroloji / Beyin Cerrahi servisine acil yatır.'
+  },
+  {
+    id: 'c11', name: 'Bayram (45)', triage: 'red', pitch: 230,
+    appearance: { skin: '#d8a488', hair: '#212529', shirt: '#37b24d', flush: true, sweat: true, pupils: 'normal' },
+    complaint: 'Tarlada çalışırken bacağıma kene yapışmış kendim çekip çıkardım; bugün yüksek ateş ve diş eti kanamam başladı!',
+    vitals: 'Ateş: 39.6°C | Nabız: 116/dk | TA: 95/60 | SpO2: %94',
+    lung: 'Ciltte peteşiyal döküntüler mevcut!',
+    pupil: 'Pupiller izokorik.',
+    radType: 'chest', radTitle: 'AKCİĞER & KLİNİK İZOLE PANEL', radFinding: 'Kırım-Kongo Kanamalı Ateşi (KKKA) yüksek şüphesi!',
+    labs: 'Trombosit: 34.000 (KRİTİK DÜŞÜK!) | AST/ALT: 4x Yüksek',
+    enabiz: 'Kırsal tarım bölgesinde ikamet.',
+    correctAction: 'quarantine',
+    hint: 'N95 Maske/KKE tak ve KKKA şüphesiyle hemen Karantina İzolasyonuna al!'
+  },
+  {
+    id: 'c12', name: 'Emirhan (19)', triage: 'red', pitch: 370,
+    appearance: { skin: '#f3c6ab', hair: '#212529', shirt: '#f59f00', flush: false, sweat: true, pupils: 'normal' },
+    complaint: 'Hocam gece uyurken aniden sol kasığımda ve testisimde dayanılmaz bıçak saplanır gibi ağrı başladı!',
+    vitals: 'Ateş: 36.8°C | Nabız: 112/dk | TA: 135/85 | SpO2: %99',
+    lung: 'Kremaster refleksi NEGATİF! Prehn bulgusu negatif!',
+    pupil: 'Pupiller izokorik.',
+    radType: 'leg', radTitle: 'SKROTAL RENKLİ DOPPLER USG', radFinding: 'Sol testiste arteriyel ve venöz kan akımı YOK (TESTİS TORSİYONU)!',
+    labs: 'WBC: 13.800 | İdrar tahlili temiz.',
+    enabiz: 'İlk 6 saat kritik cerrahi pencere!',
+    correctAction: 'admit', targetService: 'Genel Cerrahi', targetReason: 'Akut Testiküler Torsiyon (Acil Operasyon)',
+    hint: '6 saat geçerse organ kaybı olur! Derhal cerrahiye yatır.'
+  }
+];
+
+function build165Cases() {
+  const list = [...HANDCRAFTED_CASES];
+  const templates = [
+    {
+      title: 'Diyabetik Ketoasidoz (DKA)', triage: 'red', service: 'Dahiliye / Yoğun Bakım', reason: 'Diyabetik Ketoasidoz + Ağır Asidoz',
+      comp: 'Hocam 2 gündür insülinimi yapmadım, nefesim elma/aseton gibi kokuyor, çok susuyorum ve bulanık görüyorum.',
+      vit: 'Ateş: 36.8°C | Nabız: 122 | TA: 95/60 | KŞ: 485 mg/dL!', lung: 'Derin ve hızlı Kussmaul solunumu!',
+      radType: 'ecg', radTitle: 'EKG & KAN GAZI', radFinding: 'Sinüs taşikardisi. Kan gazı pH: 7.12, HCO3: 9 mEq/L!',
+      labs: 'Kan Şekeri: 485 | İdrarda Keton: +++', action: 'admit'
+    },
+    {
+      title: 'Düğünde Yorgun Mermi Travması', triage: 'red', service: 'Genel Cerrahi', reason: 'Ateşli Silah / Yorgun Mermi Yaralanması (Adli)',
+      comp: 'Düğünde halay çekerken omzuma gökten kurşun düştü hocam, kan durmuyor!',
+      vit: 'Ateş: 36.5°C | Nabız: 118 | TA: 100/65 | SpO2: %95', lung: 'Sol omuz giriş deliği aktif kanamalı.',
+      radType: 'chest', radTitle: 'TORAKS & OMUZ GRAFİSİ', radFinding: 'Skapula medialinde 9 mm metalik mermi çekirdeği!',
+      labs: 'Hgb: 10.2 | Kan grubu ve Cross-match istendi.', action: 'admit'
+    },
+    {
+      title: 'Gece Kulağa Böcek Kaçması', triage: 'green', service: 'Taburcu', reason: 'Dış Kulak Yolu Yabancı Cisim Çıkarıldı',
+      comp: 'Hocam gece yatarken kulağıma hamam böceği girdi içinde kıpırdıyor çıldıracağım!',
+      vit: 'Ateş: 36.6°C | Nabız: 92 | TA: 120/80 | SpO2: %99', lung: 'Otoskopide dış kulak yolunda canlı böcek; lidokain ile hareketsizleştirilip çıkarıldı.',
+      radType: 'brain', radTitle: 'OTOSKOPİK MUAYENE NOTU', radFinding: 'Timpanik membran sağlam, yabancı cisim tamamen çıkarıldı.',
+      labs: 'Tahlil gerekmedi.', action: 'treat', treatLabel: 'Lidokain Damla + Aspirasyon İle Çıkar'
+    },
+    {
+      title: 'Soba / Karbonmonoksit Zehirlenmesi', triage: 'red', service: 'Dahiliye / Hiperbarik', reason: 'Akut Karbonmonoksit İntoksikasyonu',
+      comp: 'Lodoslu gecede sobayı yakıp uyumuşuz, başım çatlıyor, midem bulanıyor, kulaklarım çınlıyor...',
+      vit: 'Ateş: 36.5°C | Nabız: 116 | TA: 105/65 | SpO2: %99 (Yanıltıcı!)', lung: 'Akciğerler temiz ama dudaklar kiraz kırmızısı!',
+      radType: 'ecg', radTitle: 'KARBOKSİHEMOGLOBİN & EKG', radFinding: 'COHb Düzeyi: %34 (KRİTİK)! İskemik T negatifliği.',
+      labs: 'Laktat: 5.4 mmol/L | COHb: %34', action: 'admit'
+    },
+    {
+      title: 'Sahte Sınav Raporu Rüşveti', triage: 'green', service: 'Taburcu', reason: 'Sağlıklı Birey',
+      comp: 'Hocam yarın final sınavım var hiç çalışmadım, bana 3 günlük rapor yazsan masaya 1.500₺ bıraksam?',
+      vit: 'Ateş: 36.6°C | Nabız: 74 | TA: 118/76 | SpO2: %99', lung: 'Tamamen sağlıklı solunum sesleri.',
+      radType: 'chest', radTitle: 'FİZİK MUAYENE KAYDI', radFinding: 'Hiçbir patolojik bulgu yok.',
+      labs: 'Tahlil endikasyonu yok.', action: 'discharge', bribeAmt: 1500
+    },
+    {
+      title: 'Akut Apandisit', triage: 'yellow', service: 'Genel Cerrahi', reason: 'Akut Apandisit (Cerrahi Endikasyon)',
+      comp: 'Dün göbeğim ağrıyordu bugün sağ alt karnıma indi, iştahım kesildi ve kustum.',
+      vit: 'Ateş: 37.9°C | Nabız: 102 | TA: 120/75 | SpO2: %98', lung: 'McBurney noktasında defans ve rebound POZİTİF!',
+      radType: 'leg', radTitle: 'BATIN USG', radFinding: '11 mm çaplı komprese olmayan inflame apendiks.',
+      labs: 'WBC: 16.400 | CRP: 72 mg/L', action: 'admit'
+    },
+    {
+      title: 'Aşil Tendon Rüptürü', triage: 'yellow', service: 'Ortopedi', reason: 'Total Aşil Tendon Rüptürü',
+      comp: 'Halı sahada topuğuma taş attılar sandım, artık parmak ucuma kalkamıyorum!',
+      vit: 'Ateş: 36.6°C | Nabız: 86 | TA: 125/80 | SpO2: %99', lung: 'Thompson testi POZİTİF.',
+      radType: 'leg', radTitle: 'AYAK BİLEĞİ USG', radFinding: 'Aşil tendon bütünlüğünde tam kat kopma!',
+      labs: 'Pre-op rutin normal.', action: 'admit'
+    },
+    {
+      title: 'Sıra İhlali & Saldırgan Hasta Yakını', triage: 'red', service: 'Güvenlik', reason: 'Beyaz Kod Tehdidi',
+      comp: '20 DAKİKADIR BEKLİYORUZ! Bizim hastanın parmağı kesildi niye içeridekine bakıyorsun lan?!',
+      vit: 'NABIZ YÜKSEK — SALDIRGAN TAVIR!', lung: 'Fiziksel saldırı girişimi tespit edildi!',
+      radType: 'ecg', radTitle: 'GÜVENLİK UYARISI', radFinding: 'Personel güvenliği risk altında — 1111 BEYAZ KOD!',
+      labs: 'Adli kayıt aktif.', action: 'whitecode', door: true
+    }
+  ];
+
+  const firstNames = ['Ahmet','Fatma','Mehmet','Ayşe','Mustafa','Emine','Ali','Hatice','Hüseyin','Zeynep','Hasan','Elif','İbrahim','Meryem','İsmail','Şerife','Osman','Sultan','Yusuf','Hanife','Murat','Zehra','Ömer','Havva','Ramazan','Hayriye','Halil','Cemile','Süleyman','Fadime','Abdullah','Kader','Mahmut','Büşra','Recep','Esra','Salih','Merve','Kadir','Sema','Emre','Kübra','Burak','Derya','Furkan','Gül','Enes','Tuğba','Serkan','Ebru'];
+
+  let idx = 13;
+  while (list.length < 165) {
+    const t = templates[(idx - 13) % templates.length];
+    const fn = firstNames[(idx * 3) % firstNames.length];
+    const age = 19 + ((idx * 7) % 62);
+    list.push({
+      id: 'c' + idx,
+      name: `${fn} (${age})`,
+      triage: t.triage,
+      pitch: age > 55 ? 210 : (idx % 2 === 0 ? 340 : 280),
+      appearance: {
+        skin: idx % 3 === 0 ? '#dfb195' : '#f1c2a5',
+        hair: age > 55 ? '#adb5bd' : (idx % 2 === 0 ? '#212529' : '#5c3c24'),
+        shirt: ['#1971c2','#2f9e44','#d6336c','#f08c00','#5f3dc4','#495057'][idx % 6],
+        flush: t.triage === 'red',
+        sweat: t.triage !== 'green',
+        pupils: 'normal'
+      },
+      complaint: t.comp,
+      vitals: t.vit,
+      lung: t.lung,
+      pupil: 'Pupiller izokorik, ışık refleksi +/+.',
+      radType: t.radType,
+      radTitle: t.radTitle,
+      radFinding: t.radFinding,
+      labs: t.labs,
+      enabiz: idx % 5 === 0 ? 'Not: NSAİİ (Ağrı kesici) mide hassasiyeti mevcut.' : 'Kronik ek hastalık kaydı yok.',
+      correctAction: t.action,
+      targetService: t.service,
+      targetReason: t.reason,
+      treatLabel: t.treatLabel || 'Acil Müdahale Uygula',
+      bribe: t.bribeAmt ? { amount: t.bribeAmt, text: `Zarf uzattı: "Hocam ${t.bribeAmt}₺ vereyim kimse duymasın..."` } : null,
+      doorThreat: !!t.door,
+      hint: `${t.title}: Bulguları kontrol edip ${t.service} yönlendirmesini yap.`
+    });
+    idx++;
+  }
+  return list;
+}
+const ALL_CASES = build165Cases();
+
+/* ================= START & CORE FLOW ================= */
+document.querySelectorAll('.av-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.av-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    state.avatar = Number(btn.dataset.av);
+  });
+});
+
+document.getElementById('btnStartGame').addEventListener('click', () => {
+  const dn = document.getElementById('inpDocName').value.trim();
+  const hn = document.getElementById('inpHospName').value.trim();
+  if (dn) state.docName = dn;
+  if (hn) state.hospName = hn;
+  state.diff = document.getElementById('inpDiff').value;
+  initAudio();
+  playSfx('coin');
+  document.getElementById('startScreen').style.display = 'none';
+  updateHud();
+  nextPatient();
+});
+
+function updateHud() {
+  document.getElementById('hudDay').textContent = `G${state.day} ${state.seenToday}/5`;
+  document.getElementById('hudMoney').textContent = `${state.money.toLocaleString('tr-TR')}₺`;
+  document.getElementById('hudRep').textContent = `⭐${state.rep}`;
+  document.getElementById('hudStress').textContent = `🧠${state.stress}%`;
+  document.getElementById('hudWarn').textContent = `⚠️${state.warnings}/3`;
+  const hStr = String(state.hour % 24).padStart(2, '0');
+  document.getElementById('clockTag').textContent = `🕒 ${hStr}:00`;
+}
+
+let typeTimer = null;
+function say(speaker, text, badgeText = '', badgeClass = 't-green', pitch = 300) {
+  document.getElementById('speakerName').textContent = speaker;
+  const b = document.getElementById('triageBadge');
+  b.textContent = badgeText || 'AKTİF';
+  b.className = 'triage-badge ' + badgeClass;
+  const el = document.getElementById('dialogueText');
+  el.textContent = '';
+  if (typeTimer) clearInterval(typeTimer);
+  let i = 0;
+  typeTimer = setInterval(() => {
+    if (i < text.length) {
+      el.textContent += text[i];
+      if (i % 3 === 0 && text[i] !== ' ') playBlip(pitch);
+      i++;
+    } else clearInterval(typeTimer);
+  }, 15);
+}
+
+function nextPatient() {
+  if (state.warnings >= 3) {
+    gameOver('3 İdari Uyarı aldın! Başhekimlik sözleşmeni feshetti — Kırsal Sağlık Ocağına Sürgün Edildin.');
+    return;
+  }
+  if (state.seenToday >= 5) {
+    endOfShiftSummary();
+    return;
+  }
+  state.location = 'er';
+  document.getElementById('sceneTag').textContent = `🏥 ${state.hospName.toUpperCase()} — ODA 1`;
+  document.getElementById('zoomHint').style.display = 'none';
+
+  // Trigger colleague borrow requests periodically
+  if (Math.random() < (state.diff === 'hard' ? 0.55 : 0.42)) {
+    triggerRandomLoanRequest();
+  }
+  checkLoanRepayments();
+
+  const pool = ALL_CASES.filter(c => !state.usedCaseIds.has(c.id));
+  const chosen = pool.length ? pool[Math.floor(Math.random() * pool.length)] : ALL_CASES[Math.floor(Math.random() * ALL_CASES.length)];
+  state.usedCaseIds.add(chosen.id);
+  state.currentPatient = chosen;
+  state.examDone = { vitals: false, lung: false, pupil: false, rad: false, labs: false, enabiz: false };
+  state.ppeOn = false;
+  state.doorThreat = !!chosen.doorThreat || (state.diff === 'hard' && Math.random() < 0.25);
+  state.bribePending = !!chosen.bribe;
+
+  const badgeMap = { red: ['KIRMIZI ALAN', 't-red'], yellow: ['SARI ALAN', 't-yellow'], green: ['YEŞİL ALAN', 't-green'] };
+  const [bt, bc] = badgeMap[chosen.triage];
+  say(chosen.name, `"${chosen.complaint}"`, bt, bc, chosen.pitch);
+  setTab('talk');
+}
+
+function setTab(tab) {
+  state.tab = tab;
+  ['tabTalk','tabExam','tabFile','tabDecide'].forEach(id => document.getElementById(id).classList.remove('active'));
+  const map = { talk: 'tabTalk', exam: 'tabExam', file: 'tabFile', decide: 'tabDecide' };
+  if (map[tab]) document.getElementById(map[tab]).classList.add('active');
+
+  const panel = document.getElementById('subPanel');
+  panel.innerHTML = '';
+  const p = state.currentPatient;
+  if (!p || state.location !== 'er') return;
+
+  if (tab === 'talk') {
+    addChoice(panel, '🗣️ Şikayeti Detaylandır & Klinik İpucu', () => {
+      say(p.name, `"${p.complaint}" (İpucu: ${p.hint})`, 'ANAMNEZ', 't-yellow', p.pitch);
+    });
+    const intern = INTERNS[state.internIdx];
+    addChoice(panel, `👨‍⚕️ ${intern.name}'e Danış / Gözlemle`, () => runInternSupervision());
+    if (state.doorThreat) {
+      addChoice(panel, '🚨 1111 BEYAZ KOD BAS! (Kapıda Saldırı Tehdidi)', () => {
+        playSfx('alarm');
+        state.doorThreat = false;
+        state.rep += 4;
+        updateHud();
+        say('GÜVENLİK EKİBİ', '1111 Beyaz Kod! Güvenlik ve hastane polisi saldırganı saniyeler içinde etkisiz hale getirdi.', 'GÜVENLİ', 't-green', 220);
+        if (p.correctAction === 'whitecode') completeCase(true, 'Beyaz Kod zamanında verildi, personel korundu! +450₺');
+        else setTab('talk');
+      }, 'danger');
+    }
+    if (state.bribePending && p.bribe) {
+      addChoice(panel, `✉️ Rüşvet Teklifini Gör (${p.bribe.amount}₺)`, () => {
+        say('ETİK İKİLEM', p.bribe.text, 'RÜŞVET', 't-red', 190);
+        panel.innerHTML = '';
+        addChoice(panel, `💰 Zarfı Al (+${p.bribe.amount}₺, Yüksek Disiplin Riski)`, () => {
+          state.money += p.bribe.amount;
+          state.bribePending = false;
+          addTx('Kayıt Dışı Zarf Geliri', p.bribe.amount, 'pos');
+          if (Math.random() < 0.55) {
+            state.warnings++;
+            updateHud();
+            say('BAŞHEKİMLİK MÜFETTİŞİ', 'Suçüstü! Usulsüz işlem tespit edildi. +1 Uyarı aldın!', 'UYARI', 't-red', 150);
+          } else {
+            updateHud();
+            say('SİSTEM', `Zarfı cebine koydun (+${p.bribe.amount}₺). Stres arttı.`, 'RİSKLİ', 't-yellow', 260);
+          }
+          setTab('decide');
+        }, 'danger');
+        addChoice(panel, '🛡️ "Burası Devletin Hastanesi!" (Reddet & İtibar Kazan)', () => {
+          state.bribePending = false;
+          state.rep += 6;
+          updateHud();
+          say(state.docName, '"Paranı da al çık dışarı, burada sadece tıbbi gerçekler geçer!"', 'ONURLU', 't-green', 340);
+          setTab('decide');
+        }, 'success');
+      }, 'danger');
+    }
+  }
+  else if (tab === 'exam') {
+    addChoice(panel, `😷 KKE N95 Maske Tak (${state.ppeOn ? 'TAKILI ✓' : 'KAPALI'})`, () => {
+      state.ppeOn = true;
+      say('SİSTEM', 'N95 maske ve koruyucu eldiven giyildi.', 'KORUMALI', 't-green', 420);
+      setTab('exam');
+    }, state.ppeOn ? 'success' : '');
+    addChoice(panel, `💓 Vital Bulgular (Nabız / TA / Ateş) ${state.examDone.vitals ? '✓' : ''}`, () => {
+      state.examDone.vitals = true;
+      playSfx('heart');
+      say('VİTAL MONİTÖR', p.vitals, 'VİTALLER', 't-yellow', 380);
+      setTab('exam');
+    });
+    addChoice(panel, `🩺 Stetoskop İle Dinle ${state.examDone.lung ? '✓' : ''}`, () => {
+      state.examDone.lung = true;
+      say('STETOSKOP BULGUSU', p.lung, 'OSKÜLTASYON', 't-yellow', 250);
+      setTab('exam');
+    });
+    addChoice(panel, `🔦 Göz Feneri (Pupilla Refleksi) ${state.examDone.pupil ? '✓' : ''}`, () => {
+      state.examDone.pupil = true;
+      say('NÖROLOJİK MUAYENE', p.pupil, 'PUPILLA', 't-yellow', 440);
+      setTab('exam');
+    });
+  }
+  else if (tab === 'file') {
+    addChoice(panel, `🩻 ${p.radTitle} İste & Yakınlaştır ${state.examDone.rad ? '✓' : ''}`, () => {
+      state.examDone.rad = true;
+      document.getElementById('zoomHint').style.display = 'block';
+      say(p.radTitle, p.radFinding, 'RADYOLOJİ', 't-yellow', 360);
+      openModal('radiology');
+    });
+    addChoice(panel, `🧪 Kan & Biyokimya Tahlilleri ${state.examDone.labs ? '✓' : ''}`, () => {
+      state.examDone.labs = true;
+      say('LABORATUVAR SONUCU', p.labs, 'TAHLİL', 't-yellow', 390);
+      setTab('file');
+    });
+    addChoice(panel, `💻 E-Nabız & Alerji Geçmişi ${state.examDone.enabiz ? '✓' : ''}`, () => {
+      state.examDone.enabiz = true;
+      say('E-NABIZ SİSTEMİ', p.enabiz, 'KAYIT', 't-red', 310);
+      setTab('file');
+    });
+  }
+  else if (tab === 'decide') {
+    addChoice(panel, '🏥 Servise Yatış Yap (Servis & Gerekçe Seç)', () => openAdmissionFlow(), 'success');
+    addChoice(panel, `💉 Acilde Müdahale Et (${p.treatLabel || 'Tedavi Uygula'})`, () => {
+      if (p.correctAction === 'quarantine' && !state.ppeOn) {
+        state.warnings++; updateHud();
+        completeCase(false, 'Maskesiz bulaşıcı hastaya yaklaştın ve enfekte oldun! +1 Uyarı.');
+        return;
+      }
+      const ok = p.correctAction === 'treat';
+      completeCase(ok, ok ? 'Acil müdahale tam isabet! Hasta stabilize edildi. +450₺' : 'Bu hastanın servise yatışı veya karantinası gerekiyordu!');
+    });
+    addChoice(panel, '☣️ Karantina / İzolasyon Odasına Al', () => {
+      if (p.correctAction === 'quarantine') {
+        if (!state.ppeOn) {
+          state.warnings++; updateHud();
+          completeCase(false, 'Doğru tanı ama N95 maske takmadan temas ettin! +1 Uyarı.');
+        } else {
+          completeCase(true, 'Salgın vakası KKE korumasıyla izolasyona alındı! Bakanlık tebriği +600₺');
+        }
+      } else {
+        completeCase(false, 'Bulaşıcı olmayan hastayı karantinaya kapattın!');
+      }
+    });
+    addChoice(panel, '👮 Hastane Polisi / Adli Bildirim', () => {
+      const ok = p.correctAction === 'police' || p.correctAction === 'whitecode';
+      completeCase(ok, ok ? 'Sahte reçete / adli vaka polise teslim edildi! +450₺' : 'Masum hastaya polis çağırdın!');
+    });
+    addChoice(panel, '🏠 Reçete Yaz & Taburcu Et', () => {
+      const ok = p.correctAction === 'discharge';
+      completeCase(ok, ok ? 'Gereksiz yatış yapılmadı, hasta güvenle taburcu edildi. +350₺' : 'KRİTİK HATA! Yatması gereken ağır hastayı eve gönderdin!');
+    });
+  }
+}
+
+/* ================= 2-STEP HOSPITAL ADMISSION ================= */
+function openAdmissionFlow() {
+  const panel = document.getElementById('subPanel');
+  panel.innerHTML = '';
+  say('YATIŞ PROTOKOLÜ — ADIM 1/2', 'Hastayı hangi kliniğe / servise yatırıyorsun?', 'SERVİS SEÇ', 't-yellow', 330);
+  ['Kardiyoloji','Göğüs Hastalıkları','Genel Cerrahi','Ortopedi','Kadın Doğum','Nöroloji / Beyin Cerrahi','Dahiliye / Yoğun Bakım'].forEach(srv => {
+    addChoice(panel, `🏥 ${srv}`, () => openAdmissionReason(srv));
+  });
+}
+
+function openAdmissionReason(selectedService) {
+  const p = state.currentPatient;
+  const panel = document.getElementById('subPanel');
+  panel.innerHTML = '';
+  say(`YATIŞ: ${selectedService.toUpperCase()} — ADIM 2/2`, 'Konsültan uzmana iletilecek tıbbi yatış gerekçesini seç:', 'ENDİKASYON', 't-yellow', 350);
+
+  const distractorReasons = [
+    'Akut İnferior Miyokard İnfarktüsü (STEMI)',
+    'Lober Pnömoni + Hipoksi (SpO2 %91)',
+    'Akut Apandisit (Cerrahi Endikasyon)',
+    'Deplase Tibia Kırığı (Cerrahi/Atel)',
+    'Aktif Doğum Eylemi (38 Hafta Gebelik)',
+    'Epidural Hematom + KİBAS (Anizokori)',
+    'Akut Testiküler Torsiyon (Acil Operasyon)',
+    'Vertebral Arter Diseksiyonu (Akut İnme)',
+    'Diyabetik Ketoasidoz + Ağır Asidoz',
+    'Genel Halsizlik ve Vitamin Eksikliği'
+  ];
+  const options = new Set([p.targetReason || 'Klinik Takip ve Tedavi']);
+  while (options.size < 4) options.add(distractorReasons[Math.floor(Math.random() * distractorReasons.length)]);
+
+  Array.from(options).sort(() => Math.random() - 0.5).forEach(reason => {
+    addChoice(panel, `📋 Gerekçe: ${reason}`, () => {
+      if (p.correctAction !== 'admit') {
+        completeCase(false, `${selectedService} uzmanı reddetti: "Bu hastanın yatış endikasyonu yok!"`);
+        return;
+      }
+      const serviceMatch = selectedService === p.targetService;
+      const reasonMatch = reason === p.targetReason;
+      if (serviceMatch && reasonMatch) completeCase(true, `${selectedService} kabul etti! Gerekçe (${reason}) eksiksiz. +550₺`);
+      else if (serviceMatch) completeCase(true, `${selectedService} hastayı aldı ama uzman yatış notunu düzeltti. +300₺`);
+      else completeCase(false, `YANLIŞ SERVİS! ${selectedService} yerine ${p.targetService} olmalıydı!`);
+    });
+  });
+}
+
+/* ================= INTERN LIVE SUPERVISION ================= */
+function runInternSupervision() {
+  const p = state.currentPatient;
+  const intern = INTERNS[state.internIdx];
+  const panel = document.getElementById('subPanel');
+  panel.innerHTML = '';
+
+  let internProposal = '', isMistake = true;
+  if (intern.flaw === 'allergy') internProposal = `"Hocam vakit kaybetmeyelim, ben hemen 1000 mg Penisilin iğnesi yapıp gönderiyorum!"`;
+  else if (intern.flaw === 'sleepy') internProposal = `*Esner* "Hocam akciğerleri dinledim ama stetoskopun kulaklığını takmayı unutmuşum..."`;
+  else if (intern.flaw === 'rude') internProposal = `"Abartmayın, Google'dan bakıp acili meşgul etmeyin!" (Hasta yakını sinirlendi!)`;
+  else {
+    internProposal = `"Hocam ellerim titriyor ama ${p.radTitle} istemini ve vitalleri hazırladım, doğru mu?"`;
+    isMistake = false;
+  }
+
+  say(`${intern.name.toUpperCase()} (${intern.trait})`, internProposal, 'SÜPERVİZYON', isMistake ? 't-red' : 't-green', 270);
+  if (isMistake) {
+    addChoice(panel, '✋ "DUR! Hata Yapıyorsun, Doğrusunu Göstereyim"', () => {
+      state.internTrust += 10; state.rep += 3; updateHud();
+      say(intern.name, '"Çok haklısınız hocam, az kalsın büyük hata yapıyordum!"', 'EĞİTİLDİ', 't-green', 320);
+      setTab('exam');
+    }, 'success');
+    addChoice(panel, '☕ İntörne Sıcak Çay Ismarla (-30₺, Odak Artar)', () => {
+      if (state.money >= 30) {
+        state.money -= 30; state.internTrust += 15; addTx('Kantin Çay İkramı', -30, 'neg'); updateHud();
+        say(intern.name, '"İlaç gibi geldi hocam, zihnim açıldı!"', 'MORAL +15', 't-green', 360);
+      }
+      setTab('exam');
+    });
+  } else {
+    addChoice(panel, '👏 "Aferin, Aynen Böyle Devam Et!"', () => {
+      state.internTrust += 12; state.rep += 2; updateHud();
+      say(intern.name, '"Teşekkürler hocam, sayenizde kendime güvenim geldi!"', 'MOTİVE', 't-green', 370);
+      setTab('exam');
+    }, 'success');
+  }
+}
+
+function completeCase(success, msg) {
+  playSfx('stamp');
+  state.seenToday++;
+  state.hour += 2;
+  if (success) {
+    state.money += 450;
+    state.rep = Math.min(100, state.rep + 4);
+    state.stress = Math.max(0, state.stress - 3);
+    addTx(`Vaka Performans Ödemesi (${state.currentPatient.name})`, 450, 'pos');
+  } else {
+    state.rep = Math.max(0, state.rep - 6);
+    state.stress = Math.min(100, state.stress + 12);
+    state.warnings++;
+  }
+  updateHud();
+  say(success ? 'VAKA BAŞARILI ✓' : 'KLİNİK HATA ✕', msg, success ? '+İTİBAR' : 'UYARI', success ? 't-green' : 't-red', success ? 420 : 160);
+  const panel = document.getElementById('subPanel');
+  panel.innerHTML = '';
+  addChoice(panel, '▶ Sıradaki Hastayı Çağır', () => nextPatient(), 'success');
+}
+
+function endOfShiftSummary() {
+  state.day++;
+  state.hour = 20;
+  state.seenToday = 0;
+  state.coffeeGivenToday = false;
+  state.internIdx = (state.internIdx + 1) % INTERNS.length;
+
+  let payroll = 1100 + (state.rep * 5);
+  if (state.bankDebt > 0) {
+    const cut = Math.min(state.bankDebt, 600);
+    state.bankDebt -= cut;
+    payroll -= cut;
+    addTx('TıpBank Otomatik Kredi Taksiti', -cut, 'neg');
+  }
+  state.money += payroll;
+  addTx(`Gün ${state.day - 1} Döner Sermaye & Nöbet Bordrosu`, payroll, 'pos');
+  updateHud();
+
+  const nextInt = INTERNS[state.internIdx];
+  say('NÖBET TESLİMİ & BORDRO', `TıpBank hesabına +${payroll}₺ Nöbet & Döner Sermaye yattı! Yarın yanında ${nextInt.name} olacak.`, 'NÖBET BİTTİ', 't-green', 390);
+  const panel = document.getElementById('subPanel');
+  panel.innerHTML = '';
+  addChoice(panel, '🚌 Belediye Otobüsüyle Eve Dön (%30 Rastgele Acil Durum)', () => {
+    if (Math.random() < 0.30) startBusEmergency();
+    else goLocation('home');
+  });
+  addChoice(panel, '☕ Hastane Kantinine Uğra (Personel & Kahve)', () => goLocation('canteen'));
+}
+
+/* ================= BUS 110 BPM CPR ================= */
+function startBusEmergency() {
+  playSfx('alarm');
+  let compressions = 0;
+  say('OTOBÜSTE PANİK!', '"DOKTOR VAR MI?! YOLCU YERE YIĞILDI, NABIZ YOK!" — Kalp masajı için ritmik bas (110 BPM)!', 'ACİL CPR', 't-red', 480);
+  const panel = document.getElementById('subPanel');
+  panel.innerHTML = '';
+  const btn = document.createElement('button');
+  btn.className = 'choice-btn danger';
+  btn.innerHTML = '<span>💓 GÖĞÜS BASISI UYGULA (0 / 10)</span><span>110 BPM</span>';
+  btn.onclick = () => {
+    compressions++;
+    playSfx('heart');
+    btn.innerHTML = `<span>💓 GÖĞÜS BASISI UYGULA (${compressions} / 10)</span><span>DEVAM!</span>`;
+    if (compressions >= 10) {
+      state.money += 600; state.rep = Math.min(100, state.rep + 8);
+      addTx('Belediye / Bakanlık Kahramanlık Ödülü', 600, 'pos');
+      updateHud();
+      say('YEREL HABERLER MANŞETİ!', `"${state.docName}, otobüste kalbi duran vatandaşı hayata döndürdü!" (+600₺ & +8 İtibar)`, 'KAHRAMAN', 't-green', 440);
+      panel.innerHTML = '';
+      addChoice(panel, '☀️ Yeni Nöbete Geç', () => nextPatient(), 'success');
+    }
+  };
+  panel.appendChild(btn);
+}
+
+/* ================= SMARTPHONE APPS (TIPBANK, WHATSDOC, FOTOGRAM, CALL, BETTIP) ================= */
+function openPhone() {
+  document.getElementById('phoneDot').style.display = 'none';
+  openPhoneApp('home');
+}
+
+function openPhoneApp(app) {
+  const modal = document.getElementById('modal');
+  const title = document.getElementById('modalTitle');
+  const body = document.getElementById('modalBody');
+  modal.style.display = 'flex';
+  title.textContent = `📱 ${state.assets.phone.toUpperCase()}`;
+
+  const hStr = String(state.hour % 24).padStart(2, '0');
+  let html = `<div class="phone-frame">
+    <div class="phone-status"><span>📶 TıpCell 5G</span><span>🕒 ${hStr}:00</span><span>🔋 %84</span></div>
+    <div id="phoneScreen" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px;"></div>
+    <button class="choice-btn" style="margin-top:8px;justify-content:center;" onclick="openPhoneApp('home')">⭕ ANA EKRAN</button>
+  </div>`;
+  body.innerHTML = html;
+  const scr = document.getElementById('phoneScreen');
+
+  if (app === 'home') {
+    const reqBadge = state.loanRequests.length ? `<span class="badge-dot" style="display:block;"></span>` : '';
+    scr.innerHTML = `
+      <div style="text-align:center;font-size:11px;color:var(--amber);padding:4px;">Hoş geldin, ${state.docName}</div>
+      <div class="app-grid">
+        <div class="app-icon" onclick="openPhoneApp('bank')">${reqBadge}<span class="ico">💳</span><span>TıpBank</span></div>
+        <div class="app-icon" onclick="openPhoneApp('whatsdoc')"><span class="ico">💬</span><span>WhatsDoc</span></div>
+        <div class="app-icon" onclick="openPhoneApp('fotogram')"><span class="ico">📸</span><span>FotoGram</span></div>
+        <div class="app-icon" onclick="openPhoneApp('call')"><span class="ico">📞</span><span>Arama</span></div>
+        <div class="app-icon" onclick="openPhoneApp('bettip')"><span class="ico">🎰</span><span>BetTıp</span></div>
+        <div class="app-icon" onclick="openModal('map')"><span class="ico">🗺️</span><span>Harita</span></div>
+      </div>
+      <div style="font-size:10px;color:var(--text-muted);text-align:center;margin-top:auto;">
+        Bekleyen Borç Talebi: <strong style="color:var(--crimson)">${state.loanRequests.length}</strong> | Alacakların: <strong style="color:var(--teal)">${state.activeLoansOut.length}</strong>
+      </div>`;
+  }
+  else if (app === 'bank') {
+    scr.innerHTML = `
+      <div class="bank-card">
+        <div style="font-size:10px;color:var(--teal)">TIPBANK VADESİZ HESAP</div>
+        <div style="font-size:20px;font-weight:900;margin:4px 0;">${state.money.toLocaleString('tr-TR')} ₺</div>
+        <div style="font-size:9px;color:#cbd5e1;">IBAN: ${state.iban}</div>
+        ${state.bankDebt > 0 ? `<div style="font-size:10px;color:#ff8787;margin-top:4px;">Aktif Kredi Borcu: ${state.bankDebt}₺</div>` : ''}
+      </div>
+      <div style="font-size:11px;color:var(--amber);font-weight:800;margin-top:4px;">💸 DOKTOR & PERSONEL BORÇ TALEPLERİ (${state.loanRequests.length})</div>
+    `;
+    if (!state.loanRequests.length) {
+      scr.innerHTML += `<div style="font-size:11px;color:var(--text-muted);padding:6px;background:#121829;">Şu an senden borç isteyen meslektaşın yok. Nöbet ilerledikçe talep gelebilir.</div>`;
+    } else {
+      state.loanRequests.forEach(req => {
+        const box = document.createElement('div');
+        box.style.cssText = 'background:#161f36;border:2px solid var(--gold);padding:8px;display:flex;flex-direction:column;gap:6px;';
+        box.innerHTML = `
+          <div style="display:flex;justify-content:space-between;font-weight:800;color:var(--amber);">
+            <span>${req.from} (${req.role})</span><span>İstenen: ${req.amount}₺</span>
+          </div>
+          <div style="font-size:11px;line-height:1.4;">"${req.story}"</div>
+          <div style="font-size:9.5px;color:var(--sky);">IBAN: ${req.iban} • Geri Ödeme Sözü: ${req.returnAmt}₺</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+            <button class="choice-btn success" style="justify-content:center;" onclick="resolveLoan('${req.id}', true)">✓ FAST Gönder (-${req.amount}₺)</button>
+            <button class="choice-btn danger" style="justify-content:center;" onclick="resolveLoan('${req.id}', false)">✕ Reddet</button>
+          </div>`;
+        scr.appendChild(box);
+      });
+    }
+
+    const loanBtn = document.createElement('button');
+    loanBtn.className = 'choice-btn';
+    loanBtn.textContent = '🏦 TıpBank Anında İhtiyaç Kredisi Çek (+2.000₺)';
+    loanBtn.onclick = () => {
+      if (state.bankDebt >= 4000) { alert('Kredi limitin doldu!'); return; }
+      state.money += 2000;
+      state.bankDebt += 2400;
+      addTx('TıpBank Anında Kredi Kullanımı', 2000, 'pos');
+      playSfx('coin'); updateHud(); openPhoneApp('bank');
+    };
+    scr.appendChild(loanBtn);
+
+    const txHead = document.createElement('div');
+    txHead.style.cssText = 'font-size:11px;color:var(--teal);font-weight:800;margin-top:4px;';
+    txHead.textContent = '📜 SON HESAP HAREKETLERİ';
+    scr.appendChild(txHead);
+    state.transactions.forEach(t => {
+      const r = document.createElement('div');
+      r.className = 'tx-row ' + t.type;
+      r.innerHTML = `<span>${t.desc}</span><span>${t.amt >= 0 ? '+' : ''}${t.amt}₺</span>`;
+      scr.appendChild(r);
+    });
+  }
+  else if (app === 'whatsdoc') {
+    scr.innerHTML = `<div style="font-size:12px;color:var(--teal);font-weight:800;">💬 WHATSDOC HASTANE MESAJLARI</div>`;
+    state.chats.forEach((ch, idx) => {
+      const last = ch.msgs[ch.msgs.length - 1];
+      const b = document.createElement('div');
+      b.style.cssText = 'background:#141d33;border:1px solid #32436b;padding:8px;cursor:pointer;';
+      b.innerHTML = `<div style="font-weight:800;color:var(--amber);">${ch.name}</div><div style="font-size:11px;color:#cbd5e1;margin-top:3px;">${last.from}: ${last.text}</div>`;
+      b.onclick = () => openChatThread(idx);
+      scr.appendChild(b);
+    });
+  }
+  else if (app === 'fotogram') {
+    scr.innerHTML = `
+      <div style="font-size:12px;color:var(--amber);font-weight:800;">📸 FOTOGRAM — PİKSEL PAYLAŞIM</div>
+      <canvas id="photoCanvas" width="280" height="120"></canvas>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;">
+        <button class="choice-btn" onclick="takePhoto('tea','Nöbet masasında çay ve EKG keyfi ☕🩺')">☕ Nöbet Çayı Çek</button>
+        <button class="choice-btn" onclick="takePhoto('car','Nöbet çıkışı direksiyon başı 🚗💨')">🚗 Araç Pozu Çek</button>
+      </div>
+    `;
+    drawRetroPhoto('tea');
+    state.posts.forEach(pt => {
+      const d = document.createElement('div');
+      d.style.cssText = 'background:#131a2e;border:1px solid #2c3b5e;padding:7px;font-size:11px;';
+      d.innerHTML = `<strong style="color:var(--teal)">@${pt.author.replace(/\s+/g,'').toLowerCase()}</strong><br>${pt.caption}<br><span style="color:var(--crimson)">❤️ ${pt.likes} Beğeni</span> • <span style="color:var(--text-muted)">${pt.comment}</span>`;
+      scr.appendChild(d);
+    });
+  }
+  else if (app === 'call') {
+    scr.innerHTML = `<div style="font-size:12px;color:var(--sky);font-weight:800;">📞 HIZLI ARAMA REHBERİ</div>`;
+    const contacts = [
+      ['👔 Başhekimlik Sekreterliği', 'Başhekim: "Nöbet performansını takip ediyoruz doktor, böyle devam et."'],
+      ['🚑 112 Komuta Kontrol', '112 Komuta: "Bölgede trafik kazası var, 15 dakikaya ambulans giriş yapacak."'],
+      ['🩺 Asistan Dr. Elif', 'Dr. Elif: "Sesini duymak iyi geldi, birazdan kantinde buluşalım!"'],
+      ['🚗 Oto Galerici', `Galerici: "Hocam senin bütçeye göre çok temiz araçlar geldi, beklerim."`]
+    ];
+    contacts.forEach(([name, reply]) => {
+      addChoice(scr, name, () => {
+        playSfx('msg');
+        scr.innerHTML = `<div style="padding:14px;background:#14242b;border:2px solid var(--teal);line-height:1.5;">
+          <strong style="color:var(--amber)">${name} ARANIYOR...</strong><br><br>${reply}</div>`;
+      });
+    });
+  }
+  else if (app === 'bettip') {
+    scr.innerHTML = `
+      <div style="background:#2b0d16;border:2px solid var(--crimson);padding:9px;">
+        <div style="color:#ff8787;font-weight:900;">🎰 BETTIP — KAÇAK KRİPTO SLOT</div>
+        <div style="font-size:11px;margin-top:4px;">Yüksek risk! Kaybedersen stres artar, çok oynarsan Başhekimlik soruşturma açar.</div>
+      </div>
+      <button class="choice-btn" onclick="playBet(300)">🎲 300₺ Bahis Oyna (2.2x Kazanç Şansı)</button>
+      <button class="choice-btn danger" onclick="playBet(1000)">🔥 1.000₺ Yüksek Bahis Oyna (2.5x Şans / Yüksek Risk)</button>
+      <div id="betResult" style="padding:8px;font-size:12px;color:var(--amber);"></div>
+    `;
+  }
+}
+
+function openChatThread(idx) {
+  const ch = state.chats[idx];
+  const scr = document.getElementById('phoneScreen');
+  scr.innerHTML = `<div style="font-weight:800;color:var(--amber);border-bottom:1px solid #334;padding-bottom:4px;">${ch.name}</div>`;
+  ch.msgs.forEach(m => {
+    const d = document.createElement('div');
+    d.style.cssText = 'background:#162038;padding:7px;font-size:11px;line-height:1.4;white-space:pre-line;';
+    d.innerHTML = `<strong style="color:var(--teal)">${m.from}:</strong> ${m.text}`;
+    scr.appendChild(d);
+  });
+  ch.replies.forEach(rep => {
+    addChoice(scr, `↩️ "${rep}"`, () => {
+      ch.msgs.push({ from: state.docName, text: rep });
+      playSfx('msg');
+      openChatThread(idx);
+    }, 'success');
+  });
+}
+
+function drawRetroPhoto(mode) {
+  const c = document.getElementById('photoCanvas');
+  if (!c) return;
+  const x = c.getContext('2d');
+  x.fillStyle = mode === 'tea' ? '#1a2540' : '#0f292e';
+  x.fillRect(0, 0, 280, 120);
+  x.fillStyle = '#f5b942'; x.font = 'bold 12px monospace';
+  x.fillText(mode === 'tea' ? '☕ ACİL NÖBET HATIRASI' : `🚗 ${state.assets.car.toUpperCase()}`, 16, 26);
+  x.fillStyle = '#38d9a9';
+  x.fillRect(110, 46, 56, 48);
+  x.fillStyle = '#fff';
+  x.fillText('16-BIT CAM', 102, 108);
+}
+
+function takePhoto(mode, caption) {
+  drawRetroPhoto(mode);
+  state.posts.unshift({
+    author: state.docName,
+    caption,
+    likes: 18 + Math.floor(Math.random() * 45),
+    comment: 'İntörn Berk: Hocam ateş ediyorsunuz 🔥'
+  });
+  playSfx('coin');
+  openPhoneApp('fotogram');
+}
+
+function playBet(stake) {
+  if (state.money < stake) { alert('Yetersiz bakiye!'); return; }
+  state.money -= stake;
+  const win = Math.random() < 0.42;
+  const res = document.getElementById('betResult');
+  if (win) {
+    const prize = Math.round(stake * (stake >= 1000 ? 2.4 : 2.1));
+    state.money += prize;
+    addTx('BetTıp Bahis Kazancı', prize - stake, 'pos');
+    playSfx('coin');
+    res.textContent = `🎉 KAZANDIN! +${prize}₺ hesabına geçti!`;
+  } else {
+    state.stress = Math.min(100, state.stress + 14);
+    addTx('BetTıp Bahis Kaybı', -stake, 'neg');
+    playSfx('alarm');
+    res.textContent = `💀 KAYBETTİN! -${stake}₺ gitti ve stresin %14 arttı!`;
+    if (stake >= 1000 && Math.random() < 0.35) {
+      state.warnings++;
+      res.textContent += ' ⚠️ Başhekimlik şüpheli hesap hareketi tespit etti (+1 Uyarı)!';
+    }
+  }
+  updateHud();
+}
+
+/* ================= OUTSIDE LOCATIONS ================= */
+function goLocation(loc) {
+  state.location = loc;
+  closeModal();
+  const panel = document.getElementById('subPanel');
+  panel.innerHTML = '';
+
+  if (loc === 'canteen') {
+    document.getElementById('sceneTag').textContent = '☕ HASTANE KANTİNİ — PERSONEL SOSYAL ALANI';
+    say('HASTANE KANTİNİ', `Sohbet etmek veya günde 1 kez kahve ısmarlamak için personel seç (Bugün kahve hakkı: ${state.coffeeGivenToday ? 'KULLANILDI' : '1 ADET MEVCUT'}):`, 'SOSYAL', 't-yellow', 340);
+    state.staff.forEach((st, i) => addChoice(panel, `${st.name} (${st.role}) — ❤️${st.love}`, () => interactStaff(i)));
+    addChoice(panel, '🏥 Acil Servise Dön', () => nextPatient(), 'success');
+  }
+  else if (loc === 'diner') {
+    document.getElementById('sceneTag').textContent = '🍲 MAHALLE ESNAF LOKANTASI';
+    say('USTA AŞÇI', '"Hoş geldin doktor bey! Mercimek çorbası ve kavurma taze çıktı, stresini ve yorgunluğunu alır."', 'LOKANTA', 't-yellow', 240);
+    addChoice(panel, '🍲 Mercimek Çorbası + Kavurma Ye (-90₺, -15 Stres)', () => {
+      if (state.money >= 90) {
+        state.money -= 90; state.stress = Math.max(0, state.stress - 15);
+        addTx('Esnaf Lokantası Akşam Yemeği', -90, 'neg'); updateHud();
+        say('LEZİZ!', 'Sıcacık çorba ve kavurma stresini azalttı!', 'ENERJİ FULL', 't-green', 380);
+      }
+    });
+    addChoice(panel, '🏥 Acil Servise Dön', () => nextPatient(), 'success');
+  }
+  else if (loc === 'dealer') {
+    document.getElementById('sceneTag').textContent = '🚗 OTOMOBİL GALERİSİ';
+    say('GALERİCİ', `Mevcut Aracın: ${state.assets.car}. Kazandığın nöbet parasıyla kendine sıfır/ikinci el araç seç!`, 'GALERİ', 't-yellow', 260);
+    addChoice(panel, '🚘 1998 Model Modifiyeli Şahin (2.800₺)', () => buyAsset('car', 'Modifiyeli Şahin', 2800));
+    addChoice(panel, '🚙 2024 Alman Sedan Otomobil (7.500₺)', () => buyAsset('car', 'Alman Sedan', 7500));
+    addChoice(panel, '🏥 Acil Servise Dön', () => nextPatient(), 'success');
+  }
+  else if (loc === 'tech') {
+    document.getElementById('sceneTag').textContent = '📱 TEKNOLOJİ & HEDİYE MAĞAZASI';
+    say('TEKNOLOJİ MAĞAZASI', `Telefonun: ${state.assets.phone}. Kendine son model telefon veya sevdiğin kişiye hediye al!`, 'MAĞAZA', 't-yellow', 360);
+    addChoice(panel, '📱 Pro Akıllı Telefon Al (3.200₺)', () => buyAsset('phone', 'Pro Akıllı Telefon', 3200));
+    addChoice(panel, '💐 Özel Tasarım Çiçek & Akıllı Saat Hediyesi Al (450₺)', () => {
+      if (state.money >= 450) {
+        state.money -= 450; addTx('Teknoloji & Çiçek Hediye Alımı', -450, 'neg'); updateHud();
+        state.staff[0].love = Math.min(100, state.staff[0].love + 20);
+        say('HEDİYE VERİLDİ!', `${state.staff[0].name} hediyene bayıldı! Yakınlık +20 arttı.`, '❤️ +20', 't-green', 440);
+      }
+    });
+    addChoice(panel, '🏥 Acil Servise Dön', () => nextPatient(), 'success');
+  }
+  else if (loc === 'home') {
+    document.getElementById('sceneTag').textContent = '🏠 KENDİ EVİN — SALON';
+    say('EVİM GÜZEL EVİM', `Araç: ${state.assets.car} | Telefon: ${state.assets.phone}. Dinlenince stres azalır.`, 'EV', 't-green', 320);
+    addChoice(panel, '📺 4K Dev Ekran TV & Konsol Kur (2.200₺)', () => buyAsset('homeLevel', 2, 2200));
+    addChoice(panel, '☀️ Yeni Nöbete Başla', () => nextPatient(), 'success');
+  }
+}
+
+function interactStaff(idx) {
+  const st = state.staff[idx];
+  const panel = document.getElementById('subPanel');
+  panel.innerHTML = '';
+  const line = st.stories[Math.min(st.stage, st.stories.length - 1)];
+  st.stage = Math.min(st.stories.length - 1, st.stage + 1);
+  say(`${st.name} (${st.role})`, `"${line}"`, `❤️ ${st.love}/100`, 't-green', 340);
+
+  if (!state.coffeeGivenToday) {
+    addChoice(panel, '☕ Kahve Ismarla (-45₺, Günde 1 Kez, ❤️ +15)', () => {
+      if (state.money >= 45) {
+        state.money -= 45; state.coffeeGivenToday = true;
+        st.love = Math.min(100, st.love + 15);
+        addTx(`Kantin Kahve İkramı (${st.name})`, -45, 'neg'); updateHud();
+        interactStaff(idx);
+      }
+    }, 'success');
+  }
+  addChoice(panel, '← Kantin Listesine Dön', () => goLocation('canteen'));
+}
+
+function buyAsset(key, val, cost) {
+  if (state.money < cost) {
+    say('YETERSİZ BAKİYE', `Bu ürün için ${cost}₺ gerekiyor! TıpBank'tan kredi çekebilir veya nöbet tutabilirsin.`, 'BAKİYE', 't-red', 200);
+    return;
+  }
+  state.money -= cost;
+  state.assets[key] = val;
+  addTx(`Satın Alma: ${val}`, -cost, 'neg');
+  playSfx('coin'); updateHud();
+  say('SATIN ALINDI!', `Hayırlı olsun ${state.docName}! Yeni eşyan doğrudan yaşam sahnene eklendi.`, 'YENİ EŞYA', 't-green', 420);
+}
+
+/* ================= MODALS ================= */
+function openModal(type) {
+  const modal = document.getElementById('modal');
+  const title = document.getElementById('modalTitle');
+  const body = document.getElementById('modalBody');
+  modal.style.display = 'flex';
+  body.innerHTML = '';
+
+  if (type === 'radiology') {
+    const p = state.currentPatient;
+    title.textContent = p ? `🔍 ${p.radTitle}` : 'RADYOLOJİ EKRANI';
+    if (!p) { body.textContent = 'Aktif hasta yok.'; return; }
+    const c = document.createElement('canvas');
+    c.id = 'zoomCanvas'; c.width = 320; c.height = 185;
+    body.appendChild(c);
+    drawRadiologyZoom(c, p.radType);
+    const info = document.createElement('div');
+    info.style.cssText = 'padding:8px;background:#101726;border:1px solid var(--teal);color:var(--text-main);line-height:1.5;';
+    info.innerHTML = `<strong style="color:var(--amber)">RADYOLOJİ RAPORU:</strong><br>${p.radFinding}`;
+    body.appendChild(info);
+  }
+  else if (type === 'guide') {
+    title.textContent = '📖 ACİL TIP CEP REHBERİ';
+    body.innerHTML = `
+      <div style="line-height:1.55;">
+        <p><strong style="color:var(--amber)">1. Kalp Krizi (MI):</strong> Diş, çene veya mide ağrısı + soğuk terlemede mutlaka <b>EKG</b> çek!</p>
+        <p><strong style="color:var(--amber)">2. Kafa Travması & İnme:</strong> Göz feneriyle <b>Anizokori</b> veya boyun kıtlattırma sonrası baş dönmesinde <b>Beyin BT</b> iste.</p>
+        <p><strong style="color:var(--amber)">3. Bağımlı & Rüşvet:</strong> Göz bebekleri toplu iğne başı (<b>Miyozis</b>) + E-Nabız çoklu kayıtta polisi çağır.</p>
+        <p><strong style="color:var(--amber)">4. TıpBank & Borçlar:</strong> Telefondaki <b>TıpBank</b> uygulamasından borç isteyen doktorlara FAST atabilir, vadesi gelince faiziyle geri alabilirsin.</p>
+        <p style="margin-top:8px;border-top:1px dashed #334;padding-top:6px;">Geliştirici: <a href="https://github.com/kurtulustas" target="_blank" style="color:var(--teal)">developer=kurtulustas</a></p>
+      </div>`;
+  }
+  else if (type === 'map') {
+    title.textContent = '🗺️ HASTANE & ŞEHİR HARİTASI';
+    [
+      ['🏥 Acil Servis Muayene Odası', 'er'],
+      ['☕ Hastane Kantini (8 Personel & Kahve)', 'canteen'],
+      ['🍲 Mahalle Esnaf Lokantası', 'diner'],
+      ['🚗 Otomobil Galerisi', 'dealer'],
+      ['📱 Teknoloji & Hediye Mağazası', 'tech'],
+      ['🏠 Kendi Evim', 'home']
+    ].forEach(([label, id]) => addChoice(body, label, () => goLocation(id)));
+  }
+  else if (type === 'shop') {
+    title.textContent = '🛒 MASA ÖZELLEŞTİRME DÜKKÂNI';
+    [
+      ['thermos', '☕ Çelik Nöbet Termosu (400₺)', 400],
+      ['cactus', '🌵 Masaüstü Saksı Kaktüsü (250₺)', 250],
+      ['littmann', '🩺 Littmann Profesyonel Stetoskop (700₺)', 700],
+      ['dualMonitor', '🖥️ Çift Ekranlı Negatoskop (950₺)', 950]
+    ].forEach(([key, label, cost]) => {
+      const owned = state.upgrades[key];
+      addChoice(body, owned ? `${label} [ALINDI ✓]` : label, () => {
+        if (!owned && state.money >= cost) {
+          state.money -= cost; state.upgrades[key] = true;
+          addTx(`Masa Ekipmanı: ${label}`, -cost, 'neg');
+          playSfx('coin'); updateHud(); openModal('shop');
+        }
+      }, owned ? 'success' : '');
+    });
+  }
+}
+function closeModal() { document.getElementById('modal').style.display = 'none'; }
+function addChoice(parent, label, onClick, extraClass = '') {
+  const b = document.createElement('button');
+  b.className = 'choice-btn ' + extraClass;
+  b.textContent = label;
+  b.onclick = onClick;
+  parent.appendChild(b);
+}
+function gameOver(reason) {
+  say('OYUN BİTTİ — İDARİ KARAR', reason, 'MESLEKTEN MEN', 't-red', 140);
+  const panel = document.getElementById('subPanel');
+  panel.innerHTML = '';
+  addChoice(panel, '🔄 Yeni Kariyer Başlat', () => location.reload(), 'danger');
+}
+
+/* ================= 16-BIT PIXEL CANVAS ================= */
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+let tick = 0;
+
+function drawRadiologyZoom(c, type) {
+  const x = c.getContext('2d');
+  x.fillStyle = '#040a14'; x.fillRect(0, 0, 320, 185);
+  x.strokeStyle = '#16324f';
+  for (let i = 0; i < 320; i += 16) { x.beginPath(); x.moveTo(i, 0); x.lineTo(i, 185); x.stroke(); }
+  for (let j = 0; j < 185; j += 16) { x.beginPath(); x.moveTo(0, j); x.lineTo(320, j); x.stroke(); }
+
+  if (type === 'ecg') {
+    x.strokeStyle = '#38d9a9'; x.lineWidth = 2.5;
+    x.beginPath();
+    for (let px = 10; px < 310; px += 2) {
+      const m = px % 48;
+      let py = 102;
+      if (m > 8 && m < 14) py = 94;
+      else if (m >= 16 && m < 19) py = 40;
+      else if (m >= 19 && m < 23) py = 120;
+      else if (m >= 23 && m < 34) py = 72;
+      if (px === 10) x.moveTo(px, py); else x.lineTo(px, py);
+    }
+    x.stroke();
+  } else if (type === 'leg') {
+    x.fillStyle = '#cbe4ff';
+    x.fillRect(142, 16, 18, 72);
+    x.fillRect(146, 96, 18, 74);
+    x.fillStyle = '#89b4e0';
+    x.fillRect(168, 22, 8, 142);
+    x.strokeStyle = '#ff4d5e'; x.lineWidth = 2;
+    x.strokeRect(134, 80, 42, 24);
+  } else if (type === 'brain') {
+    x.fillStyle = '#6c7a89';
+    x.beginPath(); x.ellipse(160, 92, 60, 72, 0, 0, Math.PI * 2); x.fill();
+    x.fillStyle = '#ff4d5e';
+    x.beginPath(); x.ellipse(108, 90, 14, 32, 0.15, 0, Math.PI * 2); x.fill();
+  } else {
+    x.fillStyle = '#9ec5fe';
+    x.fillRect(154, 22, 12, 138);
+    for (let r = 0; r < 5; r++) {
+      x.fillRect(102, 40 + r * 22, 48, 8);
+      x.fillRect(170, 40 + r * 22, 48, 8);
+    }
+    x.fillStyle = 'rgba(255, 193, 7, 0.55)';
+    x.fillRect(104, 106, 44, 34);
+  }
+}
+
+function renderScene() {
+  tick++;
+  ctx.clearRect(0, 0, 340, 210);
+
+  if (state.location !== 'er') {
+    ctx.fillStyle = '#182238'; ctx.fillRect(0, 0, 340, 210);
+    ctx.fillStyle = '#2b3a5e'; ctx.fillRect(0, 136, 340, 74);
+    ctx.fillStyle = '#f5b942'; ctx.font = 'bold 13px monospace';
+    const titles = {
+      canteen: '☕ HASTANE KANTİNİ — PERSONEL MOLA ALANI',
+      diner: '🍲 ESNAF LOKANTASI — SICAK ÇORBA & KAVURMA',
+      dealer: `🚗 GALERİ — ARACIN: ${state.assets.car}`,
+      tech: `📱 TEKNOLOJİ — TEL: ${state.assets.phone}`,
+      home: `🏠 EVİN — TV SEVİYESİ: ${state.assets.homeLevel}`
+    };
+    ctx.fillText(titles[state.location] || 'ŞEHİR', 16, 36);
+    if (state.assets.car !== 'Yok (Belediye Otobüsü)') {
+      ctx.fillStyle = state.assets.car.includes('Alman') ? '#38d9a9' : '#ff6b6b';
+      ctx.fillRect(92, 106, 120, 34); ctx.fillRect(116, 86, 72, 22);
+      ctx.fillStyle = '#0b0e17';
+      ctx.fillRect(108, 134, 22, 16); ctx.fillRect(176, 134, 22, 16);
+    }
+    requestAnimationFrame(renderScene);
+    return;
+  }
+
+  const isLateNight = (state.hour % 24) >= 2 && (state.hour % 24) < 6;
+  const grad = ctx.createLinearGradient(0, 0, 0, 140);
+  grad.addColorStop(0, isLateNight ? '#0b1021' : '#141c33');
+  grad.addColorStop(1, isLateNight ? '#15203b' : '#1f2d4d');
+  ctx.fillStyle = grad; ctx.fillRect(0, 0, 340, 140);
+
+  ctx.fillStyle = '#153a42'; ctx.fillRect(0, 94, 340, 46);
+  ctx.fillStyle = '#2b6cb0'; ctx.fillRect(0, 92, 340, 3);
+
+  ctx.fillStyle = isLateNight ? '#a5f3fc' : '#e6fcf5';
+  ctx.fillRect(110, 8, 120, 6);
+
+  const shakeX = state.doorThreat ? Math.sin(tick * 0.8) * 3 : 0;
+  ctx.fillStyle = '#2c3654'; ctx.fillRect(14 + shakeX, 32, 48, 108);
+  ctx.strokeStyle = '#f5b942'; ctx.strokeRect(14 + shakeX, 32, 48, 108);
+  ctx.fillStyle = '#4dabf7'; ctx.fillRect(24 + shakeX, 44, 28, 30);
+  if (state.doorThreat) {
+    ctx.fillStyle = '#ff4d5e'; ctx.fillRect(30 + shakeX, 15, 16, 15);
+    ctx.fillStyle = '#fff'; ctx.font = 'bold 12px monospace'; ctx.fillText('!', 35 + shakeX, 27);
+  }
+
+  ctx.fillStyle = '#0b1324';
+  ctx.fillRect(236, 30, state.upgrades.dualMonitor ? 86 : 54, 42);
+  ctx.strokeStyle = '#38d9a9';
+  ctx.strokeRect(236, 30, state.upgrades.dualMonitor ? 86 : 54, 42);
+  if (state.examDone.rad && state.currentPatient) {
+    ctx.fillStyle = '#63e6be'; ctx.fillRect(244, 38, 38, 26);
+    ctx.fillStyle = '#0b1324'; ctx.fillRect(256, 42, 14, 18);
+  }
+
+  const p = state.currentPatient;
+  if (p) {
+    const bob = Math.sin(tick * 0.08) * 1.5;
+    const px = 118, py = 60 + bob;
+    ctx.fillStyle = p.appearance.shirt; ctx.fillRect(px - 18, py + 34, 44, 46);
+    ctx.fillStyle = p.appearance.skin; ctx.fillRect(px - 10, py + 4, 28, 28);
+    ctx.fillStyle = p.appearance.hair; ctx.fillRect(px - 12, py, 32, 9);
+    if (p.appearance.flush) {
+      ctx.fillStyle = 'rgba(255, 77, 94, 0.55)';
+      ctx.fillRect(px - 8, py + 20, 6, 4); ctx.fillRect(px + 10, py + 20, 6, 4);
+    }
+    const blink = (tick % 140) < 4;
+    if (!blink) {
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(px - 5, py + 13, 6, 5); ctx.fillRect(px + 7, py + 13, 6, 5);
+      ctx.fillStyle = '#0b0e17';
+      const p1 = p.appearance.pupils === 'miosis' ? 1 : 3;
+      const p2 = p.appearance.pupils === 'anisocoria' ? 5 : p1;
+      ctx.fillRect(px - 3, py + 14, p1, p1); ctx.fillRect(px + 9, py + 14, p2, p2);
+    } else {
+      ctx.fillStyle = '#2b2d42';
+      ctx.fillRect(px - 5, py + 15, 6, 2); ctx.fillRect(px + 7, py + 15, 6, 2);
+    }
+    if (p.appearance.sweat) {
+      ctx.fillStyle = '#5cc8ff'; ctx.fillRect(px + 20, py + 10 + (tick % 12) * 0.5, 3, 5);
+    }
+  }
+
+  const intern = INTERNS[state.internIdx];
+  const ix = 264, iy = 82 + Math.cos(tick * 0.07) * 1;
+  ctx.fillStyle = '#f8f9fa'; ctx.fillRect(ix - 14, iy + 26, 34, 36);
+  ctx.fillStyle = intern.color; ctx.fillRect(ix - 4, iy + 26, 14, 36);
+  ctx.fillStyle = '#f1c2a5'; ctx.fillRect(ix - 7, iy + 2, 22, 22);
+  ctx.fillStyle = '#212529'; ctx.fillRect(ix - 8, iy - 1, 24, 7);
+
+  ctx.fillStyle = '#3b281e'; ctx.fillRect(0, 140, 340, 70);
+  ctx.fillStyle = '#5c3d2e'; ctx.fillRect(0, 140, 340, 8);
+  ctx.fillStyle = '#f5b942'; ctx.fillRect(0, 139, 340, 2);
+
+  ctx.fillStyle = '#1a202c'; ctx.fillRect(14, 114, 54, 36);
+  ctx.fillStyle = '#0ca678'; ctx.fillRect(18, 118, 46, 26);
+  ctx.fillStyle = '#e6fcf5';
+  ctx.fillRect(22, 122, 26, 3); ctx.fillRect(22, 128, 34, 3); ctx.fillRect(22, 134, 20, 3);
+
+  ctx.fillStyle = '#f59f00'; ctx.fillRect(128, 150, 62, 42);
+  ctx.fillStyle = '#fff9db'; ctx.fillRect(134, 154, 50, 34);
+  ctx.fillStyle = '#495057';
+  ctx.fillRect(138, 160, 36, 2); ctx.fillRect(138, 166, 42, 2); ctx.fillRect(138, 172, 28, 2);
+
+  ctx.strokeStyle = state.upgrades.littmann ? '#ff4d5e' : '#adb5bd';
+  ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.arc(216, 168, 12, 0, Math.PI * 1.4); ctx.stroke();
+
+  ctx.fillStyle = state.upgrades.thermos ? '#38d9a9' : '#ff6b6b';
+  ctx.fillRect(256, 148, 14, 22);
+  ctx.fillStyle = 'rgba(255,255,255,0.45)';
+  ctx.fillRect(261, 138 - (tick % 10), 3, 4);
+
+  if (state.upgrades.cactus) {
+    ctx.fillStyle = '#d9480f'; ctx.fillRect(82, 158, 16, 14);
+    ctx.fillStyle = '#40c057'; ctx.fillRect(86, 144, 8, 14);
+  }
+
+  ctx.fillStyle = '#c92a2a'; ctx.fillRect(292, 156, 30, 22);
+  ctx.fillStyle = '#ff8787'; ctx.fillRect(296, 159, 22, 14);
+
+  requestAnimationFrame(renderScene);
+}
+
+requestAnimationFrame(renderScene);
+</script>
+</body>
+</html>
