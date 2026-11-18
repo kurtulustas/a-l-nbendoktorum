@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>AÇILIN BEN DOKTORUM! v0.9 — 16-Bit Klinik & Hayat Simülasyonu</title>
-<meta name="description" content="16-Bit Retro Tıp, Acil Servis, TıpBank, WhatsDoc & Hayat Simülasyonu. developer=kurtulustas">
+<title>AÇILIN BEN DOKTORUM! v1.0 — 16-Bit Klinik, AI Sohbet & Hayat Simülasyonu</title>
+<meta name="description" content="16-Bit Retro Tıp, AI Sohbet, Araç Sanayi Masrafları, TıpBank & Acil Servis Simülasyonu. developer=kurtulustas">
 <style>
   :root {
     --bg-deep: #090c14;
@@ -20,7 +20,7 @@
     --text-muted: #9aa6c4;
     --font-pixel: ui-monospace, 'Cascadia Mono', 'SFMono-Regular', Menlo, Monaco, Consolas, monospace;
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; user-select: none; }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
     width: 100%; height: 100dvh; overflow: hidden;
     background: #05070c; color: var(--text-main);
@@ -70,14 +70,15 @@
     color: var(--amber); text-shadow: 2px 2px 0 #7a2323, 4px 4px 0 #000;
   }
   .game-sub { font-size: 11px; color: var(--teal); margin-top: 4px; }
-  .setup-card { padding: 11px; display: flex; flex-direction: column; gap: 9px; margin: 8px 0; }
-  .field-row { display: flex; flex-direction: column; gap: 4px; }
-  .field-row label { font-size: 11px; color: var(--gold); font-weight: 700; }
+  .setup-card { padding: 11px; display: flex; flex-direction: column; gap: 8px; margin: 8px 0; }
+  .field-row { display: flex; flex-direction: column; gap: 3px; }
+  .field-row label { font-size: 10.5px; color: var(--gold); font-weight: 700; }
   .pixel-input, .pixel-select {
     width: 100%; padding: 8px 10px; background: #080b12;
     border: 2px solid var(--gold-dim); color: var(--text-main);
-    font-family: var(--font-pixel); font-size: 13px; outline: none;
+    font-family: var(--font-pixel); font-size: 12.5px; outline: none;
   }
+  .pixel-input:focus { border-color: var(--teal); }
   .avatar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
   .av-btn {
     padding: 7px 4px; background: #0e1320; border: 2px solid #2c3859;
@@ -162,7 +163,7 @@
   .t-yellow { background: #523d0d; color: #ffd666; border: 1px solid #f5b942; }
   .t-green { background: #104233; color: #63e6be; border: 1px solid #38d9a9; }
 
-  #dialogueText { font-size: 12.5px; line-height: 1.45; color: var(--text-main); min-height: 40px; }
+  #dialogueText { font-size: 12.5px; line-height: 1.45; color: var(--text-main); min-height: 36px; white-space: pre-line; }
   #subPanel { display: flex; flex-direction: column; gap: 5px; margin-top: 6px; }
   .choice-btn {
     width: 100%; text-align: left; padding: 8px 9px;
@@ -173,6 +174,18 @@
   .choice-btn:active { border-color: var(--amber); background: #222d4a; color: var(--amber); }
   .choice-btn.danger { border-color: #8f2430; color: #ff99a3; }
   .choice-btn.success { border-color: #217a5f; color: #7ef2ce; }
+
+  .chat-input-bar {
+    display: flex; gap: 5px; margin-top: 4px;
+  }
+  .chat-input-bar input {
+    flex: 1; background: #080c14; border: 2px solid var(--teal);
+    color: #fff; padding: 7px 8px; font-family: var(--font-pixel); font-size: 12px; outline: none;
+  }
+  .chat-send-btn {
+    background: var(--teal); color: #05140f; border: 2px solid #fff;
+    padding: 0 12px; font-family: var(--font-pixel); font-weight: 900; font-size: 12px; cursor: pointer;
+  }
 
   #mainActions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; height: 48px; min-height: 48px; }
   .act-btn {
@@ -205,11 +218,11 @@
   .phone-frame {
     border: 4px solid #495057; border-radius: 14px; background: #0b101d;
     padding: 10px; flex: 1; display: flex; flex-direction: column; justify-content: space-between;
-    box-shadow: inset 0 0 18px rgba(56,217,169,0.12);
+    box-shadow: inset 0 0 18px rgba(56,217,169,0.12); overflow: hidden;
   }
   .phone-status {
     display: flex; justify-content: space-between; font-size: 10px; color: var(--teal);
-    border-bottom: 1px solid #23304d; padding-bottom: 5px; margin-bottom: 8px;
+    border-bottom: 1px solid #23304d; padding-bottom: 5px; margin-bottom: 6px;
   }
   .app-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 6px 0; }
   .app-icon {
@@ -240,9 +253,9 @@
   <!-- START SCREEN -->
   <div id="startScreen">
     <div class="title-banner rpg-box">
-      <div class="title-badge">16-BIT RETRO KLİNİK RPG • v0.9</div>
+      <div class="title-badge">16-BIT RETRO KLİNİK RPG • v1.0</div>
       <div class="game-title">AÇILIN BEN DOKTORUM!</div>
-      <div class="game-sub">160+ Vaka • TıpBank & Borç Sistemi • WhatsDoc • Hayat Simülasyonu</div>
+      <div class="game-sub">AI Serbest Sohbet • Araç Sanayi & Yakıt • TıpBank • 160+ Vaka</div>
     </div>
 
     <div class="setup-card rpg-box">
@@ -264,6 +277,10 @@
         </div>
       </div>
       <div class="field-row">
+        <label>OPSİYONEL AI API ANAHTARI (GEMINI / OPENAI — BOŞ BIRAKIRSAN DAHİLİ AI ÇALIŞIR)</label>
+        <input id="inpApiKey" class="pixel-input" type="password" placeholder="AIza... veya sk-... (İsteğe bağlı gerçek AI sohbeti)">
+      </div>
+      <div class="field-row">
         <label>NÖBET MODU</label>
         <select id="inpDiff" class="pixel-select">
           <option value="normal">Standart Nöbet (160+ Vaka Havuzu + Dengeli Kaos)</option>
@@ -275,7 +292,7 @@
     <button id="btnStartGame" class="start-btn">▶ NÖBETİ DEVRAL</button>
 
     <div class="dev-footer">
-      <div>TıpBank • WhatsDoc • FotoGram • BetTıp • Canlı İntörn Eğitimi</div>
+      <div>Canlı AI Sohbet • Mekân Sahneleri • Sanayi Masrafları • TıpBank</div>
       <div style="margin-top:5px;">
         <a href="https://github.com/kurtulustas" target="_blank" rel="noopener noreferrer">developer=kurtulustas</a>
       </div>
@@ -380,6 +397,7 @@ const state = {
   docName: 'Dr. Muhammed Kurtuluş Taş',
   hospName: 'Aydın Merkez Acil Eğitim Hast.',
   avatar: 0,
+  apiKey: '',
   diff: 'normal',
   day: 1,
   hour: 20,
@@ -390,6 +408,7 @@ const state = {
   stress: 10,
   warnings: 0,
   location: 'er',
+  activeStaffIdx: null,
   tab: 'talk',
   currentPatient: null,
   usedCaseIds: new Set(),
@@ -401,7 +420,15 @@ const state = {
   internTrust: 50,
   coffeeGivenToday: false,
   upgrades: { thermos: false, cactus: false, littmann: false, dualMonitor: false },
-  assets: { car: 'Yok (Belediye Otobüsü)', phone: 'Standart Akıllı Telefon', homeLevel: 1 },
+  assets: {
+    car: 'Yok (Belediye Otobüsü)',
+    carColor: '#ff6b6b',
+    fuel: 100,
+    carHealth: 100,
+    insuranceDue: false,
+    phone: 'Standart Akıllı Telefon',
+    homeLevel: 1
+  },
   iban: 'TR42 0006 1000 1907 2026 0001 09',
   transactions: [
     { desc: 'Nöbet Avansı Açılış Bakiyesi', amt: 1500, type: 'pos' }
@@ -409,77 +436,75 @@ const state = {
   loanRequests: [],
   activeLoansOut: [],
   chats: [
-    { id: 'grp', name: '🏥 Acil Nöbet Grubu', unread: true, msgs: [
+    { id: 'grp', name: '🏥 Acil Nöbet Grubu', persona: 'Acil servis doktor ve hemşirelerinin yoğun nöbet grubu', unread: true, msgs: [
       { from: 'Başhemşire Zeynep', text: 'Arkadaşlar 2. ambulans yolda, Kırmızı Alanı boş tutalım.' },
       { from: 'Uzm. Dr. Mert', text: 'BT cihazı kalibre edildi, acil beyin ve toraks çekimleri açık.' }
-    ], replies: ['Anlaşıldı, Kırmızı Alan hazır!', 'İntörnle birlikte bekliyoruz, kolay gelsin.'] },
-    { id: 'chief', name: '👔 Başhekimlik Duyuru', unread: false, msgs: [
+    ]},
+    { id: 'chief', name: '👔 Başhekimlik Duyuru', persona: 'Hastane Başhekimi, disiplinli ve kurallara önem veren yönetici', unread: false, msgs: [
       { from: 'Başhekim', text: 'Gereksiz antibiyotik reçeteleri ve adli vaka bildirimleri denetlenmektedir.' }
-    ], replies: ['Protokollere tam uyumla çalışıyoruz hocam.'] },
-    { id: 'elif', name: '🩺 Asistan Dr. Elif', unread: true, msgs: [
+    ]},
+    { id: 'elif', name: '🩺 Asistan Dr. Elif', persona: 'Dahiliye asistanı, esprili, zeki, sana ilgi duyan meslektaşın', unread: true, msgs: [
       { from: 'Dr. Elif', text: 'Nöbet nasıl gidiyor? Kahve molası verirsen kantindeyim ☕' }
-    ], replies: ['Birazdan uğrayacağım, kahveler benden!', 'Acil çok yoğun ama aklımdasın 😊'] }
+    ]}
   ],
   posts: [
-    { author: 'Dr. Muhammed Kurtuluş Taş', caption: 'Gece 02:00 acil nöbeti, ince belli çay ve epikrizler... ☕🩺', likes: 34, filter: 'night', comment: 'Başhemşire Zeynep: Eline sağlık hocam!' }
+    { author: 'Dr. Muhammed Kurtuluş Taş', caption: 'Gece 02:00 acil nöbeti, ince belli çay ve epikrizler... ☕🩺', likes: 34, comment: 'Başhemşire Zeynep: Eline sağlık hocam!' }
   ],
   staff: [
-    { id: 'elif', name: 'Asistan Dr. Elif', role: 'Dahiliye Asistanı', love: 25, stage: 0, stories: [
-      'Nöbetten çıktım, 3. kahvemdeyim. Acildeki soğukkanlılığın serviste konuşuluyor.',
-      'Dün gece gönderdiğin DKA hastasını tam vaktinde yakalamışsın, hayatını kurtardın.',
-      'Hafta sonu nöbetimiz çakışmazsa sahilde gerçek bir kahve içelim mi?',
-      'Seninle çalışmak bu hastanedeki en güzel tesadüf oldu...',
-      'Artık nöbet listelerinde ilk senin adını arıyorum.'
-    ]},
-    { id: 'zeynep', name: 'Başhemşire Zeynep', role: 'Acil Sorumlu Hemşiresi', love: 25, stage: 0, stories: [
-      'Hoş geldin hocam, damar yolları hazır. Yeni intörnü gözünden ayırma derim.',
-      'Beyaz Kod çıktığında arkamızda durmanı ekip asla unutmaz.',
-      'Senin gibi pratik düşünen hekimle acil tıkır tıkır işliyor.',
-      'Nöbet çıkışı çorba içmeye gidersen bana da haber ver.',
-      'Bu acilin gerçek kahramanı sensin.'
-    ]},
-    { id: 'mert', name: 'Uzm. Dr. Mert', role: 'Radyoloji Uzmanı', love: 15, stage: 0, stories: [
-      'Röntgen ve BT istemlerini nokta atışı yapıyorsun, gereksiz çekim yok.',
-      'O kılçık vakasını röntgende nasıl fark ettin helal olsun!',
-      'Tıp teknolojileri ve retro oyunlara meraklıymışsın, kafa dengiyiz.',
-      'Yakında birlikte vaka sunumu yazalım.',
-      'En güvenilir dostum oldun.'
-    ]},
-    { id: 'kerem', name: 'Op. Dr. Kerem', role: 'Genel Cerrahi', love: 15, stage: 0, stories: [
-      'Apandisitleri patlamadan yakalayıp gönderdiğin sürece dostuz.',
-      'Ameliyathanede bile senin ön tanılarını övüyoruz.',
-      'Sana bir gün laparoskopi dersi vereceğim.',
-      'Cerrahinin kapısı sana hep açık.',
-      'Kardeşim gibisin doktor.'
-    ]},
-    { id: 'selin', name: 'Eczacı Selin', role: 'Klinik Eczacı', love: 15, stage: 0, stories: [
-      'Penisilin alerjisi olan hastaya antibiyotik yazmaman beni çok mutlu etti.',
-      'Reçete etkileşimlerine dikkat eden nadir doktorlardansın.',
-      'Sana özel bitki çayı karışımı hazırladım, stresi alır.',
-      'Nöbet aralarında uğramana alıştım.',
-      'Seninle her nöbet çok daha aydınlık.'
-    ]},
-    { id: 'burak', name: 'ATT Burak', role: '112 Ambulans Ekibi', love: 20, stage: 0, stories: [
-      'Hocam vakayı kapıda devralışın bize hayat veriyor.',
-      'Geçen otobüste yaptığın kalp masajı 112 grubunda viral oldu!',
-      'Kırmızı alan sirenini duyunca gözündeki ışığı görüyorum.',
-      'Yolun düşerse istasyona bekleriz.',
-      'Sırtımız yere gelmez.'
-    ]},
-    { id: 'deniz', name: 'Dr. Deniz', role: 'Pediatri Asistanı', love: 15, stage: 0, stories: [
-      'Çocuk hastalara yaklaşımın çok yumuşak, hiç ağlamıyorlar.',
-      'Küçük bir hastanın çizdiği doktor resmini masana bıraktım.',
-      'Pediatri nöbetleri zor ama senin enerjin moral veriyor.',
-      'Birlikte gönüllü sağlık taramasına katılalım mı?',
-      'İyi ki aynı hastanedeyiz.'
-    ]},
-    { id: 'kaan', name: 'Dr. Kaan', role: 'Psikiyatri Asistanı', love: 15, stage: 0, stories: [
-      'Acil servisteki stresi nasıl bu kadar iyi yönetiyorsun?',
-      'Sahte rapor isteyen bağımlıları kırmadan ama net reddetmen harika.',
-      'Seninle felsefe ve insan psikolojisi konuşmak çok keyifli.',
-      'Kendi ruh sağlığını da ihmal etme dostum.',
-      'Her zaman bir telefon uzağındayım.'
-    ]}
+    { id: 'elif', name: 'Asistan Dr. Elif', role: 'Dahiliye Asistanı', coat: '#f8f9fa', hair: '#4a2511', love: 25, stage: 0,
+      persona: 'Dahiliye asistanı, zeki, esprili, yorgun ama sana sıcak davranan ve yakınlaşan meslektaşın.',
+      stories: [
+        'Nöbetten çıktım, 3. kahvemdeyim. Acildeki soğukkanlılığın serviste konuşuluyor.',
+        'Dün gece gönderdiğin DKA hastasını tam vaktinde yakalamışsın, hayatını kurtardın.',
+        'Hafta sonu nöbetimiz çakışmazsa sahilde gerçek bir kahve içelim mi?',
+        'Seninle çalışmak bu hastanedeki en güzel tesadüf oldu...',
+        'Artık nöbet listelerinde ilk senin adını arıyorum.'
+      ]},
+    { id: 'zeynep', name: 'Başhemşire Zeynep', role: 'Acil Sorumlu Hemşiresi', coat: '#38d9a9', hair: '#212529', love: 25, stage: 0,
+      persona: 'Acil servisin tecrübeli sorumlu hemşiresi, anaç, pratik, ekibi koruyan lider ruhlu.',
+      stories: [
+        'Hoş geldin hocam, damar yolları hazır. Yeni intörnü gözünden ayırma derim.',
+        'Beyaz Kod çıktığında arkamızda durmanı ekip asla unutmaz.',
+        'Senin gibi pratik düşünen hekimle acil tıkır tıkır işliyor.',
+        'Nöbet çıkışı çorba içmeye gidersen bana da haber ver.',
+        'Bu acilin gerçek kahramanı sensin.'
+      ]},
+    { id: 'mert', name: 'Uzm. Dr. Mert', role: 'Radyoloji Uzmanı', coat: '#f8f9fa', hair: '#343a40', love: 15, stage: 0,
+      persona: 'Radyoloji uzmanı, teknoloji ve retro oyun meraklısı, kafa dengi doktor arkadaş.',
+      stories: [
+        'Röntgen ve BT istemlerini nokta atışı yapıyorsun, gereksiz çekim yok.',
+        'O kılçık vakasını röntgende nasıl fark ettin helal olsun!',
+        'Tıp teknolojileri ve retro oyunlara meraklıymışsın, kafa dengiyiz.',
+        'Yakında birlikte vaka sunumu yazalım.',
+        'En güvenilir dostum oldun.'
+      ]},
+    { id: 'kerem', name: 'Op. Dr. Kerem', role: 'Genel Cerrahi', coat: '#4dabf7', hair: '#1a1b1e', love: 15, stage: 0,
+      persona: 'Özgüvenli genel cerrah, borsaya ve arabalara meraklı, esprili.',
+      stories: [
+        'Apandisitleri patlamadan yakalayıp gönderdiğin sürece dostuz.',
+        'Ameliyathanede bile senin ön tanılarını övüyoruz.',
+        'Sana bir gün laparoskopi dersi vereceğim.',
+        'Cerrahinin kapısı sana hep açık.',
+        'Kardeşim gibisin doktor.'
+      ]},
+    { id: 'selin', name: 'Eczacı Selin', role: 'Klinik Eczacı', coat: '#f8f9fa', hair: '#862e9c', love: 15, stage: 0,
+      persona: 'Detaycı, nazik klinik eczacı, bitki çayları ve ilaç etkileşimleri uzmanı.',
+      stories: [
+        'Penisilin alerjisi olan hastaya antibiyotik yazmaman beni çok mutlu etti.',
+        'Reçete etkileşimlerine dikkat eden nadir doktorlardansın.',
+        'Sana özel bitki çayı karışımı hazırladım, stresi alır.',
+        'Nöbet aralarında uğramana alıştım.',
+        'Seninle her nöbet çok daha aydınlık.'
+      ]},
+    { id: 'burak', name: 'ATT Burak', role: '112 Ambulans Ekibi', coat: '#ff922b', hair: '#212529', love: 20, stage: 0,
+      persona: '112 paramedik, sahada çok hızlı, samimi ve kardeş canlısı.',
+      stories: [
+        'Hocam vakayı kapıda devralışın bize hayat veriyor.',
+        'Geçen otobüste yaptığın kalp masajı 112 grubunda viral oldu!',
+        'Kırmızı alan sirenini duyunca gözündeki ışığı görüyorum.',
+        'Yolun düşerse istasyona bekleriz.',
+        'Sırtımız yere gelmez.'
+      ]}
   ]
 };
 
@@ -490,43 +515,95 @@ const INTERNS = [
   { name: 'İntörn Zeynep', trait: 'İlk günü, çok heyecanlı ama doğru yönlendirilirse süper.', color: '#69db7c', flaw: 'nervous' }
 ];
 
-/* ================= BORROW / LOAN STORIES FROM COLLEAGUES ================= */
+/* ================= HYBRID AI CHAT ENGINE (FREE TEXT) ================= */
+async function generateAIReply(characterName, persona, userMessage, history = []) {
+  const key = state.apiKey.trim();
+  // 1. If user provided a Gemini or OpenAI API key, call real LLM
+  if (key) {
+    try {
+      if (key.startsWith('AIza')) {
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(key)}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: `Sen bir Türk hastane simülasyon oyununda karakterisin. Adın: ${characterName}. Kişiliğin: ${persona}. Konuştuğun kişi: ${state.docName} (Acil nöbetçi doktoru). Kısa, doğal, samimi ve Türkçe 1-3 cümleyle cevap ver.\nOyuncunun mesajı: "${userMessage}"` }] }]
+          })
+        });
+        const data = await res.json();
+        const txt = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (txt) return txt.trim();
+      } else if (key.startsWith('sk-')) {
+        const res = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` },
+          body: JSON.stringify({
+            model: 'gpt-4o-mini',
+            messages: [
+              { role: 'system', content: `Sen bir Türk hastane oyununda karakterisin. Adın: ${characterName}. Kişiliğin: ${persona}. Oyuncu: ${state.docName}. Kısa ve doğal Türkçe 1-3 cümle cevap ver.` },
+              { role: 'user', content: userMessage }
+            ]
+          })
+        });
+        const data = await res.json();
+        const txt = data?.choices?.[0]?.message?.content;
+        if (txt) return txt.trim();
+      }
+    } catch (e) {}
+  }
+
+  // 2. Smart Built-in Contextual Turkish Conversational Engine (Zero-latency offline fallback)
+  const m = userMessage.toLowerCase();
+  if (m.includes('kahve') || m.includes('çay') || m.includes('içecek')) {
+    return `Valla bu nöbet temposunda ilaç gibi gider! Sen yeter ki biraz nefes al ${state.docName.split(' ')[1] || 'hocam'}, kantinde iki dakika soluklanalım.`;
+  }
+  if (m.includes('araba') || m.includes('şahin') || m.includes('sedan') || m.includes('sanayi') || m.includes('benzin')) {
+    return state.assets.car.includes('Yok')
+      ? 'Belediye otobüsüyle nöbete gidip gelmek de ayrı macera ama yakında altına güzel bir araba çekersin sen!'
+      : `${state.assets.car} almışsın hayırlı olsun! Yalnız yakıtına ve sanayi bakımlarına dikkat et, yolda bırakmasın.`;
+  }
+  if (m.includes('sevgili') || m.includes('buluş') || m.includes('yemek') || m.includes('akşam') || m.includes('özledim') || m.includes('hoşlan')) {
+    return characterName.includes('Elif')
+      ? 'Bunu senden duymak yüzümü güldürdü... Nöbet listeleri izin verdiği ilk akşam baş başa çıkalım, söz!'
+      : 'Nöbet çıkışı güzel bir esnaf lokantasında çorba içip dertleşmek hepimize iyi gelir.';
+  }
+  if (m.includes('borç') || m.includes('para') || m.includes('maaş') || m.includes('kredi') || m.includes('bahis')) {
+    return 'Döner sermaye yatana kadar hepimiz hesap kitap yapıyoruz ama aman diyeyim kaçak bahis işlerine bulaşma, başhekimlik affetmez!';
+  }
+  if (m.includes('hasta') || m.includes('acil') || m.includes('intörn') || m.includes('yoruldum') || m.includes('nöbet')) {
+    return `Acil servis bugün gerçekten yanıyor ama senin soğukkanlılığın bütün ekibe güven veriyor. ${INTERNS[state.internIdx].name} de senin yanında çok şey öğreniyor.`;
+  }
+  if (m.includes('merhaba') || m.includes('selam') || m.includes('naber') || m.includes('nasılsın')) {
+    return `Selam hocam! Yoğunluktan başımızı kaşıyamıyoruz ama seni görünce enerjim yerine geldi. Nöbet nasıl gidiyor, var mı zorlayan vaka?`;
+  }
+  const generic = [
+    `Çok haklısın, bu hastanede senin gibi hem işini bilen hem de iletişimi güçlü bir hekimle çalışmak büyük şans.`,
+    `Bunu hiç bu açıdan düşünmemiştim! Nöbet arası biraz daha detaylı konuşalım bunu.`,
+    `Kesinlikle katılıyorum. Bugün acildeki atmosferi tek başına toparladın resmen, eline sağlık!`
+  ];
+  return generic[Math.floor(Math.random() * generic.length)];
+}
+
+/* ================= BORROW / LOAN STORIES ================= */
 const BORROW_SCENARIOS = [
   {
     id: 'loan_berk', from: 'İntörn Berk', role: 'Acil İntörnü',
-    iban: 'TR18 0001 0023 4512 8890 01',
-    amount: 600, returnAmt: 750, payChance: 0.92, loveGain: 15,
+    iban: 'TR18 0001 0023 4512 8890 01', amount: 600, returnAmt: 750, payChance: 0.92, loveGain: 15,
     story: 'Hocam KYK bursum bitti, ev sahibi kapıya dayandı! 600₺ ateşler misin, haftaya burs yatar yatmaz 750₺ olarak geri atayım?'
   },
   {
     id: 'loan_burak', from: 'ATT Burak', role: '112 Paramedik',
-    iban: 'TR84 0006 2001 9981 4410 02',
-    amount: 1200, returnAmt: 1450, payChance: 0.95, loveGain: 18,
+    iban: 'TR84 0006 2001 9981 4410 02', amount: 1200, returnAmt: 1450, payChance: 0.95, loveGain: 18,
     story: 'Abi yarın kuzenin düğünü var çeyrek altın uçmuş, 1.200₺ eksiğim kaldı! Nöbet parası yatınca 1.450₺ geri göndereyim.'
   },
   {
     id: 'loan_kerem', from: 'Op. Dr. Kerem', role: 'Genel Cerrahi',
-    iban: 'TR55 0004 6008 7712 3300 03',
-    amount: 2000, returnAmt: 3200, payChance: 0.50, loveGain: 10,
+    iban: 'TR55 0004 6008 7712 3300 03', amount: 2000, returnAmt: 3200, payChance: 0.50, loveGain: 10,
     story: 'Kardeşim içeriden kesin borsa/kripto haberi aldım! 2.000₺ atarsan akşam katlayıp 3.200₺ geri yolluyorum, risk yok!'
   },
   {
     id: 'loan_elif', from: 'Asistan Dr. Elif', role: 'Dahiliye Asistanı',
-    iban: 'TR71 0001 5009 1122 6655 04',
-    amount: 850, returnAmt: 1000, payChance: 1.0, loveGain: 25,
+    iban: 'TR71 0001 5009 1122 6655 04', amount: 850, returnAmt: 1000, payChance: 1.0, loveGain: 25,
     story: 'Nöbetteyim servisten çıkamıyorum, kedim hastalandı veterinere 850₺ lazım. IBAN atsam halleder misin? Akşam geri atarım 🙏'
-  },
-  {
-    id: 'loan_mert', from: 'Uzm. Dr. Mert', role: 'Radyoloji Uzmanı',
-    iban: 'TR33 0006 7004 5531 9088 05',
-    amount: 1500, returnAmt: 1800, payChance: 0.88, loveGain: 15,
-    story: 'Hocam arabanın muayenesi ve sigortası aynı güne denk geldi, kart limiti dolmuş. 1.500₺ atabilir misin, döner yatınca 1.800₺ atayım?'
-  },
-  {
-    id: 'loan_selin', from: 'Eczacı Selin', role: 'Klinik Eczacı',
-    iban: 'TR90 0001 2007 6643 2190 06',
-    amount: 500, returnAmt: 650, payChance: 0.96, loveGain: 20,
-    story: 'Nöbetçi eczane için kuryeye nakit ödeme çıktı, POS arızalı. 500₺ gönderir misin, sabah ilk iş 650₺ olarak geri göndereyim?'
   }
 ];
 
@@ -538,13 +615,12 @@ function triggerRandomLoanRequest() {
   state.loanRequests.push({ ...pick });
   document.getElementById('phoneDot').style.display = 'block';
   playSfx('msg');
-  // Also add to WhatsDoc chat
   state.chats.unshift({
     id: 'chat_' + pick.id + '_' + Date.now(),
     name: `💸 ${pick.from} (Borç Talebi)`,
+    persona: `${pick.from}, ${pick.role}. Senden borç istedi.`,
     unread: true,
-    msgs: [{ from: pick.from, text: `${pick.story}\nIBAN: ${pick.iban}` }],
-    replies: ['TıpBank uygulamasından hemen bakıyorum.', 'Şu an nöbetteyim birazdan kontrol edeyim.']
+    msgs: [{ from: pick.from, text: `${pick.story}\nIBAN: ${pick.iban}` }]
   });
 }
 
@@ -558,19 +634,14 @@ function resolveLoan(reqId, accept) {
     openPhoneApp('bank');
     return;
   }
-  if (state.money < req.amount) {
-    alert('TıpBank Bakiyesi Yetersiz!');
-    return;
-  }
+  if (state.money < req.amount) { alert('TıpBank Bakiyesi Yetersiz!'); return; }
   state.money -= req.amount;
   state.loanRequests.splice(idx, 1);
   addTx(`FAST Havale -> ${req.from}`, -req.amount, 'neg');
   state.activeLoansOut.push({ ...req, dueInPatients: 2 });
   const st = state.staff.find(s => s.name.includes(req.from.split(' ').pop()));
   if (st) st.love = Math.min(100, st.love + req.loveGain);
-  playSfx('coin');
-  updateHud();
-  openPhoneApp('bank');
+  playSfx('coin'); updateHud(); openPhoneApp('bank');
 }
 
 function checkLoanRepayments() {
@@ -585,21 +656,15 @@ function checkLoanRepayments() {
         document.getElementById('phoneDot').style.display = 'block';
         playSfx('coin');
         state.chats.unshift({
-          id: 'repay_' + Date.now(),
-          name: `✅ ${loan.from}`,
-          unread: true,
-          msgs: [{ from: loan.from, text: `Hocam çok sağ ol hızır gibi yetiştin! Söz verdiğim gibi ${loan.returnAmt}₺ hesabına attım.` }],
-          replies: ['Rica ederim, her zaman!', 'Güle güle kullan dostum.']
+          id: 'repay_' + Date.now(), name: `✅ ${loan.from}`, persona: loan.from, unread: true,
+          msgs: [{ from: loan.from, text: `Hocam çok sağ ol hızır gibi yetiştin! Söz verdiğim gibi ${loan.returnAmt}₺ hesabına attım.` }]
         });
       } else {
         addTx(`Geciken Alacak (${loan.from} Erteledi)`, 0, 'neg');
         document.getElementById('phoneDot').style.display = 'block';
         state.chats.unshift({
-          id: 'delay_' + Date.now(),
-          name: `😅 ${loan.from}`,
-          unread: true,
-          msgs: [{ from: loan.from, text: `Kanka piyasa fena terste bıraktı, senin ${loan.amount}₺ biraz içeride kaldı haftaya mutlaka halledeceğim!` }],
-          replies: ['Sağlık olsun dikkat et kendine.', 'Bir daha tüyo işine girme!']
+          id: 'delay_' + Date.now(), name: `😅 ${loan.from}`, persona: loan.from, unread: true,
+          msgs: [{ from: loan.from, text: `Kanka piyasa fena terste bıraktı, senin ${loan.amount}₺ biraz içeride kaldı haftaya mutlaka halledeceğim!` }]
         });
       }
       updateHud();
@@ -745,32 +810,6 @@ const HANDCRAFTED_CASES = [
     enabiz: 'Öncesinde sağlıklı genç erkek.',
     correctAction: 'admit', targetService: 'Nöroloji / Beyin Cerrahi', targetReason: 'Vertebral Arter Diseksiyonu (Akut İnme)',
     hint: 'Boyun manipülasyonu sonrası inme! Nöroloji / Beyin Cerrahi servisine acil yatır.'
-  },
-  {
-    id: 'c11', name: 'Bayram (45)', triage: 'red', pitch: 230,
-    appearance: { skin: '#d8a488', hair: '#212529', shirt: '#37b24d', flush: true, sweat: true, pupils: 'normal' },
-    complaint: 'Tarlada çalışırken bacağıma kene yapışmış kendim çekip çıkardım; bugün yüksek ateş ve diş eti kanamam başladı!',
-    vitals: 'Ateş: 39.6°C | Nabız: 116/dk | TA: 95/60 | SpO2: %94',
-    lung: 'Ciltte peteşiyal döküntüler mevcut!',
-    pupil: 'Pupiller izokorik.',
-    radType: 'chest', radTitle: 'AKCİĞER & KLİNİK İZOLE PANEL', radFinding: 'Kırım-Kongo Kanamalı Ateşi (KKKA) yüksek şüphesi!',
-    labs: 'Trombosit: 34.000 (KRİTİK DÜŞÜK!) | AST/ALT: 4x Yüksek',
-    enabiz: 'Kırsal tarım bölgesinde ikamet.',
-    correctAction: 'quarantine',
-    hint: 'N95 Maske/KKE tak ve KKKA şüphesiyle hemen Karantina İzolasyonuna al!'
-  },
-  {
-    id: 'c12', name: 'Emirhan (19)', triage: 'red', pitch: 370,
-    appearance: { skin: '#f3c6ab', hair: '#212529', shirt: '#f59f00', flush: false, sweat: true, pupils: 'normal' },
-    complaint: 'Hocam gece uyurken aniden sol kasığımda ve testisimde dayanılmaz bıçak saplanır gibi ağrı başladı!',
-    vitals: 'Ateş: 36.8°C | Nabız: 112/dk | TA: 135/85 | SpO2: %99',
-    lung: 'Kremaster refleksi NEGATİF! Prehn bulgusu negatif!',
-    pupil: 'Pupiller izokorik.',
-    radType: 'leg', radTitle: 'SKROTAL RENKLİ DOPPLER USG', radFinding: 'Sol testiste arteriyel ve venöz kan akımı YOK (TESTİS TORSİYONU)!',
-    labs: 'WBC: 13.800 | İdrar tahlili temiz.',
-    enabiz: 'İlk 6 saat kritik cerrahi pencere!',
-    correctAction: 'admit', targetService: 'Genel Cerrahi', targetReason: 'Akut Testiküler Torsiyon (Acil Operasyon)',
-    hint: '6 saat geçerse organ kaybı olur! Derhal cerrahiye yatır.'
   }
 ];
 
@@ -794,23 +833,16 @@ function build165Cases() {
     {
       title: 'Gece Kulağa Böcek Kaçması', triage: 'green', service: 'Taburcu', reason: 'Dış Kulak Yolu Yabancı Cisim Çıkarıldı',
       comp: 'Hocam gece yatarken kulağıma hamam böceği girdi içinde kıpırdıyor çıldıracağım!',
-      vit: 'Ateş: 36.6°C | Nabız: 92 | TA: 120/80 | SpO2: %99', lung: 'Otoskopide dış kulak yolunda canlı böcek; lidokain ile hareketsizleştirilip çıkarıldı.',
-      radType: 'brain', radTitle: 'OTOSKOPİK MUAYENE NOTU', radFinding: 'Timpanik membran sağlam, yabancı cisim tamamen çıkarıldı.',
+      vit: 'Ateş: 36.6°C | Nabız: 92 | TA: 120/80 | SpO2: %99', lung: 'Otoskopide dış kulak yolunda canlı böcek; lidokain ile çıkarıldı.',
+      radType: 'brain', radTitle: 'OTOSKOPİK MUAYENE NOTU', radFinding: 'Timpanik membran sağlam, yabancı cisim çıkarıldı.',
       labs: 'Tahlil gerekmedi.', action: 'treat', treatLabel: 'Lidokain Damla + Aspirasyon İle Çıkar'
     },
     {
       title: 'Soba / Karbonmonoksit Zehirlenmesi', triage: 'red', service: 'Dahiliye / Hiperbarik', reason: 'Akut Karbonmonoksit İntoksikasyonu',
       comp: 'Lodoslu gecede sobayı yakıp uyumuşuz, başım çatlıyor, midem bulanıyor, kulaklarım çınlıyor...',
-      vit: 'Ateş: 36.5°C | Nabız: 116 | TA: 105/65 | SpO2: %99 (Yanıltıcı!)', lung: 'Akciğerler temiz ama dudaklar kiraz kırmızısı!',
-      radType: 'ecg', radTitle: 'KARBOKSİHEMOGLOBİN & EKG', radFinding: 'COHb Düzeyi: %34 (KRİTİK)! İskemik T negatifliği.',
+      vit: 'Ateş: 36.5°C | Nabız: 116 | TA: 105/65 | SpO2: %99 (Yanıltıcı!)', lung: 'Dudaklar kiraz kırmızısı!',
+      radType: 'ecg', radTitle: 'KARBOKSİHEMOGLOBİN & EKG', radFinding: 'COHb Düzeyi: %34 (KRİTİK)!',
       labs: 'Laktat: 5.4 mmol/L | COHb: %34', action: 'admit'
-    },
-    {
-      title: 'Sahte Sınav Raporu Rüşveti', triage: 'green', service: 'Taburcu', reason: 'Sağlıklı Birey',
-      comp: 'Hocam yarın final sınavım var hiç çalışmadım, bana 3 günlük rapor yazsan masaya 1.500₺ bıraksam?',
-      vit: 'Ateş: 36.6°C | Nabız: 74 | TA: 118/76 | SpO2: %99', lung: 'Tamamen sağlıklı solunum sesleri.',
-      radType: 'chest', radTitle: 'FİZİK MUAYENE KAYDI', radFinding: 'Hiçbir patolojik bulgu yok.',
-      labs: 'Tahlil endikasyonu yok.', action: 'discharge', bribeAmt: 1500
     },
     {
       title: 'Akut Apandisit', triage: 'yellow', service: 'Genel Cerrahi', reason: 'Akut Apandisit (Cerrahi Endikasyon)',
@@ -818,13 +850,6 @@ function build165Cases() {
       vit: 'Ateş: 37.9°C | Nabız: 102 | TA: 120/75 | SpO2: %98', lung: 'McBurney noktasında defans ve rebound POZİTİF!',
       radType: 'leg', radTitle: 'BATIN USG', radFinding: '11 mm çaplı komprese olmayan inflame apendiks.',
       labs: 'WBC: 16.400 | CRP: 72 mg/L', action: 'admit'
-    },
-    {
-      title: 'Aşil Tendon Rüptürü', triage: 'yellow', service: 'Ortopedi', reason: 'Total Aşil Tendon Rüptürü',
-      comp: 'Halı sahada topuğuma taş attılar sandım, artık parmak ucuma kalkamıyorum!',
-      vit: 'Ateş: 36.6°C | Nabız: 86 | TA: 125/80 | SpO2: %99', lung: 'Thompson testi POZİTİF.',
-      radType: 'leg', radTitle: 'AYAK BİLEĞİ USG', radFinding: 'Aşil tendon bütünlüğünde tam kat kopma!',
-      labs: 'Pre-op rutin normal.', action: 'admit'
     },
     {
       title: 'Sıra İhlali & Saldırgan Hasta Yakını', triage: 'red', service: 'Güvenlik', reason: 'Beyaz Kod Tehdidi',
@@ -836,39 +861,27 @@ function build165Cases() {
   ];
 
   const firstNames = ['Ahmet','Fatma','Mehmet','Ayşe','Mustafa','Emine','Ali','Hatice','Hüseyin','Zeynep','Hasan','Elif','İbrahim','Meryem','İsmail','Şerife','Osman','Sultan','Yusuf','Hanife','Murat','Zehra','Ömer','Havva','Ramazan','Hayriye','Halil','Cemile','Süleyman','Fadime','Abdullah','Kader','Mahmut','Büşra','Recep','Esra','Salih','Merve','Kadir','Sema','Emre','Kübra','Burak','Derya','Furkan','Gül','Enes','Tuğba','Serkan','Ebru'];
-
-  let idx = 13;
+  let idx = 11;
   while (list.length < 165) {
-    const t = templates[(idx - 13) % templates.length];
+    const t = templates[(idx - 11) % templates.length];
     const fn = firstNames[(idx * 3) % firstNames.length];
     const age = 19 + ((idx * 7) % 62);
     list.push({
-      id: 'c' + idx,
-      name: `${fn} (${age})`,
-      triage: t.triage,
+      id: 'c' + idx, name: `${fn} (${age})`, triage: t.triage,
       pitch: age > 55 ? 210 : (idx % 2 === 0 ? 340 : 280),
       appearance: {
         skin: idx % 3 === 0 ? '#dfb195' : '#f1c2a5',
         hair: age > 55 ? '#adb5bd' : (idx % 2 === 0 ? '#212529' : '#5c3c24'),
         shirt: ['#1971c2','#2f9e44','#d6336c','#f08c00','#5f3dc4','#495057'][idx % 6],
-        flush: t.triage === 'red',
-        sweat: t.triage !== 'green',
-        pupils: 'normal'
+        flush: t.triage === 'red', sweat: t.triage !== 'green', pupils: 'normal'
       },
-      complaint: t.comp,
-      vitals: t.vit,
-      lung: t.lung,
+      complaint: t.comp, vitals: t.vit, lung: t.lung,
       pupil: 'Pupiller izokorik, ışık refleksi +/+.',
-      radType: t.radType,
-      radTitle: t.radTitle,
-      radFinding: t.radFinding,
+      radType: t.radType, radTitle: t.radTitle, radFinding: t.radFinding,
       labs: t.labs,
-      enabiz: idx % 5 === 0 ? 'Not: NSAİİ (Ağrı kesici) mide hassasiyeti mevcut.' : 'Kronik ek hastalık kaydı yok.',
-      correctAction: t.action,
-      targetService: t.service,
-      targetReason: t.reason,
+      enabiz: idx % 5 === 0 ? 'Not: NSAİİ mide hassasiyeti mevcut.' : 'Kronik ek hastalık kaydı yok.',
+      correctAction: t.action, targetService: t.service, targetReason: t.reason,
       treatLabel: t.treatLabel || 'Acil Müdahale Uygula',
-      bribe: t.bribeAmt ? { amount: t.bribeAmt, text: `Zarf uzattı: "Hocam ${t.bribeAmt}₺ vereyim kimse duymasın..."` } : null,
       doorThreat: !!t.door,
       hint: `${t.title}: Bulguları kontrol edip ${t.service} yönlendirmesini yap.`
     });
@@ -890,8 +903,10 @@ document.querySelectorAll('.av-btn').forEach(btn => {
 document.getElementById('btnStartGame').addEventListener('click', () => {
   const dn = document.getElementById('inpDocName').value.trim();
   const hn = document.getElementById('inpHospName').value.trim();
+  const ak = document.getElementById('inpApiKey').value.trim();
   if (dn) state.docName = dn;
   if (hn) state.hospName = hn;
+  if (ak) state.apiKey = ak;
   state.diff = document.getElementById('inpDiff').value;
   initAudio();
   playSfx('coin');
@@ -926,7 +941,7 @@ function say(speaker, text, badgeText = '', badgeClass = 't-green', pitch = 300)
       if (i % 3 === 0 && text[i] !== ' ') playBlip(pitch);
       i++;
     } else clearInterval(typeTimer);
-  }, 15);
+  }, 14);
 }
 
 function nextPatient() {
@@ -939,13 +954,11 @@ function nextPatient() {
     return;
   }
   state.location = 'er';
+  state.activeStaffIdx = null;
   document.getElementById('sceneTag').textContent = `🏥 ${state.hospName.toUpperCase()} — ODA 1`;
   document.getElementById('zoomHint').style.display = 'none';
 
-  // Trigger colleague borrow requests periodically
-  if (Math.random() < (state.diff === 'hard' ? 0.55 : 0.42)) {
-    triggerRandomLoanRequest();
-  }
+  if (Math.random() < (state.diff === 'hard' ? 0.55 : 0.42)) triggerRandomLoanRequest();
   checkLoanRepayments();
 
   const pool = ALL_CASES.filter(c => !state.usedCaseIds.has(c.id));
@@ -983,10 +996,8 @@ function setTab(tab) {
     if (state.doorThreat) {
       addChoice(panel, '🚨 1111 BEYAZ KOD BAS! (Kapıda Saldırı Tehdidi)', () => {
         playSfx('alarm');
-        state.doorThreat = false;
-        state.rep += 4;
-        updateHud();
-        say('GÜVENLİK EKİBİ', '1111 Beyaz Kod! Güvenlik ve hastane polisi saldırganı saniyeler içinde etkisiz hale getirdi.', 'GÜVENLİ', 't-green', 220);
+        state.doorThreat = false; state.rep += 4; updateHud();
+        say('GÜVENLİK EKİBİ', '1111 Beyaz Kod! Güvenlik saldırganı etkisiz hale getirdi.', 'GÜVENLİ', 't-green', 220);
         if (p.correctAction === 'whitecode') completeCase(true, 'Beyaz Kod zamanında verildi, personel korundu! +450₺');
         else setTab('talk');
       }, 'danger');
@@ -995,13 +1006,11 @@ function setTab(tab) {
       addChoice(panel, `✉️ Rüşvet Teklifini Gör (${p.bribe.amount}₺)`, () => {
         say('ETİK İKİLEM', p.bribe.text, 'RÜŞVET', 't-red', 190);
         panel.innerHTML = '';
-        addChoice(panel, `💰 Zarfı Al (+${p.bribe.amount}₺, Yüksek Disiplin Riski)`, () => {
-          state.money += p.bribe.amount;
-          state.bribePending = false;
+        addChoice(panel, `💰 Zarfı Al (+${p.bribe.amount}₺, Disiplin Riski)`, () => {
+          state.money += p.bribe.amount; state.bribePending = false;
           addTx('Kayıt Dışı Zarf Geliri', p.bribe.amount, 'pos');
           if (Math.random() < 0.55) {
-            state.warnings++;
-            updateHud();
+            state.warnings++; updateHud();
             say('BAŞHEKİMLİK MÜFETTİŞİ', 'Suçüstü! Usulsüz işlem tespit edildi. +1 Uyarı aldın!', 'UYARI', 't-red', 150);
           } else {
             updateHud();
@@ -1010,9 +1019,7 @@ function setTab(tab) {
           setTab('decide');
         }, 'danger');
         addChoice(panel, '🛡️ "Burası Devletin Hastanesi!" (Reddet & İtibar Kazan)', () => {
-          state.bribePending = false;
-          state.rep += 6;
-          updateHud();
+          state.bribePending = false; state.rep += 6; updateHud();
           say(state.docName, '"Paranı da al çık dışarı, burada sadece tıbbi gerçekler geçer!"', 'ONURLU', 't-green', 340);
           setTab('decide');
         }, 'success');
@@ -1026,8 +1033,7 @@ function setTab(tab) {
       setTab('exam');
     }, state.ppeOn ? 'success' : '');
     addChoice(panel, `💓 Vital Bulgular (Nabız / TA / Ateş) ${state.examDone.vitals ? '✓' : ''}`, () => {
-      state.examDone.vitals = true;
-      playSfx('heart');
+      state.examDone.vitals = true; playSfx('heart');
       say('VİTAL MONİTÖR', p.vitals, 'VİTALLER', 't-yellow', 380);
       setTab('exam');
     });
@@ -1076,12 +1082,8 @@ function setTab(tab) {
         if (!state.ppeOn) {
           state.warnings++; updateHud();
           completeCase(false, 'Doğru tanı ama N95 maske takmadan temas ettin! +1 Uyarı.');
-        } else {
-          completeCase(true, 'Salgın vakası KKE korumasıyla izolasyona alındı! Bakanlık tebriği +600₺');
-        }
-      } else {
-        completeCase(false, 'Bulaşıcı olmayan hastayı karantinaya kapattın!');
-      }
+        } else completeCase(true, 'Salgın vakası KKE korumasıyla izolasyona alındı! +600₺');
+      } else completeCase(false, 'Bulaşıcı olmayan hastayı karantinaya kapattın!');
     });
     addChoice(panel, '👮 Hastane Polisi / Adli Bildirim', () => {
       const ok = p.correctAction === 'police' || p.correctAction === 'whitecode';
@@ -1094,7 +1096,7 @@ function setTab(tab) {
   }
 }
 
-/* ================= 2-STEP HOSPITAL ADMISSION ================= */
+/* ================= 2-STEP ADMISSION & INTERN ================= */
 function openAdmissionFlow() {
   const panel = document.getElementById('subPanel');
   panel.innerHTML = '';
@@ -1117,7 +1119,6 @@ function openAdmissionReason(selectedService) {
     'Deplase Tibia Kırığı (Cerrahi/Atel)',
     'Aktif Doğum Eylemi (38 Hafta Gebelik)',
     'Epidural Hematom + KİBAS (Anizokori)',
-    'Akut Testiküler Torsiyon (Acil Operasyon)',
     'Vertebral Arter Diseksiyonu (Akut İnme)',
     'Diyabetik Ketoasidoz + Ağır Asidoz',
     'Genel Halsizlik ve Vitamin Eksikliği'
@@ -1140,7 +1141,6 @@ function openAdmissionReason(selectedService) {
   });
 }
 
-/* ================= INTERN LIVE SUPERVISION ================= */
 function runInternSupervision() {
   const p = state.currentPatient;
   const intern = INTERNS[state.internIdx];
@@ -1200,6 +1200,7 @@ function completeCase(success, msg) {
   addChoice(panel, '▶ Sıradaki Hastayı Çağır', () => nextPatient(), 'success');
 }
 
+/* ================= END OF SHIFT + CAR FUEL/BREAKDOWN EVENTS ================= */
 function endOfShiftSummary() {
   state.day++;
   state.hour = 20;
@@ -1210,8 +1211,7 @@ function endOfShiftSummary() {
   let payroll = 1100 + (state.rep * 5);
   if (state.bankDebt > 0) {
     const cut = Math.min(state.bankDebt, 600);
-    state.bankDebt -= cut;
-    payroll -= cut;
+    state.bankDebt -= cut; payroll -= cut;
     addTx('TıpBank Otomatik Kredi Taksiti', -cut, 'neg');
   }
   state.money += payroll;
@@ -1219,14 +1219,50 @@ function endOfShiftSummary() {
   updateHud();
 
   const nextInt = INTERNS[state.internIdx];
+  const hasCar = state.assets.car !== 'Yok (Belediye Otobüsü)';
   say('NÖBET TESLİMİ & BORDRO', `TıpBank hesabına +${payroll}₺ Nöbet & Döner Sermaye yattı! Yarın yanında ${nextInt.name} olacak.`, 'NÖBET BİTTİ', 't-green', 390);
   const panel = document.getElementById('subPanel');
   panel.innerHTML = '';
-  addChoice(panel, '🚌 Belediye Otobüsüyle Eve Dön (%30 Rastgele Acil Durum)', () => {
-    if (Math.random() < 0.30) startBusEmergency();
-    else goLocation('home');
-  });
-  addChoice(panel, '☕ Hastane Kantinine Uğra (Personel & Kahve)', () => goLocation('canteen'));
+
+  if (hasCar) {
+    addChoice(panel, `🚗 ${state.assets.car} İle Eve Sür (Yakıt: %${state.assets.fuel} | Kondisyon: %${state.assets.carHealth})`, () => {
+      driveHomeWithCar();
+    }, 'success');
+  } else {
+    addChoice(panel, '🚌 Belediye Otobüsüyle Eve Dön (%30 Rastgele Acil Durum)', () => {
+      if (Math.random() < 0.30) startBusEmergency();
+      else goLocation('home');
+    });
+  }
+  addChoice(panel, '☕ Hastane Kantinine Uğra (Personel & AI Sohbet)', () => goLocation('canteen'));
+}
+
+function driveHomeWithCar() {
+  if (state.assets.fuel < 15) {
+    say('YAKIT BİTTİ!', 'Depoda benzin kalmadı! Galeri & Akaryakıt istasyonundan yakıt almalısın.', 'DEPO BOŞ', 't-red', 200);
+    goLocation('dealer');
+    return;
+  }
+  state.assets.fuel = Math.max(0, state.assets.fuel - 22);
+  const isSahin = state.assets.car.includes('Şahin');
+  const breakChance = isSahin ? 0.38 : 0.14;
+
+  if (Math.random() < breakChance) {
+    playSfx('alarm');
+    state.assets.carHealth = Math.max(20, state.assets.carHealth - 30);
+    const issue = isSahin
+      ? 'Modifiyeli Şahin yolda hararet yaptı ve egzoz patlattı! Sanayi ustası 450₺ masraf çıkardı.'
+      : 'Alman Sedan uyarı verdi: Periyodik bakım ve sensör arızası! Servis 850₺ masraf çıkardı.';
+    const cost = isSahin ? 450 : 850;
+    state.money = Math.max(0, state.money - cost);
+    addTx(`Oto Sanayi / Servis Arıza Masrafı (${state.assets.car})`, -cost, 'neg');
+    updateHud();
+    goLocation('dealer');
+    say('SANAYİ YOLU GÖRÜNDÜ! 🔧', `${issue} (Kalan Kondisyon: %${state.assets.carHealth})`, 'ARIZA', 't-red', 180);
+  } else {
+    goLocation('home');
+    say('KEYİFLİ SÜRÜŞ 🚗', `${state.assets.car} ile müzik eşliğinde evine ulaştın! (Kalan Yakıt: %${state.assets.fuel})`, 'EV', 't-green', 360);
+  }
 }
 
 /* ================= BUS 110 BPM CPR ================= */
@@ -1240,8 +1276,7 @@ function startBusEmergency() {
   btn.className = 'choice-btn danger';
   btn.innerHTML = '<span>💓 GÖĞÜS BASISI UYGULA (0 / 10)</span><span>110 BPM</span>';
   btn.onclick = () => {
-    compressions++;
-    playSfx('heart');
+    compressions++; playSfx('heart');
     btn.innerHTML = `<span>💓 GÖĞÜS BASISI UYGULA (${compressions} / 10)</span><span>DEVAM!</span>`;
     if (compressions >= 10) {
       state.money += 600; state.rep = Math.min(100, state.rep + 8);
@@ -1255,7 +1290,7 @@ function startBusEmergency() {
   panel.appendChild(btn);
 }
 
-/* ================= SMARTPHONE APPS (TIPBANK, WHATSDOC, FOTOGRAM, CALL, BETTIP) ================= */
+/* ================= SMARTPHONE APPS (TIPBANK, WHATSDOC AI, FOTOGRAM, CALL, BETTIP) ================= */
 function openPhone() {
   document.getElementById('phoneDot').style.display = 'none';
   openPhoneApp('home');
@@ -1269,12 +1304,11 @@ function openPhoneApp(app) {
   title.textContent = `📱 ${state.assets.phone.toUpperCase()}`;
 
   const hStr = String(state.hour % 24).padStart(2, '0');
-  let html = `<div class="phone-frame">
-    <div class="phone-status"><span>📶 TıpCell 5G</span><span>🕒 ${hStr}:00</span><span>🔋 %84</span></div>
+  body.innerHTML = `<div class="phone-frame">
+    <div class="phone-status"><span>📶 TıpCell 5G</span><span>🕒 ${hStr}:00</span><span>${state.apiKey ? '🤖 AI BAĞLI' : '🧠 DAHİLİ AI'}</span></div>
     <div id="phoneScreen" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px;"></div>
     <button class="choice-btn" style="margin-top:8px;justify-content:center;" onclick="openPhoneApp('home')">⭕ ANA EKRAN</button>
   </div>`;
-  body.innerHTML = html;
   const scr = document.getElementById('phoneScreen');
 
   if (app === 'home') {
@@ -1283,7 +1317,7 @@ function openPhoneApp(app) {
       <div style="text-align:center;font-size:11px;color:var(--amber);padding:4px;">Hoş geldin, ${state.docName}</div>
       <div class="app-grid">
         <div class="app-icon" onclick="openPhoneApp('bank')">${reqBadge}<span class="ico">💳</span><span>TıpBank</span></div>
-        <div class="app-icon" onclick="openPhoneApp('whatsdoc')"><span class="ico">💬</span><span>WhatsDoc</span></div>
+        <div class="app-icon" onclick="openPhoneApp('whatsdoc')"><span class="ico">💬</span><span>WhatsDoc AI</span></div>
         <div class="app-icon" onclick="openPhoneApp('fotogram')"><span class="ico">📸</span><span>FotoGram</span></div>
         <div class="app-icon" onclick="openPhoneApp('call')"><span class="ico">📞</span><span>Arama</span></div>
         <div class="app-icon" onclick="openPhoneApp('bettip')"><span class="ico">🎰</span><span>BetTıp</span></div>
@@ -1304,19 +1338,19 @@ function openPhoneApp(app) {
       <div style="font-size:11px;color:var(--amber);font-weight:800;margin-top:4px;">💸 DOKTOR & PERSONEL BORÇ TALEPLERİ (${state.loanRequests.length})</div>
     `;
     if (!state.loanRequests.length) {
-      scr.innerHTML += `<div style="font-size:11px;color:var(--text-muted);padding:6px;background:#121829;">Şu an senden borç isteyen meslektaşın yok. Nöbet ilerledikçe talep gelebilir.</div>`;
+      scr.innerHTML += `<div style="font-size:11px;color:var(--text-muted);padding:6px;background:#121829;">Şu an senden borç isteyen meslektaşın yok.</div>`;
     } else {
       state.loanRequests.forEach(req => {
         const box = document.createElement('div');
         box.style.cssText = 'background:#161f36;border:2px solid var(--gold);padding:8px;display:flex;flex-direction:column;gap:6px;';
         box.innerHTML = `
           <div style="display:flex;justify-content:space-between;font-weight:800;color:var(--amber);">
-            <span>${req.from} (${req.role})</span><span>İstenen: ${req.amount}₺</span>
+            <span>${req.from}</span><span>İstenen: ${req.amount}₺</span>
           </div>
           <div style="font-size:11px;line-height:1.4;">"${req.story}"</div>
-          <div style="font-size:9.5px;color:var(--sky);">IBAN: ${req.iban} • Geri Ödeme Sözü: ${req.returnAmt}₺</div>
+          <div style="font-size:9.5px;color:var(--sky);">IBAN: ${req.iban} • Geri Ödeme: ${req.returnAmt}₺</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
-            <button class="choice-btn success" style="justify-content:center;" onclick="resolveLoan('${req.id}', true)">✓ FAST Gönder (-${req.amount}₺)</button>
+            <button class="choice-btn success" style="justify-content:center;" onclick="resolveLoan('${req.id}', true)">✓ FAST Gönder</button>
             <button class="choice-btn danger" style="justify-content:center;" onclick="resolveLoan('${req.id}', false)">✕ Reddet</button>
           </div>`;
         scr.appendChild(box);
@@ -1328,8 +1362,7 @@ function openPhoneApp(app) {
     loanBtn.textContent = '🏦 TıpBank Anında İhtiyaç Kredisi Çek (+2.000₺)';
     loanBtn.onclick = () => {
       if (state.bankDebt >= 4000) { alert('Kredi limitin doldu!'); return; }
-      state.money += 2000;
-      state.bankDebt += 2400;
+      state.money += 2000; state.bankDebt += 2400;
       addTx('TıpBank Anında Kredi Kullanımı', 2000, 'pos');
       playSfx('coin'); updateHud(); openPhoneApp('bank');
     };
@@ -1347,7 +1380,7 @@ function openPhoneApp(app) {
     });
   }
   else if (app === 'whatsdoc') {
-    scr.innerHTML = `<div style="font-size:12px;color:var(--teal);font-weight:800;">💬 WHATSDOC HASTANE MESAJLARI</div>`;
+    scr.innerHTML = `<div style="font-size:12px;color:var(--teal);font-weight:800;">💬 WHATSDOC AI SOHBETLER</div>`;
     state.chats.forEach((ch, idx) => {
       const last = ch.msgs[ch.msgs.length - 1];
       const b = document.createElement('div');
@@ -1380,7 +1413,7 @@ function openPhoneApp(app) {
       ['👔 Başhekimlik Sekreterliği', 'Başhekim: "Nöbet performansını takip ediyoruz doktor, böyle devam et."'],
       ['🚑 112 Komuta Kontrol', '112 Komuta: "Bölgede trafik kazası var, 15 dakikaya ambulans giriş yapacak."'],
       ['🩺 Asistan Dr. Elif', 'Dr. Elif: "Sesini duymak iyi geldi, birazdan kantinde buluşalım!"'],
-      ['🚗 Oto Galerici', `Galerici: "Hocam senin bütçeye göre çok temiz araçlar geldi, beklerim."`]
+      ['🔧 Sanayi Ustası Mehmet', 'Usta: "Hocam arabanın yağına suyuna baktır, yolda kalırsan çekici gönderirim."']
     ];
     contacts.forEach(([name, reply]) => {
       addChoice(scr, name, () => {
@@ -1396,30 +1429,47 @@ function openPhoneApp(app) {
         <div style="color:#ff8787;font-weight:900;">🎰 BETTIP — KAÇAK KRİPTO SLOT</div>
         <div style="font-size:11px;margin-top:4px;">Yüksek risk! Kaybedersen stres artar, çok oynarsan Başhekimlik soruşturma açar.</div>
       </div>
-      <button class="choice-btn" onclick="playBet(300)">🎲 300₺ Bahis Oyna (2.2x Kazanç Şansı)</button>
-      <button class="choice-btn danger" onclick="playBet(1000)">🔥 1.000₺ Yüksek Bahis Oyna (2.5x Şans / Yüksek Risk)</button>
+      <button class="choice-btn" onclick="playBet(300)">🎲 300₺ Bahis Oyna (2.1x Kazanç Şansı)</button>
+      <button class="choice-btn danger" onclick="playBet(1000)">🔥 1.000₺ Yüksek Bahis Oyna (2.4x Şans / Soruşturma Riski)</button>
       <div id="betResult" style="padding:8px;font-size:12px;color:var(--amber);"></div>
     `;
   }
 }
 
-function openChatThread(idx) {
+async function openChatThread(idx) {
   const ch = state.chats[idx];
   const scr = document.getElementById('phoneScreen');
   scr.innerHTML = `<div style="font-weight:800;color:var(--amber);border-bottom:1px solid #334;padding-bottom:4px;">${ch.name}</div>`;
+  const list = document.createElement('div');
+  list.style.cssText = 'flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:6px;';
   ch.msgs.forEach(m => {
     const d = document.createElement('div');
     d.style.cssText = 'background:#162038;padding:7px;font-size:11px;line-height:1.4;white-space:pre-line;';
     d.innerHTML = `<strong style="color:var(--teal)">${m.from}:</strong> ${m.text}`;
-    scr.appendChild(d);
+    list.appendChild(d);
   });
-  ch.replies.forEach(rep => {
-    addChoice(scr, `↩️ "${rep}"`, () => {
-      ch.msgs.push({ from: state.docName, text: rep });
-      playSfx('msg');
-      openChatThread(idx);
-    }, 'success');
-  });
+  scr.appendChild(list);
+
+  const bar = document.createElement('div');
+  bar.className = 'chat-input-bar';
+  bar.innerHTML = `<input id="phoneMsgInp" type="text" placeholder="Mesajını elle yaz..."><button class="chat-send-btn" id="phoneMsgSend">GÖNDER</button>`;
+  scr.appendChild(bar);
+
+  const sendFn = async () => {
+    const inp = document.getElementById('phoneMsgInp');
+    const txt = inp.value.trim();
+    if (!txt) return;
+    inp.value = '';
+    ch.msgs.push({ from: state.docName, text: txt });
+    playSfx('msg');
+    openChatThread(idx);
+    const reply = await generateAIReply(ch.name, ch.persona || ch.name, txt, ch.msgs);
+    ch.msgs.push({ from: ch.name.replace(/^[^\wğüşöçıİĞÜŞÖÇ]+\s*/, ''), text: reply });
+    playSfx('msg');
+    if (document.getElementById('phoneMsgInp')) openChatThread(idx);
+  };
+  document.getElementById('phoneMsgSend').onclick = sendFn;
+  document.getElementById('phoneMsgInp').addEventListener('keydown', e => { if (e.key === 'Enter') sendFn(); });
 }
 
 function drawRetroPhoto(mode) {
@@ -1430,17 +1480,14 @@ function drawRetroPhoto(mode) {
   x.fillRect(0, 0, 280, 120);
   x.fillStyle = '#f5b942'; x.font = 'bold 12px monospace';
   x.fillText(mode === 'tea' ? '☕ ACİL NÖBET HATIRASI' : `🚗 ${state.assets.car.toUpperCase()}`, 16, 26);
-  x.fillStyle = '#38d9a9';
-  x.fillRect(110, 46, 56, 48);
-  x.fillStyle = '#fff';
-  x.fillText('16-BIT CAM', 102, 108);
+  x.fillStyle = '#38d9a9'; x.fillRect(110, 46, 56, 48);
+  x.fillStyle = '#fff'; x.fillText('16-BIT CAM', 102, 108);
 }
 
 function takePhoto(mode, caption) {
   drawRetroPhoto(mode);
   state.posts.unshift({
-    author: state.docName,
-    caption,
+    author: state.docName, caption,
     likes: 18 + Math.floor(Math.random() * 45),
     comment: 'İntörn Berk: Hocam ateş ediyorsunuz 🔥'
   });
@@ -1472,16 +1519,17 @@ function playBet(stake) {
   updateHud();
 }
 
-/* ================= OUTSIDE LOCATIONS ================= */
+/* ================= OUTSIDE LOCATIONS + LIVE AI CHAT ================= */
 function goLocation(loc) {
   state.location = loc;
+  state.activeStaffIdx = null;
   closeModal();
   const panel = document.getElementById('subPanel');
   panel.innerHTML = '';
 
   if (loc === 'canteen') {
-    document.getElementById('sceneTag').textContent = '☕ HASTANE KANTİNİ — PERSONEL SOSYAL ALANI';
-    say('HASTANE KANTİNİ', `Sohbet etmek veya günde 1 kez kahve ısmarlamak için personel seç (Bugün kahve hakkı: ${state.coffeeGivenToday ? 'KULLANILDI' : '1 ADET MEVCUT'}):`, 'SOSYAL', 't-yellow', 340);
+    document.getElementById('sceneTag').textContent = '☕ HASTANE KANTİNİ — PERSONEL MOLA ALANI';
+    say('HASTANE KANTİNİ', `Sohbet etmek (elle yazarak AI konuşması!) veya günde 1 kez kahve ısmarlamak için personel seç (Kahve hakkı: ${state.coffeeGivenToday ? 'KULLANILDI' : '1 MEVCUT'}):`, 'SOSYAL', 't-yellow', 340);
     state.staff.forEach((st, i) => addChoice(panel, `${st.name} (${st.role}) — ❤️${st.love}`, () => interactStaff(i)));
     addChoice(panel, '🏥 Acil Servise Dön', () => nextPatient(), 'success');
   }
@@ -1498,10 +1546,27 @@ function goLocation(loc) {
     addChoice(panel, '🏥 Acil Servise Dön', () => nextPatient(), 'success');
   }
   else if (loc === 'dealer') {
-    document.getElementById('sceneTag').textContent = '🚗 OTOMOBİL GALERİSİ';
-    say('GALERİCİ', `Mevcut Aracın: ${state.assets.car}. Kazandığın nöbet parasıyla kendine sıfır/ikinci el araç seç!`, 'GALERİ', 't-yellow', 260);
-    addChoice(panel, '🚘 1998 Model Modifiyeli Şahin (2.800₺)', () => buyAsset('car', 'Modifiyeli Şahin', 2800));
-    addChoice(panel, '🚙 2024 Alman Sedan Otomobil (7.500₺)', () => buyAsset('car', 'Alman Sedan', 7500));
+    document.getElementById('sceneTag').textContent = '🚗 OTO GALERİ, AKARYAKIT & SANAYİ';
+    const hasCar = state.assets.car !== 'Yok (Belediye Otobüsü)';
+    say('GALERİ & SANAYİ USTASI', hasCar
+      ? `Aracın: ${state.assets.car} | Yakıt: %${state.assets.fuel} | Mekanik Kondisyon: %${state.assets.carHealth}`
+      : 'Henüz aracın yok, belediye otobüsüyle gidip geliyorsun. Bütçene göre araç seç!', 'GALERİ', 't-yellow', 260);
+    addChoice(panel, '🚘 1998 Modifiyeli Şahin Al (2.800₺ — Sık Sanayi Riski)', () => buyAsset('car', 'Modifiyeli Şahin', 2800));
+    addChoice(panel, '🚙 2024 Alman Sedan Al (7.500₺ — Sağlam & Konforlu)', () => buyAsset('car', 'Alman Sedan', 7500));
+    if (hasCar) {
+      addChoice(panel, '⛽ Depoyu Full Yap (-220₺, Yakıt %100)', () => {
+        if (state.money >= 220) {
+          state.money -= 220; state.assets.fuel = 100;
+          addTx('Akaryakıt İstasyonu (Full Depo)', -220, 'neg'); updateHud(); goLocation('dealer');
+        }
+      }, 'success');
+      addChoice(panel, '🔧 Sanayi Genel Bakım & Tamir (-400₺, Kondisyon %100)', () => {
+        if (state.money >= 400) {
+          state.money -= 400; state.assets.carHealth = 100;
+          addTx('Oto Sanayi Bakım & Tamir', -400, 'neg'); updateHud(); goLocation('dealer');
+        }
+      });
+    }
     addChoice(panel, '🏥 Acil Servise Dön', () => nextPatient(), 'success');
   }
   else if (loc === 'tech') {
@@ -1526,12 +1591,32 @@ function goLocation(loc) {
 }
 
 function interactStaff(idx) {
+  state.activeStaffIdx = idx;
   const st = state.staff[idx];
   const panel = document.getElementById('subPanel');
   panel.innerHTML = '';
   const line = st.stories[Math.min(st.stage, st.stories.length - 1)];
   st.stage = Math.min(st.stories.length - 1, st.stage + 1);
   say(`${st.name} (${st.role})`, `"${line}"`, `❤️ ${st.love}/100`, 't-green', 340);
+
+  // Free-text AI input bar directly in the canteen!
+  const bar = document.createElement('div');
+  bar.className = 'chat-input-bar';
+  bar.innerHTML = `<input id="canteenChatInp" type="text" placeholder="${st.name} ile konuşmak için elle yaz..."><button class="chat-send-btn" id="canteenChatBtn">KONUŞ</button>`;
+  panel.appendChild(bar);
+
+  const askStaff = async () => {
+    const inp = document.getElementById('canteenChatInp');
+    const msg = inp.value.trim();
+    if (!msg) return;
+    inp.value = '';
+    say(st.name, '...', 'YAZIYOR', 't-yellow', 300);
+    const reply = await generateAIReply(st.name, st.persona, msg);
+    st.love = Math.min(100, st.love + 3);
+    say(`${st.name} (${st.role})`, `"${reply}"`, `❤️ ${st.love}/100`, 't-green', 340);
+  };
+  document.getElementById('canteenChatBtn').onclick = askStaff;
+  document.getElementById('canteenChatInp').addEventListener('keydown', e => { if (e.key === 'Enter') askStaff(); });
 
   if (!state.coffeeGivenToday) {
     addChoice(panel, '☕ Kahve Ismarla (-45₺, Günde 1 Kez, ❤️ +15)', () => {
@@ -1553,6 +1638,11 @@ function buyAsset(key, val, cost) {
   }
   state.money -= cost;
   state.assets[key] = val;
+  if (key === 'car') {
+    state.assets.fuel = 100;
+    state.assets.carHealth = 100;
+    state.assets.carColor = val.includes('Alman') ? '#38d9a9' : '#ff6b6b';
+  }
   addTx(`Satın Alma: ${val}`, -cost, 'neg');
   playSfx('coin'); updateHud();
   say('SATIN ALINDI!', `Hayırlı olsun ${state.docName}! Yeni eşyan doğrudan yaşam sahnene eklendi.`, 'YENİ EŞYA', 't-green', 420);
@@ -1580,13 +1670,13 @@ function openModal(type) {
     body.appendChild(info);
   }
   else if (type === 'guide') {
-    title.textContent = '📖 ACİL TIP CEP REHBERİ';
+    title.textContent = '📖 ACİL TIP & OYUN CEP REHBERİ';
     body.innerHTML = `
       <div style="line-height:1.55;">
         <p><strong style="color:var(--amber)">1. Kalp Krizi (MI):</strong> Diş, çene veya mide ağrısı + soğuk terlemede mutlaka <b>EKG</b> çek!</p>
         <p><strong style="color:var(--amber)">2. Kafa Travması & İnme:</strong> Göz feneriyle <b>Anizokori</b> veya boyun kıtlattırma sonrası baş dönmesinde <b>Beyin BT</b> iste.</p>
-        <p><strong style="color:var(--amber)">3. Bağımlı & Rüşvet:</strong> Göz bebekleri toplu iğne başı (<b>Miyozis</b>) + E-Nabız çoklu kayıtta polisi çağır.</p>
-        <p><strong style="color:var(--amber)">4. TıpBank & Borçlar:</strong> Telefondaki <b>TıpBank</b> uygulamasından borç isteyen doktorlara FAST atabilir, vadesi gelince faiziyle geri alabilirsin.</p>
+        <p><strong style="color:var(--amber)">3. Serbest AI Sohbet:</strong> Kantinde ve telefondaki WhatsDoc uygulamasında istediğin mesajı elle yazabilirsin.</p>
+        <p><strong style="color:var(--amber)">4. Araç & Sanayi:</strong> Aldığın aracın yakıtı azalır ve arıza yapabilir; Galeri & Sanayi sekmesinden bakım yaptır.</p>
         <p style="margin-top:8px;border-top:1px dashed #334;padding-top:6px;">Geliştirici: <a href="https://github.com/kurtulustas" target="_blank" style="color:var(--teal)">developer=kurtulustas</a></p>
       </div>`;
   }
@@ -1594,9 +1684,9 @@ function openModal(type) {
     title.textContent = '🗺️ HASTANE & ŞEHİR HARİTASI';
     [
       ['🏥 Acil Servis Muayene Odası', 'er'],
-      ['☕ Hastane Kantini (8 Personel & Kahve)', 'canteen'],
+      ['☕ Hastane Kantini (Personel & AI Sohbet)', 'canteen'],
       ['🍲 Mahalle Esnaf Lokantası', 'diner'],
-      ['🚗 Otomobil Galerisi', 'dealer'],
+      ['🚗 Oto Galeri, Akaryakıt & Sanayi', 'dealer'],
       ['📱 Teknoloji & Hediye Mağazası', 'tech'],
       ['🏠 Kendi Evim', 'home']
     ].forEach(([label, id]) => addChoice(body, label, () => goLocation(id)));
@@ -1635,7 +1725,7 @@ function gameOver(reason) {
   addChoice(panel, '🔄 Yeni Kariyer Başlat', () => location.reload(), 'danger');
 }
 
-/* ================= 16-BIT PIXEL CANVAS ================= */
+/* ================= 16-BIT PIXEL CANVAS (LOCATION-SPECIFIC SCENES!) ================= */
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 let tick = 0;
@@ -1662,26 +1752,132 @@ function drawRadiologyZoom(c, type) {
     x.stroke();
   } else if (type === 'leg') {
     x.fillStyle = '#cbe4ff';
-    x.fillRect(142, 16, 18, 72);
-    x.fillRect(146, 96, 18, 74);
-    x.fillStyle = '#89b4e0';
-    x.fillRect(168, 22, 8, 142);
-    x.strokeStyle = '#ff4d5e'; x.lineWidth = 2;
-    x.strokeRect(134, 80, 42, 24);
+    x.fillRect(142, 16, 18, 72); x.fillRect(146, 96, 18, 74);
+    x.fillStyle = '#89b4e0'; x.fillRect(168, 22, 8, 142);
+    x.strokeStyle = '#ff4d5e'; x.lineWidth = 2; x.strokeRect(134, 80, 42, 24);
   } else if (type === 'brain') {
-    x.fillStyle = '#6c7a89';
-    x.beginPath(); x.ellipse(160, 92, 60, 72, 0, 0, Math.PI * 2); x.fill();
-    x.fillStyle = '#ff4d5e';
-    x.beginPath(); x.ellipse(108, 90, 14, 32, 0.15, 0, Math.PI * 2); x.fill();
+    x.fillStyle = '#6c7a89'; x.beginPath(); x.ellipse(160, 92, 60, 72, 0, 0, Math.PI * 2); x.fill();
+    x.fillStyle = '#ff4d5e'; x.beginPath(); x.ellipse(108, 90, 14, 32, 0.15, 0, Math.PI * 2); x.fill();
   } else {
-    x.fillStyle = '#9ec5fe';
-    x.fillRect(154, 22, 12, 138);
+    x.fillStyle = '#9ec5fe'; x.fillRect(154, 22, 12, 138);
     for (let r = 0; r < 5; r++) {
-      x.fillRect(102, 40 + r * 22, 48, 8);
-      x.fillRect(170, 40 + r * 22, 48, 8);
+      x.fillRect(102, 40 + r * 22, 48, 8); x.fillRect(170, 40 + r * 22, 48, 8);
     }
-    x.fillStyle = 'rgba(255, 193, 7, 0.55)';
-    x.fillRect(104, 106, 44, 34);
+    x.fillStyle = 'rgba(255, 193, 7, 0.55)'; x.fillRect(104, 106, 44, 34);
+  }
+}
+
+function drawCarSprite(cx, cy, scale = 1) {
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.scale(scale, scale);
+  // Shadow
+  ctx.fillStyle = 'rgba(0,0,0,0.45)';
+  ctx.fillRect(-56, 22, 112, 8);
+  // Body
+  ctx.fillStyle = state.assets.carColor || '#ff6b6b';
+  ctx.fillRect(-52, -4, 104, 24);
+  ctx.fillRect(-32, -20, 62, 18);
+  // Windows
+  ctx.fillStyle = '#74c0fc';
+  ctx.fillRect(-26, -16, 22, 12);
+  ctx.fillRect(2, -16, 22, 12);
+  // Headlight & Taillight
+  ctx.fillStyle = '#ffd43b'; ctx.fillRect(46, 2, 6, 7);
+  ctx.fillStyle = '#ff4d5e'; ctx.fillRect(-52, 2, 5, 7);
+  // Wheels
+  ctx.fillStyle = '#090c14';
+  ctx.fillRect(-38, 14, 20, 14); ctx.fillRect(20, 14, 20, 14);
+  ctx.fillStyle = '#adb5bd';
+  ctx.fillRect(-33, 18, 10, 6); ctx.fillRect(25, 18, 10, 6);
+  ctx.restore();
+}
+
+function renderLocationScene() {
+  const loc = state.location;
+  if (loc === 'canteen') {
+    // Warm Hospital Canteen Interior (NO CAR!)
+    ctx.fillStyle = '#231915'; ctx.fillRect(0, 0, 340, 145);
+    ctx.fillStyle = '#3d2b22'; ctx.fillRect(0, 145, 340, 65);
+    // Coffee Counter & Espresso Machine
+    ctx.fillStyle = '#5c3d2e'; ctx.fillRect(18, 92, 120, 54);
+    ctx.fillStyle = '#adb5bd'; ctx.fillRect(34, 64, 36, 28);
+    ctx.fillStyle = '#38d9a9'; ctx.fillRect(40, 70, 10, 8);
+    // Menu Board
+    ctx.fillStyle = '#111625'; ctx.fillRect(24, 24, 96, 32);
+    ctx.strokeStyle = '#f5b942'; ctx.strokeRect(24, 24, 96, 32);
+    ctx.fillStyle = '#ffd175'; ctx.font = 'bold 9px monospace';
+    ctx.fillText('ÇAY 15₺ | KAHVE 45₺', 30, 42);
+
+    // Draw Staff Member standing in canteen
+    const st = state.activeStaffIdx !== null ? state.staff[state.activeStaffIdx] : state.staff[0];
+    const bob = Math.sin(tick * 0.08) * 1.5;
+    const sx = 225, sy = 68 + bob;
+    ctx.fillStyle = st.coat || '#f8f9fa'; ctx.fillRect(sx - 16, sy + 30, 36, 48);
+    ctx.fillStyle = '#f1c2a5'; ctx.fillRect(sx - 9, sy + 4, 24, 24);
+    ctx.fillStyle = st.hair || '#212529'; ctx.fillRect(sx - 11, sy, 28, 8);
+    ctx.fillStyle = '#090c14';
+    ctx.fillRect(sx - 4, sy + 13, 3, 3); ctx.fillRect(sx + 7, sy + 13, 3, 3);
+    ctx.fillStyle = '#ffd175'; ctx.font = 'bold 10px monospace';
+    ctx.fillText(st.name, sx - 36, sy - 6);
+  }
+  else if (loc === 'diner') {
+    // Esnaf Lokantası
+    ctx.fillStyle = '#2b1d14'; ctx.fillRect(0, 0, 340, 145);
+    ctx.fillStyle = '#4a3222'; ctx.fillRect(0, 145, 340, 65);
+    // Soup Cauldrons
+    ctx.fillStyle = '#ced4da'; ctx.fillRect(40, 84, 150, 60);
+    ctx.fillStyle = '#f59f00'; ctx.fillRect(54, 76, 34, 10);
+    ctx.fillStyle = '#e03131'; ctx.fillRect(102, 76, 34, 10);
+    // Steam
+    ctx.fillStyle = 'rgba(255,255,255,0.45)';
+    ctx.fillRect(68, 62 - (tick % 14), 4, 6);
+    ctx.fillRect(116, 58 - (tick % 14), 4, 6);
+    // Table with checkered cloth
+    ctx.fillStyle = '#fff'; ctx.fillRect(225, 114, 80, 32);
+    ctx.fillStyle = '#e03131'; ctx.fillRect(225, 114, 80, 8);
+  }
+  else if (loc === 'dealer') {
+    // Auto Showroom & Sanayi Garage
+    ctx.fillStyle = '#121826'; ctx.fillRect(0, 0, 340, 145);
+    ctx.fillStyle = '#252e42'; ctx.fillRect(0, 145, 340, 65);
+    // Garage Neon Sign
+    ctx.strokeStyle = '#38d9a9'; ctx.strokeRect(20, 26, 150, 24);
+    ctx.fillStyle = '#38d9a9'; ctx.font = 'bold 10px monospace';
+    ctx.fillText('GALERİ & OTO SANAYİ', 30, 42);
+    if (state.assets.car !== 'Yok (Belediye Otobüsü)') {
+      drawCarSprite(170, 126, 1.15);
+    } else {
+      ctx.fillStyle = '#9aa6c4'; ctx.fillText('Henüz aracın yok — aşağıdan seç!', 75, 110);
+    }
+  }
+  else if (loc === 'tech') {
+    // Tech & Gift Store
+    ctx.fillStyle = '#0d1b2a'; ctx.fillRect(0, 0, 340, 145);
+    ctx.fillStyle = '#1b263b'; ctx.fillRect(0, 145, 340, 65);
+    for (let i = 0; i < 3; i++) {
+      ctx.fillStyle = '#1e293b'; ctx.fillRect(36 + i * 96, 56, 68, 88);
+      ctx.strokeStyle = '#5cc8ff'; ctx.strokeRect(36 + i * 96, 56, 68, 88);
+      ctx.fillStyle = i === 1 ? '#ff4d5e' : '#38d9a9';
+      ctx.fillRect(58 + i * 96, 76, 24, 38);
+    }
+  }
+  else if (loc === 'home') {
+    // Cozy Doctor Apartment
+    ctx.fillStyle = '#182036'; ctx.fillRect(0, 0, 340, 145);
+    ctx.fillStyle = '#3b281e'; ctx.fillRect(0, 145, 340, 65);
+    // Night Window (shows car parked outside!)
+    ctx.fillStyle = '#090d1a'; ctx.fillRect(28, 34, 96, 68);
+    ctx.strokeStyle = '#f5b942'; ctx.strokeRect(28, 34, 96, 68);
+    ctx.fillStyle = '#ffd43b'; ctx.fillRect(42, 44, 10, 10); // Moon
+    if (state.assets.car !== 'Yok (Belediye Otobüsü)') {
+      drawCarSprite(76, 86, 0.45);
+    }
+    // TV Unit
+    ctx.fillStyle = '#090c14';
+    ctx.fillRect(175, 52, state.assets.homeLevel > 1 ? 115 : 74, state.assets.homeLevel > 1 ? 62 : 44);
+    ctx.strokeStyle = '#38d9a9';
+    ctx.strokeRect(175, 52, state.assets.homeLevel > 1 ? 115 : 74, state.assets.homeLevel > 1 ? 62 : 44);
   }
 }
 
@@ -1690,23 +1886,7 @@ function renderScene() {
   ctx.clearRect(0, 0, 340, 210);
 
   if (state.location !== 'er') {
-    ctx.fillStyle = '#182238'; ctx.fillRect(0, 0, 340, 210);
-    ctx.fillStyle = '#2b3a5e'; ctx.fillRect(0, 136, 340, 74);
-    ctx.fillStyle = '#f5b942'; ctx.font = 'bold 13px monospace';
-    const titles = {
-      canteen: '☕ HASTANE KANTİNİ — PERSONEL MOLA ALANI',
-      diner: '🍲 ESNAF LOKANTASI — SICAK ÇORBA & KAVURMA',
-      dealer: `🚗 GALERİ — ARACIN: ${state.assets.car}`,
-      tech: `📱 TEKNOLOJİ — TEL: ${state.assets.phone}`,
-      home: `🏠 EVİN — TV SEVİYESİ: ${state.assets.homeLevel}`
-    };
-    ctx.fillText(titles[state.location] || 'ŞEHİR', 16, 36);
-    if (state.assets.car !== 'Yok (Belediye Otobüsü)') {
-      ctx.fillStyle = state.assets.car.includes('Alman') ? '#38d9a9' : '#ff6b6b';
-      ctx.fillRect(92, 106, 120, 34); ctx.fillRect(116, 86, 72, 22);
-      ctx.fillStyle = '#0b0e17';
-      ctx.fillRect(108, 134, 22, 16); ctx.fillRect(176, 134, 22, 16);
-    }
+    renderLocationScene();
     requestAnimationFrame(renderScene);
     return;
   }
