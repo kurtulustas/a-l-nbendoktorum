@@ -3,248 +3,271 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>AÇILIN BEN DOKTORUM! v1.0 — 16-Bit Klinik, AI Sohbet & Hayat Simülasyonu</title>
-<meta name="description" content="16-Bit Retro Tıp, AI Sohbet, Araç Sanayi Masrafları, TıpBank & Acil Servis Simülasyonu. developer=kurtulustas">
+<title>AÇILIN BEN DOKTORUM! v3.1 — 16-Bit Klinik Simülasyonu & 8 Uzmanlık</title>
+<meta name="description" content="16-Bit Piksel Tıp Simülasyonu, 8 Uzmanlık Dalı, Her Branşa 30 Özel Vaka, Mini-Oyunlar & TıpBank. developer=kurtulustas">
 <style>
   :root {
-    --bg-deep: #090c14;
-    --panel-dark: #111625;
-    --panel-mid: #192238;
-    --gold: #f5b942;
-    --gold-dim: #946b1e;
-    --amber: #ffd175;
-    --teal: #38d9a9;
-    --crimson: #ff4d5e;
-    --sky: #5cc8ff;
-    --text-main: #f4f1ea;
-    --text-muted: #9aa6c4;
+    --bg-dark: #07090e;
+    --panel-dark: #0d111a;
+    --border-light: #e9ecef;
+    --accent-cyan: #3bc9db;
+    --accent-gold: #ffd43b;
+    --accent-red: #ff5252;
+    --accent-green: #51cf66;
+    --accent-purple: #b197fc;
+    --text-main: #f8f9fa;
+    --text-muted: #adb5bd;
     --font-pixel: ui-monospace, 'Cascadia Mono', 'SFMono-Regular', Menlo, Monaco, Consolas, monospace;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
     width: 100%; height: 100dvh; overflow: hidden;
-    background: #05070c; color: var(--text-main);
+    background: #030407; color: var(--text-main);
     font-family: var(--font-pixel);
     display: flex; justify-content: center; align-items: center;
   }
   #app {
     width: 100%; max-width: 680px; height: 100dvh;
-    background: var(--bg-deep);
-    border-left: 3px solid var(--gold-dim);
-    border-right: 3px solid var(--gold-dim);
+    background: var(--bg-dark);
+    border-left: 3px solid var(--border-light);
+    border-right: 3px solid var(--border-light);
     display: flex; flex-direction: column;
     position: relative; overflow: hidden;
-    box-shadow: 0 0 45px rgba(0,0,0,0.9);
   }
-  .rpg-box {
+  .pixel-box {
     background: var(--panel-dark);
-    border: 3px solid var(--gold);
-    box-shadow: inset 0 0 0 2px #090c14, 0 4px 0 #04060a;
+    border: 3px solid var(--border-light);
+    box-shadow: inset 0 0 0 2px #000000;
     position: relative;
   }
-  .rpg-box::before, .rpg-box::after {
-    content: ""; position: absolute; width: 6px; height: 6px;
-    background: var(--amber); pointer-events: none;
-  }
-  .rpg-box::before { top: -3px; left: -3px; }
-  .rpg-box::after { bottom: -3px; right: -3px; }
 
   /* START SCREEN */
   #startScreen {
     position: absolute; inset: 0; z-index: 60;
-    background: radial-gradient(circle at 50% 18%, #1d294a 0%, #090c14 78%);
+    background: var(--bg-dark);
     display: flex; flex-direction: column; justify-content: space-between;
-    padding: 14px; overflow-y: auto;
+    padding: 12px; overflow-y: auto;
   }
   .title-banner {
-    text-align: center; padding: 12px 10px;
-    background: linear-gradient(180deg, #1e2a4a 0%, #101524 100%);
+    text-align: center; padding: 12px 8px;
+    background: #0a0e17;
   }
   .title-badge {
-    display: inline-block; background: var(--crimson); color: #fff;
-    font-size: 10px; font-weight: 800; padding: 3px 8px; letter-spacing: 1px;
-    margin-bottom: 5px; border: 1px solid #fff;
+    display: inline-block; background: #141c2b; color: var(--accent-cyan);
+    font-size: 10.5px; font-weight: 900; padding: 3px 8px; letter-spacing: 1px;
+    margin-bottom: 5px; border: 2px solid var(--accent-cyan);
   }
   .game-title {
     font-size: clamp(20px, 5vw, 27px); font-weight: 900;
-    color: var(--amber); text-shadow: 2px 2px 0 #7a2323, 4px 4px 0 #000;
+    color: var(--text-main); letter-spacing: 1px;
   }
-  .game-sub { font-size: 11px; color: var(--teal); margin-top: 4px; }
-  .setup-card { padding: 11px; display: flex; flex-direction: column; gap: 8px; margin: 8px 0; }
+  .game-sub { font-size: 10.5px; color: var(--accent-green); margin-top: 4px; }
+  .setup-card { padding: 10px; display: flex; flex-direction: column; gap: 7px; margin: 6px 0; }
   .field-row { display: flex; flex-direction: column; gap: 3px; }
-  .field-row label { font-size: 10.5px; color: var(--gold); font-weight: 700; }
+  .field-row label { font-size: 10px; color: var(--accent-gold); font-weight: 800; }
   .pixel-input, .pixel-select {
-    width: 100%; padding: 8px 10px; background: #080b12;
-    border: 2px solid var(--gold-dim); color: var(--text-main);
-    font-family: var(--font-pixel); font-size: 12.5px; outline: none;
+    width: 100%; padding: 7px 9px; background: #05070c;
+    border: 2px solid #868e96; color: var(--text-main);
+    font-family: var(--font-pixel); font-size: 12px; outline: none;
   }
-  .pixel-input:focus { border-color: var(--teal); }
-  .avatar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .pixel-input:focus { border-color: var(--accent-cyan); }
+  .avatar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
   .av-btn {
-    padding: 7px 4px; background: #0e1320; border: 2px solid #2c3859;
-    color: var(--text-main); font-family: var(--font-pixel); font-size: 11px; cursor: pointer;
+    padding: 6px 4px; background: #080b12; border: 2px solid #495057;
+    color: #fff; font-family: var(--font-pixel); font-size: 10.5px; cursor: pointer;
   }
-  .av-btn.active { border-color: var(--teal); background: #142b2b; color: var(--teal); font-weight: 700; }
+  .av-btn.active { border-color: var(--accent-cyan); color: var(--accent-cyan); font-weight: 900; background: #101926; }
   .start-btn {
-    width: 100%; padding: 13px; background: linear-gradient(180deg, #38d9a9 0%, #1ca37c 100%);
-    border: 3px solid #fff; color: #05140f; font-family: var(--font-pixel);
-    font-size: 15px; font-weight: 900; cursor: pointer; letter-spacing: 1px;
+    width: 100%; padding: 12px; background: #101926;
+    border: 3px solid var(--accent-green); color: var(--accent-green); font-family: var(--font-pixel);
+    font-size: 14px; font-weight: 900; cursor: pointer; letter-spacing: 1px;
   }
-  .dev-footer { text-align: center; font-size: 11px; color: var(--text-muted); padding-top: 6px; }
+  .start-btn:hover { background: var(--accent-green); color: #000; }
+  .continue-btn {
+    width: 100%; padding: 10px; margin-bottom: 6px;
+    background: #101926; border: 3px solid var(--accent-gold); color: var(--accent-gold);
+    font-family: var(--font-pixel); font-size: 13px; font-weight: 900; cursor: pointer; display: none;
+  }
+  .dev-footer { text-align: center; font-size: 10.5px; color: var(--text-muted); padding-top: 5px; }
   .dev-footer a {
-    color: var(--amber); text-decoration: none; font-weight: 800;
-    padding: 2px 7px; border: 1px solid var(--gold-dim); background: #141a2b;
+    color: var(--accent-cyan); text-decoration: none; font-weight: 800;
+    padding: 2px 7px; border: 1px solid #868e96; background: #080b12;
   }
 
   /* HUD */
   #hud {
     height: 44px; min-height: 44px; padding: 0 6px;
-    background: #0c111d; border-bottom: 2px solid var(--gold-dim);
-    display: flex; align-items: center; justify-content: space-between; gap: 3px; font-size: 10px;
+    background: #080b12; border-bottom: 3px solid var(--border-light);
+    display: flex; align-items: center; justify-content: space-between; gap: 3px; font-size: 10.5px;
   }
-  .hud-stats { display: flex; align-items: center; gap: 4px; overflow: hidden; }
-  .stat-pill {
-    background: #171f33; border: 1px solid #2e3b5e; padding: 3px 5px;
-    white-space: nowrap; font-weight: 700;
+  .hud-stats { display: flex; align-items: center; gap: 5px; overflow: hidden; font-weight: 900; }
+  .stat-pill { padding: 2px 4px; white-space: nowrap; }
+  .rep-bar-wrap { display: inline-flex; align-items: center; gap: 4px; }
+  .rep-bar {
+    width: 34px; height: 10px; background: #212529; border: 1px solid #fff; display: inline-block;
   }
+  .rep-fill { height: 100%; background: var(--accent-cyan); width: 50%; }
   .hud-btns { display: flex; gap: 3px; }
   .icon-btn {
-    background: #1c253d; border: 2px solid var(--gold-dim); color: var(--amber);
-    padding: 3px 6px; font-size: 12px; cursor: pointer; font-family: var(--font-pixel);
+    background: #0d111a; border: 2px solid #adb5bd; color: var(--accent-gold);
+    padding: 3px 5px; font-size: 11px; cursor: pointer; font-family: var(--font-pixel);
     position: relative;
   }
+  .icon-btn:hover { border-color: var(--accent-cyan); }
   .badge-dot {
     position: absolute; top: -4px; right: -4px; width: 9px; height: 9px;
-    background: var(--crimson); border: 1px solid #fff; border-radius: 50%; display: none;
+    background: var(--accent-red); border: 1px solid #fff; border-radius: 50%; display: none;
   }
 
   /* TOP SCENE */
   #sceneWrap {
-    position: relative; width: 100%; height: 45%; min-height: 205px;
-    background: #0e1424; border-bottom: 3px solid var(--gold); overflow: hidden;
+    position: relative; width: 100%; height: 43%; min-height: 196px;
+    background: #06080d; border-bottom: 3px solid var(--border-light); overflow: hidden;
   }
   #gameCanvas { width: 100%; height: 100%; display: block; image-rendering: pixelated; }
   .crt-overlay {
     position: absolute; inset: 0; pointer-events: none;
-    background: repeating-linear-gradient(0deg, rgba(0,0,0,0.13) 0px, rgba(0,0,0,0.13) 1px, transparent 1px, transparent 3px);
+    background: repeating-linear-gradient(0deg, rgba(0,0,0,0.12) 0px, rgba(0,0,0,0.12) 1px, transparent 1px, transparent 3px);
   }
   .scene-tag {
-    position: absolute; top: 7px; left: 7px;
-    background: rgba(9,12,20,0.9); border: 1px solid var(--gold);
-    padding: 3px 7px; font-size: 10px; color: var(--amber); font-weight: 700;
+    position: absolute; top: 6px; left: 6px;
+    background: rgba(7,9,14,0.92); border: 2px solid var(--border-light);
+    padding: 2px 6px; font-size: 9.5px; color: var(--accent-gold); font-weight: 900;
   }
   .clock-tag {
-    position: absolute; top: 7px; right: 7px;
-    background: rgba(9,12,20,0.9); border: 1px solid var(--sky);
-    padding: 3px 7px; font-size: 10px; color: var(--sky); font-weight: 700;
+    position: absolute; top: 6px; right: 6px;
+    background: rgba(7,9,14,0.92); border: 2px solid var(--border-light);
+    padding: 2px 6px; font-size: 9.5px; color: var(--accent-cyan); font-weight: 900;
+  }
+  .rank-tag {
+    position: absolute; bottom: 6px; left: 6px;
+    background: rgba(7,9,14,0.92); border: 2px solid var(--accent-purple);
+    padding: 2px 6px; font-size: 9.5px; color: var(--accent-purple); font-weight: 900;
   }
   .zoom-hint {
-    position: absolute; bottom: 7px; right: 7px;
-    background: rgba(16,42,35,0.94); border: 1px solid var(--teal);
-    padding: 4px 8px; font-size: 10px; color: var(--teal); cursor: pointer; display: none; font-weight: 800;
+    position: absolute; bottom: 6px; right: 6px;
+    background: rgba(7,9,14,0.92); border: 2px solid var(--accent-green);
+    padding: 3px 7px; font-size: 9.5px; color: var(--accent-green); cursor: pointer; display: none; font-weight: 900;
   }
 
-  /* BOTTOM ZONE */
+  /* BOTTOM RPG ZONE */
   #bottomZone {
     flex: 1; display: flex; flex-direction: column;
-    background: var(--panel-dark); padding: 7px; gap: 7px; overflow: hidden;
+    background: var(--bg-dark); padding: 7px; gap: 7px; overflow: hidden;
   }
   #dialogueBox {
-    flex: 1; padding: 9px; display: flex; flex-direction: column;
-    justify-content: space-between; overflow-y: auto; background: #0a0e18;
+    flex: 1; padding: 9px 11px; display: flex; flex-direction: column;
+    justify-content: space-between; overflow-y: auto; background: var(--panel-dark);
   }
   .speaker-header {
     display: flex; justify-content: space-between; align-items: center;
-    border-bottom: 1px solid #26314f; padding-bottom: 4px; margin-bottom: 5px;
+    border-bottom: 2px solid #2b3344; padding-bottom: 4px; margin-bottom: 5px;
   }
-  .speaker-name { color: var(--amber); font-weight: 800; font-size: 12px; }
-  .triage-badge { font-size: 10px; padding: 2px 6px; font-weight: 800; }
-  .t-red { background: #5c141d; color: #ff8591; border: 1px solid #ff4d5e; }
-  .t-yellow { background: #523d0d; color: #ffd666; border: 1px solid #f5b942; }
-  .t-green { background: #104233; color: #63e6be; border: 1px solid #38d9a9; }
+  .speaker-name { color: var(--accent-gold); font-weight: 900; font-size: 12px; }
+  .triage-badge { font-size: 10px; padding: 1px 6px; font-weight: 900; border: 2px solid #fff; }
+  .t-red { background: #2b0b0e; color: var(--accent-red); border-color: var(--accent-red); }
+  .t-yellow { background: #2b2208; color: var(--accent-gold); border-color: var(--accent-gold); }
+  .t-green { background: #0b2613; color: var(--accent-green); border-color: var(--accent-green); }
 
-  #dialogueText { font-size: 12.5px; line-height: 1.45; color: var(--text-main); min-height: 36px; white-space: pre-line; }
+  #dialogueText { font-size: 12.5px; line-height: 1.48; color: #f8f9fa; min-height: 36px; white-space: pre-line; }
   #subPanel { display: flex; flex-direction: column; gap: 5px; margin-top: 6px; }
   .choice-btn {
-    width: 100%; text-align: left; padding: 8px 9px;
-    background: #161e33; border: 2px solid #35446e;
-    color: var(--text-main); font-family: var(--font-pixel); font-size: 11.5px;
+    width: 100%; text-align: left; padding: 7px 9px;
+    background: #080b12; border: 2px solid #495057;
+    color: #f8f9fa; font-family: var(--font-pixel); font-size: 11.5px;
     cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 6px;
   }
-  .choice-btn:active { border-color: var(--amber); background: #222d4a; color: var(--amber); }
-  .choice-btn.danger { border-color: #8f2430; color: #ff99a3; }
-  .choice-btn.success { border-color: #217a5f; color: #7ef2ce; }
+  .choice-btn::before { content: "▸ "; color: var(--accent-cyan); font-weight: 900; }
+  .choice-btn:hover, .choice-btn:active { border-color: var(--accent-cyan); color: var(--accent-cyan); background: #0f1724; }
+  .choice-btn.danger { border-color: var(--accent-red); color: #ff8787; }
+  .choice-btn.success { border-color: var(--accent-green); color: var(--accent-green); }
+  .choice-btn.purple { border-color: var(--accent-purple); color: var(--accent-purple); }
 
-  .chat-input-bar {
-    display: flex; gap: 5px; margin-top: 4px;
-  }
+  .chat-input-bar { display: flex; gap: 5px; margin-top: 4px; }
   .chat-input-bar input {
-    flex: 1; background: #080c14; border: 2px solid var(--teal);
+    flex: 1; background: #05070c; border: 2px solid #adb5bd;
     color: #fff; padding: 7px 8px; font-family: var(--font-pixel); font-size: 12px; outline: none;
   }
   .chat-send-btn {
-    background: var(--teal); color: #05140f; border: 2px solid #fff;
+    background: #101926; color: var(--accent-cyan); border: 2px solid var(--accent-cyan);
     padding: 0 12px; font-family: var(--font-pixel); font-weight: 900; font-size: 12px; cursor: pointer;
   }
 
-  #mainActions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; height: 48px; min-height: 48px; }
+  /* 4 CLINICAL ACTION TABS */
+  #mainActions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; height: 46px; min-height: 46px; }
   .act-btn {
-    background: linear-gradient(180deg, #222c47 0%, #141b2e 100%);
-    border: 2px solid var(--gold); color: var(--amber);
-    font-family: var(--font-pixel); font-size: 11px; font-weight: 800;
-    cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+    background: #0d111a;
+    border: 3px solid #868e96; color: var(--text-main);
+    font-family: var(--font-pixel); font-size: 11px; font-weight: 900;
+    cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px;
   }
-  .act-btn.active, .act-btn:active { background: var(--gold); color: #090c14; }
+  .act-btn.active, .act-btn:hover {
+    border-color: var(--accent-cyan); color: var(--accent-cyan); background: #121b2b;
+  }
 
-  /* MODAL & SMARTPHONE */
+  /* MODAL & MINI-GAMES */
   #modal {
     position: absolute; inset: 0; z-index: 45;
-    background: rgba(5, 7, 13, 0.95);
+    background: rgba(3, 5, 9, 0.96);
     display: none; flex-direction: column; padding: 10px;
   }
   .modal-card { flex: 1; display: flex; flex-direction: column; padding: 10px; overflow: hidden; }
   .modal-head {
     display: flex; justify-content: space-between; align-items: center;
-    border-bottom: 2px solid var(--gold-dim); padding-bottom: 7px; margin-bottom: 8px;
+    border-bottom: 3px solid var(--border-light); padding-bottom: 7px; margin-bottom: 8px;
   }
-  .modal-title { font-size: 13px; font-weight: 900; color: var(--amber); }
+  .modal-title { font-size: 13px; font-weight: 900; color: var(--accent-gold); }
   .close-btn {
-    background: var(--crimson); color: #fff; border: 2px solid #fff;
-    padding: 3px 9px; font-family: var(--font-pixel); font-weight: 800; cursor: pointer;
+    background: #1a0b0e; color: var(--accent-red); border: 2px solid var(--accent-red);
+    padding: 3px 9px; font-family: var(--font-pixel); font-weight: 900; cursor: pointer;
   }
   .modal-body { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 7px; font-size: 12px; }
 
+  .mg-box {
+    background: #080b12; border: 3px solid var(--border-light); padding: 10px;
+    display: flex; flex-direction: column; gap: 8px; align-items: center; text-align: center;
+  }
+  #mgCanvas {
+    width: 100%; max-width: 320px; height: 150px;
+    background: #05070c; border: 3px solid var(--border-light); image-rendering: pixelated;
+  }
+  .mg-action-btn {
+    width: 100%; padding: 12px; background: #101926;
+    border: 3px solid var(--accent-green); color: var(--accent-green); font-family: var(--font-pixel);
+    font-size: 14px; font-weight: 900; cursor: pointer;
+  }
+  .mg-action-btn:hover { background: var(--accent-green); color: #000; }
+
   /* PHONE UI */
   .phone-frame {
-    border: 4px solid #495057; border-radius: 14px; background: #0b101d;
+    border: 3px solid var(--border-light); background: #07090e;
     padding: 10px; flex: 1; display: flex; flex-direction: column; justify-content: space-between;
-    box-shadow: inset 0 0 18px rgba(56,217,169,0.12); overflow: hidden;
+    overflow: hidden;
   }
   .phone-status {
-    display: flex; justify-content: space-between; font-size: 10px; color: var(--teal);
-    border-bottom: 1px solid #23304d; padding-bottom: 5px; margin-bottom: 6px;
+    display: flex; justify-content: space-between; font-size: 10px; color: var(--accent-green);
+    border-bottom: 2px solid #2b3344; padding-bottom: 5px; margin-bottom: 6px;
   }
   .app-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 6px 0; }
   .app-icon {
-    background: #162038; border: 2px solid #354770; padding: 10px 4px;
+    background: #0d111a; border: 2px solid #868e96; padding: 10px 4px;
     text-align: center; cursor: pointer; display: flex; flex-direction: column; gap: 4px; align-items: center;
-    font-size: 11px; color: var(--text-main); font-weight: 700; position: relative;
+    font-size: 11px; color: #fff; font-weight: 800; position: relative;
   }
-  .app-icon:active { border-color: var(--amber); background: #223052; }
-  .app-icon span.ico { font-size: 22px; }
+  .app-icon:hover { border-color: var(--accent-cyan); color: var(--accent-cyan); }
+  .app-icon span.ico { font-size: 20px; }
   .bank-card {
-    background: linear-gradient(135deg, #134e4a 0%, #0f172a 100%);
-    border: 2px solid var(--teal); padding: 10px; color: #fff;
+    background: #0b1914; border: 3px solid var(--accent-green); padding: 10px; color: #fff;
   }
   .tx-row {
     display: flex; justify-content: space-between; font-size: 11px;
-    padding: 5px 6px; background: #121829; border-left: 3px solid var(--gold);
+    padding: 5px 6px; background: #0d111a; border-left: 3px solid var(--accent-gold);
   }
-  .tx-row.neg { border-left-color: var(--crimson); color: #ffa8b0; }
-  .tx-row.pos { border-left-color: var(--teal); color: #8ce99a; }
+  .tx-row.neg { border-left-color: var(--accent-red); color: #ff8787; }
+  .tx-row.pos { border-left-color: var(--accent-green); color: var(--accent-green); }
   #zoomCanvas, #photoCanvas {
-    width: 100%; max-height: 220px; background: #04070d;
-    border: 2px solid var(--teal); image-rendering: pixelated;
+    width: 100%; max-height: 220px; background: #05070c;
+    border: 3px solid var(--border-light); image-rendering: pixelated;
   }
 </style>
 </head>
@@ -252,13 +275,14 @@
 <div id="app">
   <!-- START SCREEN -->
   <div id="startScreen">
-    <div class="title-banner rpg-box">
-      <div class="title-badge">16-BIT RETRO KLİNİK RPG • v1.0</div>
+    <div class="title-banner pixel-box">
+      <div class="title-badge">16-BIT KLİNİK SİMÜLASYONU • v3.1</div>
       <div class="game-title">AÇILIN BEN DOKTORUM!</div>
-      <div class="game-sub">AI Serbest Sohbet • Araç Sanayi & Yakıt • TıpBank • 160+ Vaka</div>
+      <div class="game-sub">8 Uzmanlık Dalı • Her Branşa 30 Özel Vaka (240+ Vaka) • TUS & TıpBank</div>
     </div>
 
-    <div class="setup-card rpg-box">
+    <div class="setup-card pixel-box">
+      <button id="btnContinueSave" class="continue-btn">▸ KAYITLI KARİYERDEN DEVAM ET</button>
       <div class="field-row">
         <label>HEKİM ADI SOYADI</label>
         <input id="inpDocName" class="pixel-input" type="text" value="Dr. Muhammed Kurtuluş Taş" maxlength="32">
@@ -270,30 +294,30 @@
       <div class="field-row">
         <label>DOKTOR TARZI</label>
         <div class="avatar-grid" id="avatarGrid">
-          <button type="button" class="av-btn active" data-av="0">🩺 Klasik</button>
-          <button type="button" class="av-btn" data-av="1">👓 Gözlüklü</button>
-          <button type="button" class="av-btn" data-av="2">☕ Uykusuz</button>
-          <button type="button" class="av-btn" data-av="3">⚡ Karizmatik</button>
+          <button type="button" class="av-btn active" data-av="0">Klasik</button>
+          <button type="button" class="av-btn" data-av="1">Gözlüklü</button>
+          <button type="button" class="av-btn" data-av="2">Uykusuz</button>
+          <button type="button" class="av-btn" data-av="3">Karizma</button>
         </div>
       </div>
       <div class="field-row">
-        <label>OPSİYONEL AI API ANAHTARI (GEMINI / OPENAI — BOŞ BIRAKIRSAN DAHİLİ AI ÇALIŞIR)</label>
+        <label>OPSİYONEL AI API ANAHTARI (GEMINI / OPENAI — BOŞSA DAHİLİ AI ÇALIŞIR)</label>
         <input id="inpApiKey" class="pixel-input" type="password" placeholder="AIza... veya sk-... (İsteğe bağlı gerçek AI sohbeti)">
       </div>
       <div class="field-row">
         <label>NÖBET MODU</label>
         <select id="inpDiff" class="pixel-select">
-          <option value="normal">Standart Nöbet (160+ Vaka Havuzu + Dengeli Kaos)</option>
+          <option value="normal">Standart Nöbet (8 Uzmanlık x 30 Vaka + Genel Acil)</option>
           <option value="hard">Cuma Gece Acili (Yüksek Beyaz Kod, Rüşvet & Borç Talebi)</option>
         </select>
       </div>
     </div>
 
-    <button id="btnStartGame" class="start-btn">▶ NÖBETİ DEVRAL</button>
+    <button id="btnStartGame" class="start-btn">NÖBETİ DEVRAL ▸</button>
 
     <div class="dev-footer">
-      <div>Canlı AI Sohbet • Mekân Sahneleri • Sanayi Masrafları • TıpBank</div>
-      <div style="margin-top:5px;">
+      <div>8 Branş Atmosferi • 240 Uzmanlık Vakası • Canlı Vaka & Sosyalleşme</div>
+      <div style="margin-top:4px;">
         <a href="https://github.com/kurtulustas" target="_blank" rel="noopener noreferrer">developer=kurtulustas</a>
       </div>
     </div>
@@ -302,18 +326,19 @@
   <!-- HUD -->
   <div id="hud">
     <div class="hud-stats">
-      <span class="stat-pill" style="color:var(--amber)" id="hudDay">G1 0/5</span>
-      <span class="stat-pill" style="color:var(--teal)" id="hudMoney">1.500₺</span>
-      <span class="stat-pill" style="color:var(--sky)" id="hudRep">⭐50</span>
-      <span class="stat-pill" style="color:#ff922b" id="hudStress">🧠10%</span>
-      <span class="stat-pill" style="color:var(--crimson)" id="hudWarn">⚠️0/3</span>
+      <span class="stat-pill" style="color:var(--accent-gold)" id="hudDay">G1 0/5</span>
+      <span class="stat-pill" style="color:var(--accent-green)" id="hudMoney">1.500₺</span>
+      <span class="stat-pill rep-bar-wrap" style="color:var(--accent-cyan)">İTİBAR<span class="rep-bar"><span class="rep-fill" id="repFill"></span></span></span>
+      <span class="stat-pill" style="color:var(--accent-purple)" id="hudTus">TUS:42</span>
+      <span class="stat-pill" style="color:var(--accent-red)" id="hudWarn">⚠️0/3</span>
     </div>
     <div class="hud-btns">
+      <button class="icon-btn" onclick="openModal('tus')" title="TUS & 8 Uzmanlık">🎓</button>
       <button class="icon-btn" onclick="openPhone()" title="Akıllı Telefon">📱<span class="badge-dot" id="phoneDot"></span></button>
-      <button class="icon-btn" onclick="openModal('guide')" title="Cep Rehberi">📖</button>
       <button class="icon-btn" onclick="openModal('map')" title="Hastane ve Şehir">🗺️</button>
       <button class="icon-btn" onclick="openModal('shop')" title="Masa Dükkânı">🛒</button>
-      <button class="icon-btn" id="btnSound" onclick="toggleSound()" title="Ses">🔊</button>
+      <button class="icon-btn" id="btnMusic" onclick="toggleMusic()" title="8-Bit Gece Müziği">🎵</button>
+      <button class="icon-btn" id="btnSound" onclick="toggleSound()" title="Ses Efektleri">🔊</button>
     </div>
   </div>
 
@@ -321,38 +346,39 @@
   <div id="sceneWrap">
     <canvas id="gameCanvas" width="340" height="210"></canvas>
     <div class="crt-overlay"></div>
-    <div class="scene-tag" id="sceneTag">🏥 ACİL SERVİS — MUAYENE ODASI 1</div>
-    <div class="clock-tag" id="clockTag">🕒 20:00</div>
-    <div class="zoom-hint" id="zoomHint" onclick="openModal('radiology')">🔍 RADYOLOJİ / EKG YAKINLAŞTIR</div>
+    <div class="scene-tag" id="sceneTag">ACİL SERVİS — ODA 1</div>
+    <div class="clock-tag" id="clockTag">20:00</div>
+    <div class="rank-tag" id="rankTag">🩺 PRATİSYEN HEKİM</div>
+    <div class="zoom-hint" id="zoomHint" onclick="openModal('radiology')">🔍 GÖRÜNTÜLEME YAKINLAŞTIR</div>
   </div>
 
-  <!-- BOTTOM RPG ZONE -->
+  <!-- BOTTOM CLINICAL RPG ZONE -->
   <div id="bottomZone">
-    <div id="dialogueBox" class="rpg-box">
+    <div id="dialogueBox" class="pixel-box">
       <div>
         <div class="speaker-header">
           <span class="speaker-name" id="speakerName">SİSTEM</span>
           <span class="triage-badge t-green" id="triageBadge">HAZIR</span>
         </div>
-        <div id="dialogueText">Nöbet başladı. Sıradaki hastayı çağırmak için aşağıdaki menüyü kullan.</div>
+        <div id="dialogueText">Nöbet başladı. Sıradaki hastayı muayene et!</div>
       </div>
       <div id="subPanel"></div>
     </div>
 
     <div id="mainActions">
-      <button class="act-btn active" id="tabTalk" onclick="setTab('talk')"><span>🗣️</span><span>KONUŞ</span></button>
-      <button class="act-btn" id="tabExam" onclick="setTab('exam')"><span>🩺</span><span>MUAYENE</span></button>
-      <button class="act-btn" id="tabFile" onclick="setTab('file')"><span>📋</span><span>DOSYA/PC</span></button>
-      <button class="act-btn" id="tabDecide" onclick="setTab('decide')"><span>⚖️</span><span>KARAR</span></button>
+      <button class="act-btn active" id="tabTalk" onclick="setTab('talk')">💬 KONUŞ</button>
+      <button class="act-btn" id="tabExam" onclick="setTab('exam')">🩺 MUAYENE</button>
+      <button class="act-btn" id="tabFile" onclick="setTab('file')">🩻 DOSYA</button>
+      <button class="act-btn" id="tabDecide" onclick="setTab('decide')">📋 KARAR</button>
     </div>
   </div>
 
   <!-- MODAL -->
   <div id="modal">
-    <div class="modal-card rpg-box">
+    <div class="modal-card pixel-box">
       <div class="modal-head">
         <span class="modal-title" id="modalTitle">BAŞLIK</span>
-        <button class="close-btn" onclick="closeModal()">KAPAT ✕</button>
+        <button class="close-btn" onclick="closeModal()">KAPAT [X]</button>
       </div>
       <div class="modal-body" id="modalBody"></div>
     </div>
@@ -360,29 +386,60 @@
 </div>
 
 <script>
-/* ================= AUDIO ENGINE ================= */
-let audioCtx = null, soundOn = true;
+/* ================= AUDIO & 16-BIT CHIP SYNTH ================= */
+let audioCtx = null, soundOn = true, musicOn = false, musicTimer = null, noteStep = 0;
+
 function initAudio() {
   if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   if (audioCtx.state === 'suspended') audioCtx.resume();
 }
+
 function toggleSound() {
   soundOn = !soundOn;
   document.getElementById('btnSound').textContent = soundOn ? '🔊' : '🔇';
 }
-function playBlip(pitch = 320, type = 'square', dur = 0.045, vol = 0.035) {
+
+function toggleMusic() {
+  musicOn = !musicOn;
+  document.getElementById('btnMusic').textContent = musicOn ? '🎶' : '🎵';
+  if (musicOn) startNightMusic();
+  else if (musicTimer) { clearInterval(musicTimer); musicTimer = null; }
+}
+
+function startNightMusic() {
+  if (musicTimer) clearInterval(musicTimer);
+  const seq = [220, 261.6, 329.6, 392, 174.6, 220, 261.6, 329.6, 146.8, 174.6, 220, 261.6, 164.8, 196, 246.9, 293.6];
+  musicTimer = setInterval(() => {
+    if (!musicOn) return;
+    try {
+      initAudio();
+      const freq = seq[noteStep % seq.length];
+      noteStep++;
+      const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+      o.type = 'triangle';
+      o.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      g.gain.setValueAtTime(0.018, audioCtx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.0008, audioCtx.currentTime + 0.36);
+      o.connect(g); g.connect(audioCtx.destination);
+      o.start(); o.stop(audioCtx.currentTime + 0.38);
+    } catch (e) {}
+  }, 420);
+}
+
+function playBlip(pitch = 320, type = 'triangle', dur = 0.035, vol = 0.03) {
   if (!soundOn) return;
   try {
     initAudio();
     const o = audioCtx.createOscillator(), g = audioCtx.createGain();
     o.type = type;
-    o.frequency.setValueAtTime(pitch + (Math.random() * 22 - 11), audioCtx.currentTime);
+    o.frequency.setValueAtTime(pitch + (Math.random() * 14 - 7), audioCtx.currentTime);
     g.gain.setValueAtTime(vol, audioCtx.currentTime);
     g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
     o.connect(g); g.connect(audioCtx.destination);
     o.start(); o.stop(audioCtx.currentTime + dur);
   } catch (e) {}
 }
+
 function playSfx(kind) {
   if (!soundOn) return;
   if (kind === 'stamp') playBlip(120, 'sawtooth', 0.14, 0.08);
@@ -392,7 +449,22 @@ function playSfx(kind) {
   else if (kind === 'msg') { playBlip(520, 'sine', 0.07, 0.06); setTimeout(() => playBlip(780, 'sine', 0.09, 0.06), 75); }
 }
 
-/* ================= GAME STATE ================= */
+/* ================= 8 SPECIALTIES & CAREER RANKS ================= */
+const SPECIALTIES = {
+  none:   { id: 'none',   title: 'Pratisyen Hekim',           icon: '🩺', reqTus: 40, reqRep: 40, bonusPay: 0,   serviceName: 'Acil Servis' },
+  ophth:  { id: 'ophth',  title: 'Göz Hastalıkları Uzmanı',   icon: '👁️', reqTus: 54, reqRep: 50, bonusPay: 220, serviceName: 'Göz Hastalıkları' },
+  cardio: { id: 'cardio', title: 'Kardiyoloji Uzmanı',        icon: '❤️', reqTus: 60, reqRep: 55, bonusPay: 260, serviceName: 'Kardiyoloji' },
+  emerg:  { id: 'emerg',  title: 'Acil Tıp Uzmanı',           icon: '🚨', reqTus: 50, reqRep: 48, bonusPay: 200, serviceName: 'Acil Resüsitasyon' },
+  neuro:  { id: 'neuro',  title: 'Nöroloji & Beyin Cerrahi',  icon: '🧠', reqTus: 58, reqRep: 54, bonusPay: 250, serviceName: 'Nöroloji / Beyin Cerrahi' },
+  ortho:  { id: 'ortho',  title: 'Ortopedi & Travmatoloji',   icon: '🦴', reqTus: 52, reqRep: 50, bonusPay: 210, serviceName: 'Ortopedi' },
+  peds:   { id: 'peds',   title: 'Pediatri & Çocuk Acil',     icon: '🧸', reqTus: 52, reqRep: 50, bonusPay: 210, serviceName: 'Pediatri' },
+  ent:    { id: 'ent',    title: 'Kulak Burun Boğaz (KBB)',   icon: '👂', reqTus: 50, reqRep: 48, bonusPay: 195, serviceName: 'KBB' },
+  surg:   { id: 'surg',   title: 'Genel Cerrahi Uzmanı',      icon: '🔪', reqTus: 56, reqRep: 52, bonusPay: 240, serviceName: 'Genel Cerrahi' }
+};
+
+/* ================= GAME STATE & LOCALSTORAGE ================= */
+const SAVE_KEY = 'acilin_ben_doktorum_v3_1';
+
 const state = {
   docName: 'Dr. Muhammed Kurtuluş Taş',
   hospName: 'Aydın Merkez Acil Eğitim Hast.',
@@ -402,16 +474,21 @@ const state = {
   day: 1,
   hour: 20,
   seenToday: 0,
+  dailyCorrect: 0,
+  dailyWrong: 0,
+  totalSaved: 0,
   money: 1500,
   bankDebt: 0,
   rep: 50,
+  tusScore: 42,
+  specialty: 'none',
   stress: 10,
   warnings: 0,
   location: 'er',
   activeStaffIdx: null,
   tab: 'talk',
   currentPatient: null,
-  usedCaseIds: new Set(),
+  usedCaseIds: [],
   examDone: { vitals: false, lung: false, pupil: false, rad: false, labs: false, enabiz: false },
   ppeOn: false,
   doorThreat: false,
@@ -422,45 +499,42 @@ const state = {
   upgrades: { thermos: false, cactus: false, littmann: false, dualMonitor: false },
   assets: {
     car: 'Yok (Belediye Otobüsü)',
-    carColor: '#ff6b6b',
+    carColor: '#ff4d5e',
     fuel: 100,
     carHealth: 100,
-    insuranceDue: false,
     phone: 'Standart Akıllı Telefon',
     homeLevel: 1
   },
   iban: 'TR42 0006 1000 1907 2026 0001 09',
-  transactions: [
-    { desc: 'Nöbet Avansı Açılış Bakiyesi', amt: 1500, type: 'pos' }
-  ],
+  transactions: [{ desc: 'Nöbet Avansı Açılış Bakiyesi', amt: 1500, type: 'pos' }],
   loanRequests: [],
   activeLoansOut: [],
   chats: [
     { id: 'grp', name: '🏥 Acil Nöbet Grubu', persona: 'Acil servis doktor ve hemşirelerinin yoğun nöbet grubu', unread: true, msgs: [
       { from: 'Başhemşire Zeynep', text: 'Arkadaşlar 2. ambulans yolda, Kırmızı Alanı boş tutalım.' },
-      { from: 'Uzm. Dr. Mert', text: 'BT cihazı kalibre edildi, acil beyin ve toraks çekimleri açık.' }
+      { from: 'Uzm. Dr. Mert', text: 'Tüm polikliniklerin görüntüleme cihazları (BT, Biyomikroskop, Odyometri) aktif!' }
     ]},
     { id: 'chief', name: '👔 Başhekimlik Duyuru', persona: 'Hastane Başhekimi, disiplinli ve kurallara önem veren yönetici', unread: false, msgs: [
-      { from: 'Başhekim', text: 'Gereksiz antibiyotik reçeteleri ve adli vaka bildirimleri denetlenmektedir.' }
+      { from: 'Başhekim', text: '8 farklı uzmanlık dalımızda asistan kadroları TUS puanına göre açılmıştır.' }
     ]},
     { id: 'elif', name: '🩺 Asistan Dr. Elif', persona: 'Dahiliye asistanı, esprili, zeki, sana ilgi duyan meslektaşın', unread: true, msgs: [
       { from: 'Dr. Elif', text: 'Nöbet nasıl gidiyor? Kahve molası verirsen kantindeyim ☕' }
     ]}
   ],
   posts: [
-    { author: 'Dr. Muhammed Kurtuluş Taş', caption: 'Gece 02:00 acil nöbeti, ince belli çay ve epikrizler... ☕🩺', likes: 34, comment: 'Başhemşire Zeynep: Eline sağlık hocam!' }
+    { author: 'Dr. Muhammed Kurtuluş Taş', caption: 'Gece 02:00 acil nöbeti, TUS soruları ve piksel EKG... ☕🩺', likes: 34, comment: 'Başhemşire Zeynep: Eline sağlık hocam!' }
   ],
   staff: [
-    { id: 'elif', name: 'Asistan Dr. Elif', role: 'Dahiliye Asistanı', coat: '#f8f9fa', hair: '#4a2511', love: 25, stage: 0,
+    { id: 'elif', name: 'Asistan Dr. Elif', role: 'Dahiliye Asistanı', coat: '#ffffff', hair: '#4a2511', love: 25, stage: 0,
       persona: 'Dahiliye asistanı, zeki, esprili, yorgun ama sana sıcak davranan ve yakınlaşan meslektaşın.',
       stories: [
         'Nöbetten çıktım, 3. kahvemdeyim. Acildeki soğukkanlılığın serviste konuşuluyor.',
-        'Dün gece gönderdiğin DKA hastasını tam vaktinde yakalamışsın, hayatını kurtardın.',
+        'TUS denemelerinde netlerin uçuşa geçmiş diyorlar, hangi branşı seçeceksin?',
         'Hafta sonu nöbetimiz çakışmazsa sahilde gerçek bir kahve içelim mi?',
         'Seninle çalışmak bu hastanedeki en güzel tesadüf oldu...',
         'Artık nöbet listelerinde ilk senin adını arıyorum.'
       ]},
-    { id: 'zeynep', name: 'Başhemşire Zeynep', role: 'Acil Sorumlu Hemşiresi', coat: '#38d9a9', hair: '#212529', love: 25, stage: 0,
+    { id: 'zeynep', name: 'Başhemşire Zeynep', role: 'Acil Sorumlu Hemşiresi', coat: '#51cf66', hair: '#212529', love: 25, stage: 0,
       persona: 'Acil servisin tecrübeli sorumlu hemşiresi, anaç, pratik, ekibi koruyan lider ruhlu.',
       stories: [
         'Hoş geldin hocam, damar yolları hazır. Yeni intörnü gözünden ayırma derim.',
@@ -469,70 +543,80 @@ const state = {
         'Nöbet çıkışı çorba içmeye gidersen bana da haber ver.',
         'Bu acilin gerçek kahramanı sensin.'
       ]},
-    { id: 'mert', name: 'Uzm. Dr. Mert', role: 'Radyoloji Uzmanı', coat: '#f8f9fa', hair: '#343a40', love: 15, stage: 0,
+    { id: 'mert', name: 'Uzm. Dr. Mert', role: 'Radyoloji Uzmanı', coat: '#ffffff', hair: '#343a40', love: 15, stage: 0,
       persona: 'Radyoloji uzmanı, teknoloji ve retro oyun meraklısı, kafa dengi doktor arkadaş.',
       stories: [
-        'Röntgen ve BT istemlerini nokta atışı yapıyorsun, gereksiz çekim yok.',
-        'O kılçık vakasını röntgende nasıl fark ettin helal olsun!',
+        'Röntgen, BT ve fundus istemlerini nokta atışı yapıyorsun, gereksiz çekim yok.',
+        'Uzmanlık polikliniklerinde bile senin ön tanılarını konuşuyoruz!',
         'Tıp teknolojileri ve retro oyunlara meraklıymışsın, kafa dengiyiz.',
         'Yakında birlikte vaka sunumu yazalım.',
         'En güvenilir dostum oldun.'
       ]},
-    { id: 'kerem', name: 'Op. Dr. Kerem', role: 'Genel Cerrahi', coat: '#4dabf7', hair: '#1a1b1e', love: 15, stage: 0,
+    { id: 'kerem', name: 'Op. Dr. Kerem', role: 'Genel Cerrahi', coat: '#3bc9db', hair: '#1a1b1e', love: 15, stage: 0,
       persona: 'Özgüvenli genel cerrah, borsaya ve arabalara meraklı, esprili.',
       stories: [
         'Apandisitleri patlamadan yakalayıp gönderdiğin sürece dostuz.',
         'Ameliyathanede bile senin ön tanılarını övüyoruz.',
-        'Sana bir gün laparoskopi dersi vereceğim.',
+        'Sana bir gün mikrocerrahi dersi vereceğim.',
         'Cerrahinin kapısı sana hep açık.',
         'Kardeşim gibisin doktor.'
-      ]},
-    { id: 'selin', name: 'Eczacı Selin', role: 'Klinik Eczacı', coat: '#f8f9fa', hair: '#862e9c', love: 15, stage: 0,
-      persona: 'Detaycı, nazik klinik eczacı, bitki çayları ve ilaç etkileşimleri uzmanı.',
-      stories: [
-        'Penisilin alerjisi olan hastaya antibiyotik yazmaman beni çok mutlu etti.',
-        'Reçete etkileşimlerine dikkat eden nadir doktorlardansın.',
-        'Sana özel bitki çayı karışımı hazırladım, stresi alır.',
-        'Nöbet aralarında uğramana alıştım.',
-        'Seninle her nöbet çok daha aydınlık.'
-      ]},
-    { id: 'burak', name: 'ATT Burak', role: '112 Ambulans Ekibi', coat: '#ff922b', hair: '#212529', love: 20, stage: 0,
-      persona: '112 paramedik, sahada çok hızlı, samimi ve kardeş canlısı.',
-      stories: [
-        'Hocam vakayı kapıda devralışın bize hayat veriyor.',
-        'Geçen otobüste yaptığın kalp masajı 112 grubunda viral oldu!',
-        'Kırmızı alan sirenini duyunca gözündeki ışığı görüyorum.',
-        'Yolun düşerse istasyona bekleriz.',
-        'Sırtımız yere gelmez.'
       ]}
   ]
 };
 
+function saveCareer() {
+  try {
+    const payload = { ...state, currentPatient: null };
+    localStorage.setItem(SAVE_KEY, JSON.stringify(payload));
+  } catch (e) {}
+}
+
+function loadCareer() {
+  try {
+    const raw = localStorage.getItem(SAVE_KEY);
+    if (!raw) return false;
+    const parsed = JSON.parse(raw);
+    Object.assign(state, parsed);
+    if (!Array.isArray(state.usedCaseIds)) state.usedCaseIds = [];
+    return true;
+  } catch (e) { return false; }
+}
+
+if (localStorage.getItem(SAVE_KEY)) {
+  const btnCont = document.getElementById('btnContinueSave');
+  btnCont.style.display = 'block';
+  btnCont.addEventListener('click', () => {
+    if (loadCareer()) {
+      initAudio();
+      playSfx('coin');
+      document.getElementById('startScreen').style.display = 'none';
+      updateHud();
+      nextPatient();
+    }
+  });
+}
+
 const INTERNS = [
-  { name: 'İntörn Berk', trait: 'Hızlı ama epikriz okumadan antibiyotik yazar!', color: '#4dabf7', flaw: 'allergy' },
-  { name: 'İntörn Selin', trait: 'Uykusuz; çay verilmezse stetoskopu yanlış tutar.', color: '#da77f2', flaw: 'sleepy' },
+  { name: 'İntörn Berk', trait: 'Hızlı ama epikriz okumadan antibiyotik yazar!', color: '#3bc9db', flaw: 'allergy' },
+  { name: 'İntörn Selin', trait: 'Uykusuz; çay verilmezse stetoskopu yanlış tutar.', color: '#b197fc', flaw: 'sleepy' },
   { name: 'İntörn Emre', trait: 'Teorik dehası ama hastaya kaba davranıp kavga çıkarır.', color: '#ffd43b', flaw: 'rude' },
-  { name: 'İntörn Zeynep', trait: 'İlk günü, çok heyecanlı ama doğru yönlendirilirse süper.', color: '#69db7c', flaw: 'nervous' }
+  { name: 'İntörn Zeynep', trait: 'İlk günü, çok heyecanlı ama doğru yönlendirilirse süper.', color: '#51cf66', flaw: 'nervous' }
 ];
 
-/* ================= HYBRID AI CHAT ENGINE (FREE TEXT) ================= */
-async function generateAIReply(characterName, persona, userMessage, history = []) {
+/* ================= HYBRID AI CHAT ENGINE ================= */
+async function generateAIReply(characterName, persona, userMessage) {
   const key = state.apiKey.trim();
   if (key) {
     try {
-  if (key.startsWith('AIza') || key.startsWith('AQ.')) {
+      if (key.startsWith('AIza') || key.startsWith('AQ.')) {
         const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-goog-api-key': key
-          },
+          headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
           body: JSON.stringify({
-            contents: [{ parts: [{ text: `Sen bir Türk hastane simülasyon oyununda karakterisin. Adın: ${characterName}. Kişiliğin: ${persona}. Konuştuğun kişi: ${state.docName} (Acil nöbetçi doktoru). Kısa, doğal, samimi ve Türkçe 1-3 cümleyle cevap ver.\nOyuncunun mesajı: "${userMessage}"` }] }]
+            contents: [{ parts: [{ text: `Sen bir Türk hastane simülasyon oyununda karakterisin. Adın: ${characterName}. Kişiliğin: ${persona}. Konuştuğun kişi: ${state.docName} (${SPECIALTIES[state.specialty].title}). Kısa, doğal, samimi ve Türkçe 1-3 cümleyle cevap ver.\nOyuncunun mesajı: "${userMessage}"` }] }]
           })
         });
         const data = await res.json();
-        if (data?.error) return 'API Hatası: ' + data.error.message;
         const txt = data?.candidates?.[0]?.content?.parts?.[0]?.text;
         if (txt) return txt.trim();
       } else if (key.startsWith('sk-')) {
@@ -555,32 +639,26 @@ async function generateAIReply(characterName, persona, userMessage, history = []
   }
 
   const m = userMessage.toLowerCase();
-  if (m.includes('kahve') || m.includes('çay') || m.includes('içecek')) {
-    return `Valla bu nöbet temposunda ilaç gibi gider! Sen yeter ki biraz nefes al ${state.docName.split(' ')[1] || 'hocam'}, kantinde iki dakika soluklanalım.`;
+  if (m.includes('tus') || m.includes('uzman') || m.includes('göz') || m.includes('kardiyo')) {
+    return `Senin klinik pratiğinle TUS'u rahat devirirsin ${state.docName.split(' ')[1] || 'hocam'}! Hedeflediğin uzmanlık polikliniğinde şimdiden adın geçiyor.`;
   }
-  if (m.includes('araba') || m.includes('şahin') || m.includes('sedan') || m.includes('sanayi') || m.includes('benzin')) {
+  if (m.includes('kahve') || m.includes('çay')) {
+    return `Valla bu nöbet temposunda ilaç gibi gider! İki dakika soluklanalım, acil biraz nefes aldı.`;
+  }
+  if (m.includes('araba') || m.includes('şahin') || m.includes('sedan') || m.includes('sanayi')) {
     return state.assets.car.includes('Yok')
-      ? 'Belediye otobüsüyle nöbete gidip gelmek de ayrı macera ama yakında altına güzel bir araba çekersin sen!'
-      : `${state.assets.car} almışsın hayırlı olsun! Yalnız yakıtına ve sanayi bakımlarına dikkat et, yolda bırakmasın.`;
+      ? 'Belediye otobüsüyle nöbete gidip gelmek de ayrı macera ama yakında altına güzel bir araba çekersin!'
+      : `${state.assets.car} almışsın hayırlı olsun! Yakıtına ve sanayi bakımlarına dikkat et, yolda bırakmasın.`;
   }
-  if (m.includes('sevgili') || m.includes('buluş') || m.includes('yemek') || m.includes('akşam') || m.includes('özledim') || m.includes('hoşlan')) {
+  if (m.includes('sevgili') || m.includes('buluş') || m.includes('yemek') || m.includes('akşam')) {
     return characterName.includes('Elif')
       ? 'Bunu senden duymak yüzümü güldürdü... Nöbet listeleri izin verdiği ilk akşam baş başa çıkalım, söz!'
       : 'Nöbet çıkışı güzel bir esnaf lokantasında çorba içip dertleşmek hepimize iyi gelir.';
   }
-  if (m.includes('borç') || m.includes('para') || m.includes('maaş') || m.includes('kredi') || m.includes('bahis')) {
-    return 'Döner sermaye yatana kadar hepimiz hesap kitap yapıyoruz ama aman diyeyim kaçak bahis işlerine bulaşma, başhekimlik affetmez!';
-  }
-  if (m.includes('hasta') || m.includes('acil') || m.includes('intörn') || m.includes('yoruldum') || m.includes('nöbet')) {
-    return `Acil servis bugün gerçekten yanıyor ama senin soğukkanlılığın bütün ekibe güven veriyor. ${INTERNS[state.internIdx].name} de senin yanında çok şey öğreniyor.`;
-  }
-  if (m.includes('merhaba') || m.includes('selam') || m.includes('naber') || m.includes('nasılsın')) {
-    return `Selam hocam! Yoğunluktan başımızı kaşıyamıyoruz ama seni görünce enerjim yerine geldi. Nöbet nasıl gidiyor, var mı zorlayan vaka?`;
-  }
   const generic = [
     `Çok haklısın, bu hastanede senin gibi hem işini bilen hem de iletişimi güçlü bir hekimle çalışmak büyük şans.`,
     `Bunu hiç bu açıdan düşünmemiştim! Nöbet arası biraz daha detaylı konuşalım bunu.`,
-    `Kesinlikle katılıyorum. Bugün acildeki atmosferi tek başına toparladın resmen, eline sağlık!`
+    `Kesinlikle katılıyorum. Bugün poliklinikteki atmosferi tek başına toparladın resmen, eline sağlık!`
   ];
   return generic[Math.floor(Math.random() * generic.length)];
 }
@@ -593,14 +671,9 @@ const BORROW_SCENARIOS = [
     story: 'Hocam KYK bursum bitti, ev sahibi kapıya dayandı! 600₺ ateşler misin, haftaya burs yatar yatmaz 750₺ olarak geri atayım?'
   },
   {
-    id: 'loan_burak', from: 'ATT Burak', role: '112 Paramedik',
-    iban: 'TR84 0006 2001 9981 4410 02', amount: 1200, returnAmt: 1450, payChance: 0.95, loveGain: 18,
-    story: 'Abi yarın kuzenin düğünü var çeyrek altın uçmuş, 1.200₺ eksiğim kaldı! Nöbet parası yatınca 1.450₺ geri göndereyim.'
-  },
-  {
     id: 'loan_kerem', from: 'Op. Dr. Kerem', role: 'Genel Cerrahi',
-    iban: 'TR55 0004 6008 7712 3300 03', amount: 2000, returnAmt: 3200, payChance: 0.50, loveGain: 10,
-    story: 'Kardeşim içeriden kesin borsa/kripto haberi aldım! 2.000₺ atarsan akşam katlayıp 3.200₺ geri yolluyorum, risk yok!'
+    iban: 'TR55 0004 6008 7712 3300 03', amount: 1800, returnAmt: 2900, payChance: 0.55, loveGain: 10,
+    story: 'Kardeşim içeriden kesin borsa/kripto haberi aldım! 1.800₺ atarsan akşam katlayıp 2.900₺ geri yolluyorum, risk yok!'
   },
   {
     id: 'loan_elif', from: 'Asistan Dr. Elif', role: 'Dahiliye Asistanı',
@@ -617,13 +690,6 @@ function triggerRandomLoanRequest() {
   state.loanRequests.push({ ...pick });
   document.getElementById('phoneDot').style.display = 'block';
   playSfx('msg');
-  state.chats.unshift({
-    id: 'chat_' + pick.id + '_' + Date.now(),
-    name: `💸 ${pick.from} (Borç Talebi)`,
-    persona: `${pick.from}, ${pick.role}. Senden borç istedi.`,
-    unread: true,
-    msgs: [{ from: pick.from, text: `${pick.story}\nIBAN: ${pick.iban}` }]
-  });
 }
 
 function resolveLoan(reqId, accept) {
@@ -633,8 +699,7 @@ function resolveLoan(reqId, accept) {
   if (!accept) {
     state.loanRequests.splice(idx, 1);
     addTx(`Borç Talebi Reddedildi (${req.from})`, 0, 'neg');
-    openPhoneApp('bank');
-    return;
+    saveCareer(); openPhoneApp('bank'); return;
   }
   if (state.money < req.amount) { alert('TıpBank Bakiyesi Yetersiz!'); return; }
   state.money -= req.amount;
@@ -643,7 +708,7 @@ function resolveLoan(reqId, accept) {
   state.activeLoansOut.push({ ...req, dueInPatients: 2 });
   const st = state.staff.find(s => s.name.includes(req.from.split(' ').pop()));
   if (st) st.love = Math.min(100, st.love + req.loveGain);
-  playSfx('coin'); updateHud(); openPhoneApp('bank');
+  playSfx('coin'); updateHud(); saveCareer(); openPhoneApp('bank');
 }
 
 function checkLoanRepayments() {
@@ -657,17 +722,8 @@ function checkLoanRepayments() {
         addTx(`FAST Gelen Borç İadesi <- ${loan.from}`, loan.returnAmt, 'pos');
         document.getElementById('phoneDot').style.display = 'block';
         playSfx('coin');
-        state.chats.unshift({
-          id: 'repay_' + Date.now(), name: `✅ ${loan.from}`, persona: loan.from, unread: true,
-          msgs: [{ from: loan.from, text: `Hocam çok sağ ol hızır gibi yetiştin! Söz verdiğim gibi ${loan.returnAmt}₺ hesabına attım.` }]
-        });
       } else {
         addTx(`Geciken Alacak (${loan.from} Erteledi)`, 0, 'neg');
-        document.getElementById('phoneDot').style.display = 'block';
-        state.chats.unshift({
-          id: 'delay_' + Date.now(), name: `😅 ${loan.from}`, persona: loan.from, unread: true,
-          msgs: [{ from: loan.from, text: `Kanka piyasa fena terste bıraktı, senin ${loan.amount}₺ biraz içeride kaldı haftaya mutlaka halledeceğim!` }]
-        });
       }
       updateHud();
     }
@@ -679,219 +735,302 @@ function addTx(desc, amt, type) {
   if (state.transactions.length > 15) state.transactions.pop();
 }
 
-/* ================= 160+ UNIQUE CASES ================= */
-const HANDCRAFTED_CASES = [
-  {
-    id: 'c1', name: 'Rıza Amca (68)', triage: 'yellow', pitch: 180,
-    appearance: { skin: '#e8b496', hair: '#d0d7de', shirt: '#495057', flush: true, sweat: true, pupils: 'normal' },
-    complaint: 'Evladım üç gündür üşütmüşüm, öksürüyorum. Bir iğne yap da eve gideyim.',
-    vitals: 'Ateş: 38.9°C | Nabız: 108 | TA: 125/80 | SpO2: %91',
-    lung: 'Sağ alt lobda belirgin krepitan raller ve solunum seslerinde azalma!',
-    pupil: 'Pupiller izokorik, ışık refleksi doğal (+/+).',
-    radType: 'chest', radTitle: 'AKCİĞER GRAFİSİ (PA)', radFinding: 'Sağ alt zonda lober pnömoni (zatürre) infiltrasyonu.',
-    labs: 'WBC: 18.400 | CRP: 142 mg/L | Prokalsitonin: Yüksek',
-    enabiz: 'DİKKAT! CİDDİ PENİSİLİN ALERJİSİ KAYDI VAR (Anafilaksi öyküsü)!',
-    correctAction: 'admit', targetService: 'Göğüs Hastalıkları', targetReason: 'Lober Pnömoni + Hipoksi (SpO2 %91)',
-    hint: 'Akciğer dinle ve E-Nabız alerjisine bak; SpO2 %91 olduğu için yatırılmalı!'
-  },
-  {
-    id: 'c2', name: 'Berkcan (21)', triage: 'red', pitch: 380,
-    appearance: { skin: '#f1c2a5', hair: '#212529', shirt: '#e03131', flush: false, sweat: true, pupils: 'normal' },
-    complaint: 'Hocam sabaha kadar bilgisayar oynadım, 6 kutu enerji içeceği + pre-workout içtim kalbim ağzımdan çıkacak!',
-    vitals: 'Ateş: 36.8°C | Nabız: 194/dk! | TA: 105/65 | SpO2: %98',
-    lung: 'Akciğer sesleri doğal, taşikardik kalp sesleri.',
-    pupil: 'Pupiller midriyatik (kafein/sempatomimetik etki).',
-    radType: 'ecg', radTitle: '12-DERİVASYON EKG', radFinding: 'Dar QRS düzenli taşikardi — 194 bpm Supraventriküler Taşikardi (SVT)!',
-    labs: 'Troponin: Normal | Potasyum: 3.4 | Yüksek doz kafein',
-    enabiz: 'Bilinen kalp hastalığı yok.',
-    correctAction: 'treat', treatLabel: 'Vagal Manevra + IV Adenozin Uygula',
-    hint: 'EKG çek! 194 bpm SVT var; acil müdahale edip ritmi düşür.'
-  },
-  {
-    id: 'c3', name: 'Gülşen Teyze (59)', triage: 'red', pitch: 240,
-    appearance: { skin: '#e6b89c', hair: '#868e96', shirt: '#7048e8', flush: false, sweat: true, pupils: 'normal' },
-    complaint: 'Oğlum sabahtan beri alt dişlerim ve midem yanıyor, sırtıma soğuk ter bastı...',
-    vitals: 'Ateş: 36.4°C | Nabız: 54/dk | TA: 90/55 | SpO2: %95',
-    lung: 'Akciğer bazallerde hafif raller.',
-    pupil: 'Pupiller izokorik.',
-    radType: 'ecg', radTitle: '12-DERİVASYON EKG', radFinding: 'DII, DIII, aVF derivasyonlarında belirgin ST ELEVASONU (İnferior MI)!',
-    labs: 'Troponin-I: 4.85 ng/mL (KRİTİK YÜKSEK!)',
-    enabiz: 'Hipertansiyon ve Tip 2 Diyabet mevcut.',
-    correctAction: 'admit', targetService: 'Kardiyoloji', targetReason: 'Akut İnferior Miyokard İnfarktüsü (STEMI)',
-    hint: 'Mide yanması sanılan gizli Kalp Krizi! EKG ve Troponin ile Kardiyolojiye yatır.'
-  },
-  {
-    id: 'c4', name: 'Kamil (34)', triage: 'yellow', pitch: 290,
-    appearance: { skin: '#dfb195', hair: '#343a40', shirt: '#2b2d42', flush: false, sweat: true, pupils: 'miosis' },
-    complaint: 'Doktor bey böbrek taşım düştü ölüyorum, bana hemen kırmızı reçeteli morfin/dolantin yaz, çorbana bakarız...',
-    vitals: 'Ateş: 36.5°C | Nabız: 62/dk | TA: 110/70 | SpO2: %96',
-    lung: 'Solunum yüzeysel ve yavaş (10/dk).',
-    pupil: 'TOPLU İĞNE BAŞI PUPILLA (MİYOZİS)! Opioid kullanımı bulgusu!',
-    radType: 'leg', radTitle: 'BATIN / ÜRİNER GRAFİ', radFinding: 'Radyoopak böbrek taşı saptanmadı.',
-    labs: 'İdrar: Tamamen temiz (Eritrosit negatif!)',
-    enabiz: 'SON 1 AYDA 7 FARKLI ACİL SERVİSTEN NARKOTİK İLAÇ TALEBİ!',
-    bribe: { amount: 2500, text: 'Masanın altına 2.500₺ zarf uzattı: "Yaz şu ilacı hocam ikimiz de kazanalım."' },
-    correctAction: 'police',
-    hint: 'Göz feneri tut (miyozis) + E-Nabız geçmişine bak! Sahte ağrı ve rüşvet var.'
-  },
-  {
-    id: 'c5', name: 'Mertcan (19)', triage: 'yellow', pitch: 350,
-    appearance: { skin: '#f3c6ab', hair: '#5c3c24', shirt: '#1971c2', flush: false, sweat: false, pupils: 'normal' },
-    complaint: 'Halı sahada topa vurayım derken kaval kemiğimden çatırt diye ses geldi hocam!',
-    vitals: 'Ateş: 36.7°C | Nabız: 96/dk | TA: 130/80 | SpO2: %99',
-    lung: 'Solunum doğal.',
-    pupil: 'Pupiller izokorik.',
-    radType: 'leg', radTitle: 'SAĞ KRURİS (BACAK) RÖNTGENİ', radFinding: 'Tibia distal diyafizinde deplase oblik kırık hattı!',
-    labs: 'Pre-op hemogram normal.',
-    enabiz: 'Bilinen hastalık yok.',
-    correctAction: 'admit', targetService: 'Ortopedi', targetReason: 'Deplase Tibia Kırığı (Cerrahi/Atel)',
-    hint: 'Bacak röntgeni iste ve yakınlaştırıp kırık hattını gör -> Ortopedi.'
-  },
-  {
-    id: 'c6', name: 'Zeliha (29)', triage: 'red', pitch: 410,
-    appearance: { skin: '#f5ccb2', hair: '#4a2511', shirt: '#d6336c', flush: true, sweat: true, pupils: 'normal' },
-    complaint: 'Doktor bey 38 haftalık hamileyim, suyum geldi ve sancılarım 2 dakikada bir vuruyor!',
-    vitals: 'Ateş: 36.9°C | Nabız: 112/dk | TA: 120/75 | SpO2: %98',
-    lung: 'Solunum hızlı ama temiz.',
-    pupil: 'Pupiller izokorik.',
-    radType: 'ecg', radTitle: 'NST / FETAL MONİTÖR', radFinding: 'Fetal kalp atımı 145 bpm, aktif doğum kontraksiyonları mevcut.',
-    labs: 'Hgb: 11.4 | Kan Grubu: A Rh(+)',
-    enabiz: 'Düzenli gebelik takibi mevcut.',
-    correctAction: 'admit', targetService: 'Kadın Doğum', targetReason: 'Aktif Doğum Eylemi (38 Hafta Gebelik)',
-    hint: 'Acil doğum eylemi başlamış! Vakayı Kadın Doğum servisine yatır.'
-  },
-  {
-    id: 'c7', name: 'Hakan (42)', triage: 'red', pitch: 260,
-    appearance: { skin: '#e0ac8b', hair: '#2b2d42', shirt: '#2f9e44', flush: true, sweat: true, pupils: 'normal' },
-    complaint: 'Yurt dışı iş seyahatinden dün döndüm; 40 derece ateş, kanlı öksürük ve döküntüm var!',
-    vitals: 'Ateş: 40.1°C | Nabız: 124/dk | TA: 95/60 | SpO2: %89',
-    lung: 'Bilateral yaygın kaba raller.',
-    pupil: 'Pupiller izokorik.',
-    radType: 'chest', radTitle: 'AKCİĞER GRAFİSİ (PA)', radFinding: 'Bilateral buzlu cam opasiteleri ve diffüz infiltrasyon.',
-    labs: 'Lenfopeni + Yüksek Ferritin + PCR Pozitif',
-    enabiz: 'Endemik bölgeden uluslararası uçuş kaydı.',
-    correctAction: 'quarantine',
-    hint: 'ÖNCE N95 MASKE TAK! Sonra yüksek bulaşıcılık nedeniyle Karantina İzolasyonu ver.'
-  },
-  {
-    id: 'c8', name: 'Şakir (47)', triage: 'red', pitch: 210,
-    appearance: { skin: '#d8a488', hair: '#1a1b1e', shirt: '#343a40', flush: false, sweat: true, pupils: 'anisocoria' },
-    complaint: 'İnşaatta başıma kalas düştü, önce iyiyim dedim ama şimdi sağ tarafım tutmuyor, kusuyorum...',
-    vitals: 'Ateş: 36.6°C | Nabız: 50/dk | TA: 175/100 | SpO2: %94',
-    lung: 'Solunum düzensiz.',
-    pupil: 'ANİZOKORİ! Sağ pupilla dilate ve ışığa yanıtsız!',
-    radType: 'brain', radTitle: 'BEYİN BT (KRANİYAL)', radFinding: 'Sol temporoparietal bölgede bikonveks EPİDURAL HEMATOM ve orta hat kayması!',
-    labs: 'INR: 1.0 | Acil Nöroşirürji hazırlığı',
-    enabiz: 'Travma sonrası lucid interval öyküsü.',
-    correctAction: 'admit', targetService: 'Nöroloji / Beyin Cerrahi', targetReason: 'Epidural Hematom + KİBAS (Anizokori)',
-    hint: 'Göz feneriyle anizokoriyi ve Beyin BT ile kanamayı yakala!'
-  },
-  {
-    id: 'c9', name: 'Serdar (31)', triage: 'yellow', pitch: 315,
-    appearance: { skin: '#f1c2a5', hair: '#212529', shirt: '#e67700', flush: false, sweat: true, pupils: 'normal' },
-    complaint: 'Hocam 90+6 da son penaltı kaçtı, arabanın parasını basmıştım göğsüm sıkışıyor ölüyorum! Bana 3 gün rapor ver karıma göstermem lazım...',
-    vitals: 'Ateş: 36.7°C | Nabız: 118/dk | TA: 145/90 | SpO2: %99',
-    lung: 'Hiperventilasyon dışında akciğerler temiz.',
-    pupil: 'Pupiller izokorik.',
-    radType: 'ecg', radTitle: '12-DERİVASYON EKG', radFinding: 'Sinüs taşikardisi; ST-T değişikliği veya iskemi YOK!',
-    labs: 'Troponin-I: 0.01 ng/mL (Tamamen Normal!)',
-    enabiz: 'Panik bozukluk öyküsü mevcut.',
-    bribe: { amount: 1500, text: 'Cebinden buruşuk 1.500₺ çıkardı: "Hocam eşime hastanede yattım diyeyim rapor yaz..."' },
-    correctAction: 'discharge',
-    hint: 'EKG ve Troponin normal — kumar kaybı sonrası Panik Atak! Rüşveti reddet ve taburcu et.'
-  },
-  {
-    id: 'c10', name: 'Oğuzhan (26)', triage: 'red', pitch: 330,
-    appearance: { skin: '#eab99b', hair: '#3b281e', shirt: '#1864ab', flush: false, sweat: true, pupils: 'anisocoria' },
-    complaint: 'Berberde boynumu sertçe kıtlattırdım, 10 dakika sonra başım döndü, çift görmeye ve dengemi kaybetmeye başladım!',
-    vitals: 'Ateş: 36.6°C | Nabız: 78/dk | TA: 155/95 | SpO2: %97',
-    lung: 'Solunum doğal, nörolojik muayenede dismetri ve nistagmus!',
-    pupil: 'Hafif anizokori + Horner bulguları!',
-    radType: 'brain', radTitle: 'BEYİN BT ANJİYO', radFinding: 'Sol VERTEBRAL ARTER DİSEKSİYONU ve posterior sirkülasyon iskemisi!',
-    labs: 'D-Dimer yüksek, koagülasyon normal.',
-    enabiz: 'Öncesinde sağlıklı genç erkek.',
-    correctAction: 'admit', targetService: 'Nöroloji / Beyin Cerrahi', targetReason: 'Vertebral Arter Diseksiyonu (Akut İnme)',
-    hint: 'Boyun manipülasyonu sonrası inme! Nöroloji / Beyin Cerrahi servisine acil yatır.'
-  }
-];
-
-function build165Cases() {
-  const list = [...HANDCRAFTED_CASES];
-  const templates = [
-    {
-      title: 'Diyabetik Ketoasidoz (DKA)', triage: 'red', service: 'Dahiliye / Yoğun Bakım', reason: 'Diyabetik Ketoasidoz + Ağır Asidoz',
-      comp: 'Hocam 2 gündür insülinimi yapmadım, nefesim elma/aseton gibi kokuyor, çok susuyorum ve bulanık görüyorum.',
-      vit: 'Ateş: 36.8°C | Nabız: 122 | TA: 95/60 | KŞ: 485 mg/dL!', lung: 'Derin ve hızlı Kussmaul solunumu!',
-      radType: 'ecg', radTitle: 'EKG & KAN GAZI', radFinding: 'Sinüs taşikardisi. Kan gazı pH: 7.12, HCO3: 9 mEq/L!',
-      labs: 'Kan Şekeri: 485 | İdrarda Keton: +++', action: 'admit'
-    },
-    {
-      title: 'Düğünde Yorgun Mermi Travması', triage: 'red', service: 'Genel Cerrahi', reason: 'Ateşli Silah / Yorgun Mermi Yaralanması (Adli)',
-      comp: 'Düğünde halay çekerken omzuma gökten kurşun düştü hocam, kan durmuyor!',
-      vit: 'Ateş: 36.5°C | Nabız: 118 | TA: 100/65 | SpO2: %95', lung: 'Sol omuz giriş deliği aktif kanamalı.',
-      radType: 'chest', radTitle: 'TORAKS & OMUZ GRAFİSİ', radFinding: 'Skapula medialinde 9 mm metalik mermi çekirdeği!',
-      labs: 'Hgb: 10.2 | Kan grubu ve Cross-match istendi.', action: 'admit'
-    },
-    {
-      title: 'Gece Kulağa Böcek Kaçması', triage: 'green', service: 'Taburcu', reason: 'Dış Kulak Yolu Yabancı Cisim Çıkarıldı',
-      comp: 'Hocam gece yatarken kulağıma hamam böceği girdi içinde kıpırdıyor çıldıracağım!',
-      vit: 'Ateş: 36.6°C | Nabız: 92 | TA: 120/80 | SpO2: %99', lung: 'Otoskopide dış kulak yolunda canlı böcek; lidokain ile çıkarıldı.',
-      radType: 'brain', radTitle: 'OTOSKOPİK MUAYENE NOTU', radFinding: 'Timpanik membran sağlam, yabancı cisim çıkarıldı.',
-      labs: 'Tahlil gerekmedi.', action: 'treat', treatLabel: 'Lidokain Damla + Aspirasyon İle Çıkar'
-    },
-    {
-      title: 'Soba / Karbonmonoksit Zehirlenmesi', triage: 'red', service: 'Dahiliye / Hiperbarik', reason: 'Akut Karbonmonoksit İntoksikasyonu',
-      comp: 'Lodoslu gecede sobayı yakıp uyumuşuz, başım çatlıyor, midem bulanıyor, kulaklarım çınlıyor...',
-      vit: 'Ateş: 36.5°C | Nabız: 116 | TA: 105/65 | SpO2: %99 (Yanıltıcı!)', lung: 'Dudaklar kiraz kırmızısı!',
-      radType: 'ecg', radTitle: 'KARBOKSİHEMOGLOBİN & EKG', radFinding: 'COHb Düzeyi: %34 (KRİTİK)!',
-      labs: 'Laktat: 5.4 mmol/L | COHb: %34', action: 'admit'
-    },
-    {
-      title: 'Akut Apandisit', triage: 'yellow', service: 'Genel Cerrahi', reason: 'Akut Apandisit (Cerrahi Endikasyon)',
+/* ================= 8 SPECIALTIES x 30 UNIQUE CASES = 240 SPECIALTY CASES ================= */
+const SPECIALTY_BLUEPRINTS = {
+  ophth: [
+    { diag: 'Akut Açı Kapanması Glokomu', triage: 'red', action: 'treat', mg: 'iv', treat: 'IV Mannitol + Asetazolamid + Pilokarpin', srv: 'Göz Hastalıkları', radType: 'eye', radTitle: 'TONOMETRİ & BİYOMİKROSKOP',
+      comp: 'Karanlık sinemadan çıktığımdan beri sağ gözüm taş gibi sertleşti, ışıkların etrafında gökkuşağı halkaları görüyorum!',
+      vit: 'TA: 165/95 | Nabız: 96 | Göz İçi Basıncı (GİB): 54 mmHg!', exam: 'Kornea ödemli, ön kamara sığ.', pupil: 'Sağ pupilla orta dilate ve ışığa yanıtsız!',
+      rad: 'GİB 54 mmHg — Akut Açı Kapanması Glokomu Krizi!', labs: 'Böbrek fonksiyonları IV Mannitol için uygun.', hint: 'GİB 54 mmHg! Hemen IV Mannitol ile göz içi basıncını düşür!' },
+    { diag: 'Santral Retinal Arter Tıkanıklığı (CRAO)', triage: 'red', action: 'admit', srv: 'Göz Hastalıkları', radType: 'eye', radTitle: 'FUNDUS GÖRÜNTÜLEME',
+      comp: 'Sabah uyandığımda sol gözümün önüne bir anda siyah perde indi, ağrım yok ama hiç göremiyorum!',
+      vit: 'TA: 170/95 | Nabız: 84 (AF) | Görme Keskinliği: El Hareketi', exam: 'Oküler emboli şüphesi.', pupil: 'Sol gözde belirgin RAPD (Marcus Gunn) pozitif!',
+      rad: 'Retinada yaygın solukluk ve makulada JAPON BAYRAĞI (Cherry-Red Spot)!', labs: 'EKG: Atriyal Fibrilasyon.', hint: 'Ağrısız ani görme kaybı + Japon Bayrağı makula! Göz Hastalıklarına acil yatır.' },
+    { diag: 'Alkali Kimyasal Kornea Yanığı', triage: 'red', action: 'treat', mg: 'decon', treat: 'Acil Sürekli SF Göz İrrigasyonu (pH 7.4)', srv: 'Göz Hastalıkları', radType: 'eye', radTitle: 'OKÜLER pH & FLORESEİN',
+      comp: 'İnşaatta sönmemiş kireç torbası patladı, gözüme kireç doldu yanıyor!',
+      vit: 'Nabız: 114 | Oküler Yüzey pH: 11.5 (Ağır Alkali!)', exam: 'Yoğun blefarospazm ve konjonktival kemosis.', pupil: 'Limbal iskemi başlangıcı!',
+      rad: 'pH 11.5 — Kornea erimesi riski! Hemen bol SF yıkama şart!', labs: 'Tahlil beklenmeden yıkama yapılmalı.', hint: 'Alkali yanıkta saniyeler kritiktir! Hemen sürekli serum fizyolojik irrigasyonu uygula.' },
+    { diag: 'Macula-On Retina Dekolmanı', triage: 'yellow', action: 'admit', srv: 'Göz Hastalıkları', radType: 'eye', radTitle: 'OKÜLER B-MOD USG',
+      comp: 'Yüksek miyopum; dün geceden beri gözümde şimşek çakmaları ve sinek uçuşmaları var, alttan gölge yükseliyor!',
+      vit: 'TA: 120/75 | Nabız: 82 | Miyopi: -8.50 D', exam: 'Vitreusta tütün tozu (Shafer) bulgusu.', pupil: 'Pupiller izokorik.',
+      rad: 'Üst temporal kadranda at nalı yırtık ve büllöz Retina Dekolmanı!', labs: 'Pre-op kanama profili normal.', hint: 'Şimşek çakması + perde inmesi = Retina Dekolmanı! Göz Hastalıklarına yatır.' },
+    { diag: 'Orbital Selülit (Postseptal)', triage: 'red', action: 'admit', srv: 'Göz Hastalıkları', radType: 'brain', radTitle: 'ORBİTA BT',
+      comp: 'Sinüzit sonrası sağ göz kapağım davul gibi şişti, gözümü sağa sola oynatırken şiddetli ağrıyor ve çift görüyorum!',
+      vit: 'Ateş: 39.2°C | Nabız: 112 | Proptozis mevcut!', exam: 'Oftalmopleji ve ağrılı göz hareketleri.', pupil: 'Hafif RAPD mevcut.',
+      rad: 'Etmoid sinüzite sekonder postseptal orbital apse ve proptozis!', labs: 'WBC: 19.600 | CRP: 165 mg/L', hint: 'Ağrılı oftalmopleji + ateş = Orbital Selülit! Kavernöz sinüs trombozu riskiyle yatır.' },
+    { diag: 'Endoftalmi (Post-Op Katarakt)', triage: 'red', action: 'admit', srv: 'Göz Hastalıkları', radType: 'eye', radTitle: 'ÖN KAMARA & B-USG',
+      comp: '3 gün önce katarakt ameliyatı oldum, bugün gözümde dayanılmaz ağrı, kızarıklık ve görme bulanıklığı başladı!',
+      vit: 'Ateş: 37.8°C | Nabız: 98 | Görme: Işık Hissi', exam: 'Ön kamarada 3 mm HİPOPİYON (pü seviyesi)!', pupil: 'Pupilla eksuda ile kapalı.',
+      rad: 'Vitreus kavitesinde yoğun ekojeniteler — Akut Bakteriyel Endoftalmi!', labs: 'İntravitreal vankomisin/seftazidim hazırlığı.', hint: 'Katarakt cerrahisi sonrası hipopiyon = Endoftalmi! Acil Göz Hastalıklarına yatır.' }
+  ],
+  cardio: [
+    { diag: 'Unstabil Ventriküler Taşikardi (VT)', triage: 'red', action: 'treat', mg: 'cardioversion', treat: '100J Senkronize Kardiyoversiyon', srv: 'Kardiyoloji', radType: 'ecg', radTitle: '12-DERİVASYON EKG',
+      comp: 'Göğsümde fil oturuyor gibi baskı var, soğuk ter döküyorum, gözüm kararıyor bayılacağım!',
+      vit: 'TA: 78/45 mmHg! | Nabız: 178/dk (Geniş QRS)! | SpO2: %90', exam: 'Boyun venöz dolgunluğu, soğuk ekstremite.', pupil: 'Hasta letarjik.',
+      rad: 'Geniş QRS düzenli monomorfik Ventriküler Taşikardi!', labs: 'Troponin-I: 8.4 ng/mL', hint: 'Hipotansif Unstabil VT! Hemen 100J Senkronize Kardiyoversiyon uygula.' },
+    { diag: 'Kardiyak Tamponad (Beck Triadı)', triage: 'red', action: 'admit', srv: 'Kardiyoloji', radType: 'ecg', radTitle: 'EKG & YATAK BAŞI EKO',
+      comp: 'Nefesim daraldı, yatınca boğuluyorum, başım dönüyor ve tansiyonum düştü!',
+      vit: 'TA: 82/50 (Pulsus Paradoksus!) | Nabız: 132 | SpO2: %91', exam: 'Beck Triadı: Hipotansiyon + JVD + Derinden gelen kalp sesleri!', pupil: 'Pupiller izokorik.',
+      rad: 'EKG’de Elektriksel Alternans; EKO’da sağ ventrikül diyastolik kollapsı!', labs: 'D-Dimer yüksek.', hint: 'Beck Triadı = Kardiyak Tamponad! Perikardiyosentez için Kardiyolojiye yatır.' },
+    { diag: 'Akut Anterior STEMI', triage: 'red', action: 'admit', srv: 'Kardiyoloji', radType: 'ecg', radTitle: '12-DERİVASYON EKG',
+      comp: 'Sol koluma ve çeneme vuran sıkıştırıcı göğüs ağrısı 30 dakikadır geçmiyor, ter içindeyim!',
+      vit: 'TA: 100/65 | Nabız: 104 | SpO2: %94', exam: 'S4 gallop ritmi, soğuk terleme.', pupil: 'Pupiller izokorik.',
+      rad: 'V1-V5 derivasyonlarında dev mezar taşı ST ELEVASYONU (Anterior MI)!', labs: 'Troponin-I: 12.6 ng/mL', hint: 'V1-V5 ST elevasyonu = Akut Anterior MI! Primer PKG için Kardiyolojiye yatır.' },
+    { diag: 'Tam AV Blok (3. Derece Blok)', triage: 'red', action: 'admit', srv: 'Kardiyoloji', radType: 'ecg', radTitle: '12-DERİVASYON EKG',
+      comp: 'Evde aniden bayıldım, nabzım çok yavaş atıyor ve kendimi çok halsiz hissediyorum.',
+      vit: 'TA: 85/50 | Nabız: 34/dk! | SpO2: %93', exam: 'Cannon A dalgaları mevcut.', pupil: 'Pupiller izokorik.',
+      rad: 'P dalgaları ile QRS kompleksleri tamamen ilişkisiz — 3. Derece Tam AV Blok!', labs: 'Potasyum: 4.3 mEq/L', hint: 'Nabız 34/dk + AV dissosiasyon = Tam AV Blok! Geçici pacemaker için Kardiyolojiye yatır.' },
+    { diag: 'Tip A Akut Aort Diseksiyonu', triage: 'red', action: 'admit', srv: 'Kardiyoloji', radType: 'chest', radTitle: 'TORAKS BT ANJİYO',
+      comp: 'Sırtımda iki kürek kemiğimin arasında bıçak saplanır ve yırtılır gibi ani ağrı başladı!',
+      vit: 'Sağ Kol TA: 195/110 | Sol Kol TA: 135/80 (Fark >20 mmHg)!', exam: 'Aort odağında yeni diyastolik üfürüm.', pupil: 'Pupiller izokorik.',
+      rad: 'Asendan aortada intimal flep ve çift lümen — Stanford Tip A Diseksiyon!', labs: 'D-Dimer: 6.400 ng/mL', hint: 'Yırtıcı sırt ağrısı + iki kol tansiyon farkı = Aort Diseksiyonu!' },
+    { diag: 'Akut Dekompanse Kalp Yetersizliği (Akciğer Ödemi)', triage: 'red', action: 'treat', mg: 'iv', treat: 'IV Furosemid + Nitrogliserin + CPAP', srv: 'Kardiyoloji', radType: 'chest', radTitle: 'AKCİĞER GRAFİSİ',
+      comp: 'Gece boğulma hissiyle uyandım, pembe köpüklü balgam çıkarıyorum oturmadan nefes alamıyorum!',
+      vit: 'TA: 185/105 | Nabız: 126 | SpO2: %85!', exam: 'Tüm akciğer alanlarında yaygın yaş raller (fokurdama).', pupil: 'Pupiller izokorik.',
+      rad: 'Kardiyomegali, Kerley B çizgileri ve yarasa kanadı pulmoner ödem!', labs: 'NT-proBNP: 14.500 pg/mL', hint: 'Pembe köpüklü balgam + yaygın raller = Akut Akciğer Ödemi! IV diüretik & vazodilatör uygula.' }
+  ],
+  emerg: [
+    { diag: 'Tansiyon Pnömotoraks', triage: 'red', action: 'treat', mg: 'decon', treat: 'Sağ 2. İKA İğne Dekompresyonu', srv: 'Acil Resüsitasyon', radType: 'chest', radTitle: 'KLİNİK RESÜSİTASYON',
+      comp: 'Motosiklet kazası geçirdim, sağ göğsüm şişti nefes alamıyorum boğuluyorum!',
+      vit: 'TA: 75/40! | Nabız: 138 | SpO2: %84!', exam: 'Sağda solunum sesi YOK, hiperrezonans + Trakea sola deviye!', pupil: 'Boyun venleri şiş.',
+      rad: 'Tansiyon Pnömotoraks! Röntgen beklenmeden iğne dekompresyonu şart!', labs: 'Acil müdahale.', hint: 'Trakea deviasyonu + hipotansiyon = Tansiyon Pnömotoraks! Hemen iğne dekompresyonu yap.' },
+    { diag: 'Anafilaktik Şok', triage: 'red', action: 'treat', mg: 'iv', treat: '0.5 mg İM Adrenalin + IV Sıvı Bolus', srv: 'Acil Resüsitasyon', radType: 'ecg', radTitle: 'RESÜSİTASYON MONİTÖRÜ',
+      comp: 'Fıstıklı tatlı yedikten sonra boğazım tıkandı, hırıltım başladı ve tansiyonum düştü!',
+      vit: 'TA: 80/45! | Nabız: 136 | SpO2: %88', exam: 'İnspiratuar stridor, bronkospazm ve yaygın ürtiker.', pupil: 'Pupiller izokorik.',
+      rad: 'Anafilaktik Şok! İlk basamak hayat kurtarıcı: 0.5 mg İM Adrenalin!', labs: 'E-Nabız: Yer fıstığı alerjisi.', hint: 'Anafilaktik şokta tek ilk seçenek 0.5 mg İM Adrenalindir!' },
+    { diag: 'Status Epileptikus', triage: 'red', action: 'treat', mg: 'iv', treat: 'IV Diazepam / Midazolam + Hava Yolu', srv: 'Acil Resüsitasyon', radType: 'brain', radTitle: 'NÖRO-ACİL PROTOKOLÜ',
+      comp: 'Hastamız 15 dakikadır bilinci açılmadan arka arkaya nöbet geçirip kasılıyor!',
+      vit: 'Ateş: 38.2°C | Nabız: 134 | SpO2: %89 | KŞ: 105', exam: 'Jeneralize tonik-klonik kasılma sürüyor.', pupil: 'Pupiller dilate.',
+      rad: 'Status Epileptikus (>5 dk kesintisiz nöbet)! Hemen IV benzodiazepin uygula!', labs: 'Kan şekeri normal (105 mg/dL).', hint: '5 dakikayı aşan nöbet = Status Epileptikus! Hemen IV Midazolam/Diazepam uygula.' },
+    { diag: 'Rüptüre Ektopik Gebelik', triage: 'red', action: 'admit', srv: 'Kadın Doğum', radType: 'leg', radTitle: 'YATAK BAŞI FAST USG',
+      comp: 'Adetim 2 hafta gecikti, aniden sağ kasığımda bıçak saplanır ağrı oldu ve bayıldım!',
+      vit: 'TA: 82/48! | Nabız: 128 | Beta-hCG: POZİTİF!', exam: 'Batında yaygın hassasiyet ve defans.', pupil: 'Soluk konjonktiva.',
+      rad: 'Douglas boşluğunda yoğun serbest sıvı (hemoperitoneum) + boş uterus!', labs: 'Hgb: 7.8 g/dL', hint: 'Beta-hCG pozitif + şok + batında serbest sıvı = Rüptüre Ektopik Gebelik! Kadın Doğuma yatır.' },
+    { diag: 'Organofosfat (Tarım İlacı) Zehirlenmesi', triage: 'red', action: 'treat', mg: 'iv', treat: 'IV Atropin + Pralidoksim + Dekontaminasyon', srv: 'Acil Resüsitasyon', radType: 'ecg', radTitle: 'TOKSİKOLOJİ MONİTÖRÜ',
+      comp: 'Bahçede tarım ilacı sıkarken üstüme döküldü, ağzımdan köpük geliyor, nefesim daralıyor!',
+      vit: 'TA: 90/55 | Nabız: 46/dk (Bradikardi) | SpO2: %89', exam: 'Aşırı tükürük, terleme, bronkore ve sarımsak kokusu!', pupil: 'İğne başı pupilla (Miyozis)!',
+      rad: 'Kolinerjik Kriz (DUMBBELS)! Yüksek doz IV Atropin şart!', labs: 'Psödokolinesteraz düzeyi çok düşük.', hint: 'Tarım ilacı + miyozis + bronkore = Organofosfat zehirlenmesi! IV Atropin uygula.' },
+    { diag: 'Akut Hipoglisemi Koması', triage: 'red', action: 'treat', mg: 'iv', treat: 'IV %20 Dekstroz 100 mL Bolus', srv: 'Acil Resüsitasyon', radType: 'ecg', radTitle: 'PARMAK UCU KAN ŞEKERİ',
+      comp: 'Sabah insülinini yaptıktan sonra kahvaltı etmemiş, ter içinde baygın bulduk!',
+      vit: 'TA: 115/70 | Nabız: 118 | Kan Şekeri: 28 mg/dL!', exam: 'Soğuk terleme, GKS: 8 (Stupor).', pupil: 'Pupiller izokorik.',
+      rad: 'Kritik Hipoglisemi (28 mg/dL)! Hemen IV Dekstroz puşesi uygula!', labs: 'KŞ: 28 mg/dL', hint: 'Kan şekeri 28 mg/dL! Hemen IV Dekstroz uygula.' }
+  ],
+  neuro: [
+    { diag: 'Akut İskemik İnme (tPA Penceresi)', triage: 'red', action: 'admit', srv: 'Nöroloji / Beyin Cerrahi', radType: 'brain', radTitle: 'KONTRATSIZ BEYİN BT',
+      comp: '45 dakika önce konuşmam peltekleşti, sol kolum ve bacağım tutmaz oldu!',
+      vit: 'TA: 168/92 | Nabız: 88 | NIHSS: 14', exam: 'Sol hemiparezi ve santral fasiyal paralizi.', pupil: 'Pupiller izokorik.',
+      rad: 'Beyin BT’de KANAMA YOK! Sağ MCA hiperdens arter işareti (İlk 4.5 saat)!', labs: 'INR: 1.0, KŞ: 112 (tPA uygun).', hint: 'İlk 4.5 saat ve kanama yok! Trombolitik için Nörolojiye yatır.' },
+    { diag: 'Subaraknoid Kanama (SAK)', triage: 'red', action: 'admit', srv: 'Nöroloji / Beyin Cerrahi', radType: 'brain', radTitle: 'BEYİN BT & LOMBER PONKSİYON',
+      comp: 'Hayatımda yaşadığım en şiddetli baş ağrısı saniyeler içinde kafamda bomba patlamış gibi başladı!',
+      vit: 'TA: 185/105 | Nabız: 64 | Ense Sertliği: POZİTİF!', exam: 'Kernig ve Brudzinski pozitif, fotofobi.', pupil: 'Pupiller izokorik.',
+      rad: 'Bazal sisternalarda yıldız şeklinde hiperdens SUBARAKNOİD KANAMA!', labs: 'Anevrizma rüptürü şüphesi.', hint: 'Hayatın en şiddetli ani baş ağrısı + ense sertliği = SAK! Beyin Cerrahiye yatır.' },
+    { diag: 'Akut Epidural Hematom', triage: 'red', action: 'admit', srv: 'Nöroloji / Beyin Cerrahi', radType: 'brain', radTitle: 'KRANİYAL BT',
+      comp: 'Başıma darbe aldıktan sonra 1 saat iyiydim ama şimdi bilincim kapanıyor ve kusuyorum!',
+      vit: 'TA: 175/100 | Nabız: 50 (Cushing Triadı)!', exam: 'Sağ hemiparezi.', pupil: 'ANİZOKORİ! Sağ pupilla dilate ve fikse!',
+      rad: 'Sol temporoparietal bikonveks (mercek şeklinde) Epidural Hematom!', labs: 'Acil kraniyotomi hazırlığı.', hint: 'Lucid interval + anizokori + bikonveks hematom = Epidural Hematom!' },
+    { diag: 'Akut Bakteriyel Menenjit', triage: 'red', action: 'admit', srv: 'Nöroloji / Beyin Cerrahi', radType: 'brain', radTitle: 'BOS ANALİZİ & BEYİN BT',
+      comp: 'Yüksek ateş, şiddetli baş ağrısı ve ışığa bakamama şikayetim var, bacaklarımda mor döküntüler çıktı!',
+      vit: 'Ateş: 39.8°C | Nabız: 122 | TA: 95/60', exam: 'Belirgin ense sertliği ve peteşiyal döküntüler.', pupil: 'Fotofobi mevcut.',
+      rad: 'BOS bulanık; lökosit 2.400 (PMNL hakim), BOS glukozu çok düşük!', labs: 'WBC: 22.100 | CRP: 210 mg/L', hint: 'Ateş + ense sertliği + peteşi = Meningokoksik Menenjit! Acil yatır.' },
+    { diag: 'Guillain-Barré Sendromu', triage: 'yellow', action: 'admit', srv: 'Nöroloji / Beyin Cerrahi', radType: 'brain', radTitle: 'BOS & EMG İNCELEMESİ',
+      comp: '2 hafta önce ishal geçirdim; dünden beri ayaklarımdan başlayan uyuşma ve güçsüzlük dizlerime kadar yükseldi!',
+      vit: 'TA: 130/80 | Nabız: 94 | Solunum Sayısı: 22', exam: 'Alt ekstremitelerde arefleksi ve simetrik asendan paralizi!', pupil: 'Pupiller izokorik.',
+      rad: 'BOS’ta albüminositolojik disosiasyon (Protein yüksek, hücre normal)!', labs: 'Solunum kas tutulumu açısından yakın takip şart.', hint: 'Asendan güçsüzlük + arefleksi = Guillain-Barré! Solunum yetmezliği riskiyle yatır.' },
+    { diag: 'Myastenia Gravis Krizi', triage: 'red', action: 'admit', srv: 'Nöroloji / Beyin Cerrahi', radType: 'chest', radTitle: 'TORAKS BT & SOLUNUM TESTİ',
+      comp: 'Akşama doğru göz kapaklarım düşüyor ve çift görüyorum; bugün yutkunamıyorum ve nefesim yetmiyor!',
+      vit: 'TA: 125/80 | Nabız: 108 | SpO2: %90 | Vital Kapasite Düşük!', exam: 'Bilateral pitoz ve bulber güçsüzlük.', pupil: 'Pupiller izokorik (korunmuş).',
+      rad: 'Timoma şüphesi + diyafram kas yorgunluğu (Myastenik Kriz)!', labs: 'Anti-AChR antikoru pozitif.', hint: 'Bulber tutulum + solunum yetersizliği = Myastenik Kriz! Plazmaferez/IVIG için yatır.' }
+  ],
+  ortho: [
+    { diag: 'Deplase Tibia Diyafiz Kırığı', triage: 'yellow', action: 'treat', mg: 'fracture', treat: 'Kapalı Redüksiyon + Uzun Bacak Atel', srv: 'Ortopedi', radType: 'leg', radTitle: 'KRURİS (BACAK) RÖNTGENİ',
+      comp: 'Halı sahada ikili mücadelede kaval kemiğimden çatırt diye ses geldi, üzerine basamıyorum!',
+      vit: 'TA: 130/80 | Nabız: 96 | Distal Nabızlar: Açık', exam: 'Sağ kruriste deformite ve hassasiyet.', pupil: 'Pupiller izokorik.',
+      rad: 'Tibia distal diyafizinde deplase oblik kırık hattı!', labs: 'Pre-op hemogram normal.', hint: 'Deplase tibia kırığı! Redüksiyon mini-oyunuyla kemiği hizala ve atele al.' },
+    { diag: 'Akut Kompartman Sendromu', triage: 'red', action: 'admit', srv: 'Ortopedi', radType: 'leg', radTitle: 'KOMPARTMAN BASINÇ ÖLÇÜMÜ',
+      comp: 'Dün alçıya alınan bacağımda morfinle bile geçmeyen dayanılmaz zonklayıcı ağrı ve uyuşma başladı!',
+      vit: 'TA: 145/90 | Nabız: 116 | İntrakompartmantal Basınç: 46 mmHg!', exam: 'Pasif ayak parmağı germeyle şiddetli ağrı + gergin kompartman!', pupil: 'Pupiller izokorik.',
+      rad: 'Delta P < 30 mmHg — Akut Kompartman Sendromu! Acil Fasyotomi şart!', labs: 'CK (Kreatin Kinaz): 14.200 U/L', hint: 'Pasif germeyle orantısız ağrı = Kompartman Sendromu! Acil fasyotomi için Ortopediye yatır.' },
+    { diag: 'Anterior Omuz Çıkığı', triage: 'yellow', action: 'treat', mg: 'fracture', treat: 'Sedasyon Altında Omuz Redüksiyonu', srv: 'Ortopedi', radType: 'chest', radTitle: 'OMUZ AP & Y GRAFİSİ',
+      comp: 'Merdivenden düşerken kolumun üstüne düştüm, sağ omzum çöktü ve kolumu hiç oynatamıyorum!',
+      vit: 'TA: 135/85 | Nabız: 94 | Aksiller Sinir Muayenesi: Sağlam', exam: 'Omuzda tipik apolet (kare omuz) belirtisi!', pupil: 'Pupiller izokorik.',
+      rad: 'Humerus başı glenoidin anterior ve inferioruna disloke!', labs: 'Tahlil gerekmedi.', hint: 'Kare omuz belirtisi = Anterior Omuz Çıkığı! Redüksiyon mini-oyunuyla yerine oturt.' },
+    { diag: 'Açık Femur Kırığı (Gustilo Tip 3)', triage: 'red', action: 'admit', srv: 'Ortopedi', radType: 'leg', radTitle: 'FEMUR RÖNTGENİ',
+      comp: 'Yüksekten düştüm, uyluk kemiğim deriyi yırtıp dışarı çıktı çok kan kaybediyorum!',
+      vit: 'TA: 90/55 | Nabız: 124 | SpO2: %95', exam: 'Uylukta 6 cm açık yara ve kemik fragmanı.', pupil: 'Pupiller izokorik.',
+      rad: 'Parçalı açık femur diyafiz kırığı! Acil debridman + İV sefazolin + tetanoz!', labs: 'Hgb: 8.9 g/dL (Kan hazırlığı).', hint: 'Açık kırık ortopedik acildir! Antibiyotik başlayıp Ortopedi ameliyathanesine yatır.' },
+    { diag: 'Septik Artrit (Diz Eklemi)', triage: 'red', action: 'admit', srv: 'Ortopedi', radType: 'leg', radTitle: 'EKLEM PONKSİYONU & USG',
+      comp: 'Sağ dizim dünden beri kıpkırmızı, ateş gibi yanıyor ve en ufak kıpırdamada çığlık atıyorum!',
+      vit: 'Ateş: 39.1°C | Nabız: 112 | TA: 125/80', exam: 'Dizde ısı artışı, efüzyon ve aktif/pasif hareket kısıtlılığı.', pupil: 'Pupiller izokorik.',
+      rad: 'Sinoviyal sıvı pürülan; lökosit 82.000/mm3 (%92 PMNL)!', labs: 'WBC: 18.900 | CRP: 195 mg/L', hint: 'Sinoviyal lökosit >50.000 + ateş = Septik Artrit! Eklem yıkaması için Ortopediye yatır.' },
+    { diag: 'Kauda Ekina Sendromu', triage: 'red', action: 'admit', srv: 'Ortopedi', radType: 'brain', radTitle: 'LOMBER MRG',
+      comp: 'Bel fıtığım vardı; bugün bacaklarım tutmaz oldu, kasık bölgem uyuştu ve idrarımı kaçırdım!',
+      vit: 'TA: 135/85 | Nabız: 92', exam: 'Eyer tarzı (saddle) anestezi + anal sfinkter tonus kaybı!', pupil: 'Pupiller izokorik.',
+      rad: 'L4-L5 masif santral disk herniasyonu ve kauda ekina basısı!', labs: 'Acil cerrahi dekompresyon endikasyonu.', hint: 'İdrar inkontinansı + eyer tarzı uyuşma = Kauda Ekina! Acil cerrahi için yatır.' }
+  ],
+  peds: [
+    { diag: 'Akut Epiglottit (Çocuk Acil)', triage: 'red', action: 'admit', srv: 'Pediatri', radType: 'chest', radTitle: 'YAN BOYUN GRAFİSİ',
+      comp: '4 yaşındaki oğlumun ateşi bir anda 40 oldu, ağzından salya akıyor ve öne eğilip boğulur gibi nefes alıyor!',
+      vit: 'Ateş: 39.9°C | Nabız: 148 | SpO2: %89', exam: 'Tripod pozisyonu, salya akması (drooling) ve stridor! (Dil basacağı KULLANMA!)', pupil: 'Pupiller izokorik.',
+      rad: 'Yan boyun grafisinde tipik BAŞPARMAK İŞARETİ (Thumbprint Sign)!', labs: 'Ameliyathane şartlarında entübasyon hazırlığı.', hint: 'Salya akması + tripod pozisyonu = Akut Epiglottit! Boğazına çubuk sokma, Pediatri yoğun bakıma yatır!' },
+    { diag: 'İnvajinasyon (Bağırsak Düğümlenmesi)', triage: 'red', action: 'admit', srv: 'Pediatri', radType: 'leg', radTitle: 'BATIN USG',
+      comp: '10 aylık bebeğimiz 15 dakikada bir bacaklarını karnına çekip ağlıyor, az önce bezinde çilek jölesi gibi kanlı kaka gördük!',
+      vit: 'Ateş: 37.4°C | Nabız: 142 | TA: 85/50', exam: 'Sağ üst kadranda sucuk şeklinde kitle palpe ediliyor.', pupil: 'Pupiller izokorik.',
+      rad: 'Batın USG’de tipik HEDEF TAHTASI (Target / Doughnut Sign) bulgusu!', labs: 'Pnömatik redüksiyon / çocuk cerrahisi konsültasyonu.', hint: 'Çilek jölesi dışkı + Target sign = İnvajinasyon! Pediatri / Çocuk Cerrahisine yatır.' },
+    { diag: 'Komplike Febril Konvülsiyon', triage: 'yellow', action: 'admit', srv: 'Pediatri', radType: 'brain', radTitle: 'PEDİATRİK NÖRO-DEĞERLENDİRME',
+      comp: '2 yaşındaki kızımız ateşlenince 20 dakika boyunca kasıldı ve gözleri kaydı, aynı gün ikinci kez tekrarladı!',
+      vit: 'Ateş: 39.5°C | Nabız: 144 | SpO2: %95', exam: 'Postiktal uyku hali, fokal nörolojik bulgu yok.', pupil: 'Pupiller izokorik.',
+      rad: '>15 dk süren ve 24 saatte tekrarlayan Komplike Febril Nöbet!', labs: 'CRP yüksek, elektrolitler normal.', hint: '15 dakikayı aşan veya tekrarlayan ateşli havale = Komplike Febril Konvülsiyon! Pediatriye yatır.' },
+    { diag: 'Krup (Akut Laringotrakeobronşit)', triage: 'yellow', action: 'treat', mg: 'iv', treat: 'Nebülize Adrenalin + Tek Doz Deksametazon', srv: 'Pediatri', radType: 'chest', radTitle: 'ÖN-ARKA BOYUN GRAFİSİ',
+      comp: '3 yaşındaki çocuğumuz gece yarısı havlar tarzda kuru öksürük ve nefes alırken ıslık sesiyle uyandı!',
+      vit: 'Ateş: 38.1°C | Nabız: 128 | SpO2: %93', exam: 'İnspiratuar stridor ve havlar tarzda öksürük.', pupil: 'Pupiller izokorik.',
+      rad: 'Boyun grafisinde subglottik daralma — KALEM UCU İŞARETİ (Steeple Sign)!', labs: 'Parainfluenza viral tablo.', hint: 'Havlar tarzda öksürük + Kalem Ucu işareti = Krup! Nebülize adrenalin + deksametazon uygula.' },
+    { diag: 'Pil Yutma (Özofagus Yabancı Cisim)', triage: 'red', action: 'admit', srv: 'Pediatri', radType: 'chest', radTitle: 'TORAKS & BATIN RÖNTGENİ',
+      comp: '2 yaşındaki oğlumuz kumandanın içindeki yuvarlak düğme pili yuttu, göğsünü tutup ağlıyor!',
+      vit: 'Ateş: 36.8°C | Nabız: 136 | SpO2: %98', exam: 'Yutma güçlüğü ve hipersalivasyon.', pupil: 'Pupiller izokorik.',
+      rad: 'Özofagus proksimalinde ÇİFT HALE (Double Halo) görünümlü lityum düğme pil!', labs: '2 saat içinde özofagus nekrozu/perforasyonu riski!', hint: 'Özofagusta düğme pil 2 saatte dokuyu yakar! Acil endoskopik çıkarma için Pediatriye yatır.' },
+    { diag: 'Akut Bronşiyolit (RSV)', triage: 'yellow', action: 'admit', srv: 'Pediatri', radType: 'chest', radTitle: 'AKCİĞER GRAFİSİ',
+      comp: '5 aylık bebeğimiz 2 gündür burun akıntısı sonrası hızlı nefes alıp vermeye başladı, ememiyor!',
+      vit: 'Ateş: 37.9°C | Solunum: 64/dk (Takipne)! | SpO2: %89!', exam: 'İnterkostal çekilmeler, yaygın vizing ve raller.', pupil: 'Pupiller izokorik.',
+      rad: 'Akciğerlerde yaygın havalanma artışı ve diyaframda düzleşme!', labs: 'RSV antijen testi pozitif.', hint: 'SpO2 %89 + beslenememe + çekilmeler = Ağır Bronşiyolit! Oksijen ve hidrasyon için Pediatriye yatır.' }
+  ],
+  ent: [
+    { diag: 'Peritonsiller Apse (Quinsy)', triage: 'red', action: 'admit', srv: 'KBB', radType: 'brain', radTitle: 'BOĞAZ MUAYENESİ & BOYUN BT',
+      comp: 'Boğaz ağrım 4 gündür arttı, ağzımı açamıyorum, sesim sıcak patates yutmuş gibi boğuk çıkıyor!',
+      vit: 'Ateş: 39.0°C | Nabız: 112 | Trismus: POZİTİF!', exam: 'Sağ tonsil mediale itilmiş, UVULA KARŞI TARAFA (SOLA) DEVİYE!', pupil: 'Pupiller izokorik.',
+      rad: 'Sağ peritonsiller bölgede 3.5 cm apse koleksiyonu!', labs: 'WBC: 19.400 | CRP: 155 mg/L', hint: 'Trismus + uvula deviasyonu + sıcak patates sesi = Peritonsiller Apse! Drenaj için KBB’ye yatır.' },
+    { diag: 'Posterior Epistaksis (Durdurulamayan Burun Kanaması)', triage: 'red', action: 'treat', mg: 'decon', treat: 'Posterior Foley/Balon Tamponad + Traneksamik Asit', srv: 'KBB', radType: 'ecg', radTitle: 'KOAGÜLASYON & VİTAL TAKİP',
+      comp: 'Tansiyon hastasıyım; 1 saattir burnumdan ve genzimden oluk oluk kan geliyor, buz koydum durmuyor!',
+      vit: 'TA: 190/105 | Nabız: 118 | SpO2: %95', exam: 'Anterior tampona rağmen orofarenksten aktif kan akışı!', pupil: 'Pupiller izokorik.',
+      rad: 'Posterior sfenopalatin arter kaynaklı şiddetli epistaksis!', labs: 'Hgb: 9.8 | INR: 1.2', hint: 'Genze akan şiddetli burun kanaması = Posterior Epistaksis! Balon tamponad uygula.' },
+    { diag: 'Ani İdiyopatik Sensörinöral İşitme Kaybı', triage: 'yellow', action: 'admit', srv: 'KBB', radType: 'brain', radTitle: 'ODYOMETRİ & WEBER TESTİ',
+      comp: 'Sabah uyandığımda sağ kulağım tamamen sağır olmuş gibi duymuyor ve çok şiddetli çınlıyor!',
+      vit: 'TA: 120/75 | Nabız: 80', exam: 'Otoskopi normal; Weber testi SAĞLAM kulağa (sola) lateralize!', pupil: 'Pupiller izokorik.',
+      rad: 'Odyometride ardışık 3 frekansta >30 dB sensörinöral işitme kaybı!', labs: 'Erken sistemik steroid tedavisi kritik.', hint: 'Otoskopi normal + Weber sağlam tarafa lateralize = Ani İşitme Kaybı! KBB’ye yatır.' },
+    { diag: 'Dış Kulak Yolunda Canlı Böcek', triage: 'green', action: 'treat', mg: 'decon', treat: 'Lidokain Damla + Mikroaspirasyon', srv: 'KBB', radType: 'brain', radTitle: 'OTOSKOPİK GÖRÜNTÜ',
+      comp: 'Gece uyurken kulağıma böcek kaçtı, içinde kanat çırpıyor kafayı yiyeceğim!',
+      vit: 'TA: 125/80 | Nabız: 96', exam: 'Dış kulak yolunda canlı böcek, kulak zarı sağlam.', pupil: 'Pupiller izokorik.',
+      rad: 'Önce lidokain ile böcek immobilize edilip aspire edilmeli!', labs: 'Tahlil gerekmedi.', hint: 'Canlı böceği önce lidokain damla ile hareketsizleştirip çıkar!' },
+    { diag: 'Ludwig Anjini (Ağız Tabanı Flegmonu)', triage: 'red', action: 'admit', srv: 'KBB', radType: 'chest', radTitle: 'BOYUN BT & HAVA YOLU',
+      comp: 'Diş apsesinden sonra çene altım taş gibi şişti, dilim yukarı kalktı nefes alamıyorum!',
+      vit: 'Ateş: 39.4°C | Nabız: 126 | SpO2: %88!', exam: 'Submandibular odunsu sertlik ve dil elevasyonu (Hava yolu tehlikede)!', pupil: 'Pupiller izokorik.',
+      rad: 'Bilateral submandibular/sublingual flegmon ve trakeal daralma!', labs: 'WBC: 24.500 | Acil trakeostomi hazırlığı.', hint: 'Çene altı odunsu şişlik + dil elevasyonu = Ludwig Anjini! Hava yolu güvenliği için KBB’ye yatır.' },
+    { diag: 'Akut Mastoidit', triage: 'yellow', action: 'admit', srv: 'KBB', radType: 'brain', radTitle: 'TEMPORAL KEMİK BT',
+      comp: 'Orta kulak iltihabından sonra sağ kulak arkam kızardı, şişti ve kepçe kulağım öne doğru itildi!',
+      vit: 'Ateş: 38.8°C | Nabız: 106', exam: 'Postauriküler fluktuasyon ve hassasiyet.', pupil: 'Pupiller izokorik.',
+      rad: 'Mastoid hava hücrelerinde koalesan opasifikasyon ve subperiosteal apse!', labs: 'WBC: 17.800 | CRP: 130 mg/L', hint: 'Kulak arkasında kızarıklık + kepçe kulak öne itilmesi = Akut Mastoidit! KBB’ye yatır.' }
+  ],
+  surg: [
+    { diag: 'Akut Apandisit', triage: 'yellow', action: 'admit', srv: 'Genel Cerrahi', radType: 'leg', radTitle: 'BATIN USG & BT',
       comp: 'Dün göbeğim ağrıyordu bugün sağ alt karnıma indi, iştahım kesildi ve kustum.',
-      vit: 'Ateş: 37.9°C | Nabız: 102 | TA: 120/75 | SpO2: %98', lung: 'McBurney noktasında defans ve rebound POZİTİF!',
-      radType: 'leg', radTitle: 'BATIN USG', radFinding: '11 mm çaplı komprese olmayan inflame apendiks.',
-      labs: 'WBC: 16.400 | CRP: 72 mg/L', action: 'admit'
-    },
-    {
-      title: 'Sıra İhlali & Saldırgan Hasta Yakını', triage: 'red', service: 'Güvenlik', reason: 'Beyaz Kod Tehdidi',
-      comp: '20 DAKİKADIR BEKLİYORUZ! Bizim hastanın parmağı kesildi niye içeridekine bakıyorsun lan?!',
-      vit: 'NABIZ YÜKSEK — SALDIRGAN TAVIR!', lung: 'Fiziksel saldırı girişimi tespit edildi!',
-      radType: 'ecg', radTitle: 'GÜVENLİK UYARISI', radFinding: 'Personel güvenliği risk altında — 1111 BEYAZ KOD!',
-      labs: 'Adli kayıt aktif.', action: 'whitecode', door: true
-    }
+      vit: 'Ateş: 37.9°C | Nabız: 102 | TA: 120/75', exam: 'McBurney noktasında defans, rebound ve Rovsing POZİTİF!', pupil: 'Pupiller izokorik.',
+      rad: '11 mm çaplı komprese olmayan inflame apendiks ve çevre yağ dokuda kirlenme!', labs: 'WBC: 16.400 | CRP: 72 mg/L', hint: 'McBurney rebound + 11 mm apendiks = Akut Apandisit! Genel Cerrahiye yatır.' },
+    { diag: 'Peptik Ülser Perforasyonu (Akut Batın)', triage: 'red', action: 'admit', srv: 'Genel Cerrahi', radType: 'chest', radTitle: 'AYAKTA DİREKT KARIN GRAFİSİ',
+      comp: 'Mide ülserim vardı; 1 saat önce karnıma bıçak saplanır gibi ağrı girdi, nefes bile alamıyorum!',
+      vit: 'TA: 95/60 | Nabız: 124 | Ateş: 38.1°C', exam: 'TAHTA KARIN (Yaygın rijidite) ve bağırsak sesleri kayıp!', pupil: 'Pupiller izokorik.',
+      rad: 'Sağ diyafram altında serbest hava (Pnömoperitoneum)!', labs: 'WBC: 18.200 | Laktat: 3.8', hint: 'Tahta karın + diyafram altı serbest hava = Peptik Ülser Perforasyonu! Genel Cerrahiye yatır.' },
+    { diag: 'Boğulmuş (Strangüle) İnguinal Herni', triage: 'red', action: 'admit', srv: 'Genel Cerrahi', radType: 'leg', radTitle: 'KASIK YÜZEYEL USG',
+      comp: 'Kasığımdaki fıtık şişliği 4 saattir içeri girmiyor, morarmaya başladı ve yeşil kusuyorum!',
+      vit: 'Ateş: 38.3°C | Nabız: 118 | TA: 105/65', exam: 'Sağ kasıkta irreduktabl, kızarık ve aşırı hassas kitle!', pupil: 'Pupiller izokorik.',
+      rad: 'Fıtık kesesi içinde kan akımı bozulmuş (iskemik) ince bağırsak ansı!', labs: 'Laktat yüksek, lökositoz.', hint: 'İrreduktabl + kızarık fıtık = Strangüle Herni! Bağırsak nekrozu olmadan Cerrahiye yatır.' },
+    { diag: 'Akut Kolesistit (Murphy Pozitif)', triage: 'yellow', action: 'admit', srv: 'Genel Cerrahi', radType: 'leg', radTitle: 'HEPATOBİLİYER USG',
+      comp: 'Yağlı yemek sonrası sağ üst karnımda başlayıp sağ kürek kemiğime vuran ağrı ve ateşim var!',
+      vit: 'Ateş: 38.4°C | Nabız: 104 | TA: 130/80', exam: 'İnspiryumda sağ üst kadranda ağrıyla nefes kesilmesi (Murphy Pozitif)!', pupil: 'Pupiller izokorik.',
+      rad: 'Safra kesesi duvar kalınlığı 6 mm, perikolesistik sıvı ve impakte taş!', labs: 'WBC: 15.800 | CRP: 94 mg/L', hint: 'Murphy pozitif + duvar kalınlaşması = Akut Kolesistit! Genel Cerrahiye yatır.' },
+    { diag: 'Akut Mezenter İskemi', triage: 'red', action: 'admit', srv: 'Genel Cerrahi', radType: 'brain', radTitle: 'BATIN BT ANJİYO',
+      comp: 'Kalp ritim bozukluğum var; karnımda ölecekmişim gibi korkunç ağrı var ama doktor karnıma basınca o kadar acımıyor!',
+      vit: 'TA: 95/60 | Nabız: 130 (AF) | Laktat: 6.8 mmol/L!', exam: 'Fizik muayene ile orantısız şiddetli karın ağrısı!', pupil: 'Pupiller izokorik.',
+      rad: 'Superior Mezenterik Arter (SMA) proksimalinde embolik tam tıkanıklık!', labs: 'Ciddi metabolik asidoz ve laktat yüksekliği.', hint: 'Muayeneyle orantısız ağrı + AF + yüksek laktat = Akut Mezenter İskemi! Cerrahiye yatır.' },
+    { diag: 'Düğünde Yorgun Mermi Yaralanması', triage: 'red', action: 'admit', srv: 'Genel Cerrahi', radType: 'chest', radTitle: 'TORAKS & OMUZ GRAFİSİ',
+      comp: 'Düğünde halay çekerken omzuma gökten kurşun düştü hocam, kan durmuyor!',
+      vit: 'TA: 100/65 | Nabız: 118 | SpO2: %95', exam: 'Sol omuz giriş deliği aktif kanamalı (Adli Vaka).', pupil: 'Pupiller izokorik.',
+      rad: 'Skapula medialinde 9 mm metalik mermi çekirdeği!', labs: 'Hgb: 10.2 | Cross-match istendi.', hint: 'Ateşli silah yaralanması! Adli bildirim ile Genel Cerrahiye yatır.' }
+  ]
+};
+
+function buildAllCases() {
+  const list = [];
+  const firstNames = ['Ahmet','Fatma','Mehmet','Ayşe','Mustafa','Emine','Ali','Hatice','Hüseyin','Zeynep','Hasan','Elif','İbrahim','Meryem','İsmail','Şerife','Osman','Sultan','Yusuf','Hanife','Murat','Zehra','Ömer','Havva','Ramazan','Hayriye','Halil','Cemile','Süleyman','Fadime','Abdullah','Kader','Mahmut','Büşra','Recep','Esra','Salih','Merve','Kadir','Sema','Emre','Kübra','Burak','Derya','Furkan','Gül','Enes','Tuğba','Serkan','Ebru','Cem','Selin','Kaan','Melis','Bora','İrem','Tolga','Gizem','Ozan','Nihan'];
+  const contexts = [
+    'Nöbetin en yoğun saatinde 112 ambulansı ile getirildi.',
+    'Yakınlarının kolunda acil polikliniğe başvurdu.',
+    'Gece yarısı şikayetleri aniden şiddetlenince hastaneye koşmuş.',
+    'Sabah saatlerinden beri evde beklemiş, durumu ağırlaşınca gelmiş.',
+    'İş yerinden mesai arkadaşları tarafından acile ulaştırılmış.'
   ];
 
-  const firstNames = ['Ahmet','Fatma','Mehmet','Ayşe','Mustafa','Emine','Ali','Hatice','Hüseyin','Zeynep','Hasan','Elif','İbrahim','Meryem','İsmail','Şerife','Osman','Sultan','Yusuf','Hanife','Murat','Zehra','Ömer','Havva','Ramazan','Hayriye','Halil','Cemile','Süleyman','Fadime','Abdullah','Kader','Mahmut','Büşra','Recep','Esra','Salih','Merve','Kadir','Sema','Emre','Kübra','Burak','Derya','Furkan','Gül','Enes','Tuğba','Serkan','Ebru'];
-  let idx = 11;
-  while (list.length < 165) {
-    const t = templates[(idx - 11) % templates.length];
-    const fn = firstNames[(idx * 3) % firstNames.length];
-    const age = 19 + ((idx * 7) % 62);
+  // 8 uzmanlık dalı x 30 özel vaka = 240 branş vakası
+  Object.keys(SPECIALTY_BLUEPRINTS).forEach((specKey, sIdx) => {
+    const bps = SPECIALTY_BLUEPRINTS[specKey];
+    for (let i = 0; i < 30; i++) {
+      const bp = bps[i % bps.length];
+      const fn = firstNames[(i * 7 + sIdx * 11) % firstNames.length];
+      const age = specKey === 'peds' ? (1 + (i % 14)) : (22 + ((i * 5 + sIdx * 3) % 58));
+      const ctxNote = contexts[i % contexts.length];
+
+      list.push({
+        id: `${specKey}_${i + 1}`,
+        spec: specKey,
+        name: `${fn} (${age})`,
+        triage: bp.triage,
+        pitch: specKey === 'peds' ? 430 : (age > 55 ? 205 : (i % 2 === 0 ? 335 : 275)),
+        appearance: {
+          skin: i % 3 === 0 ? '#dfb195' : '#f1c2a5',
+          hair: age > 55 ? '#adb5bd' : (i % 2 === 0 ? '#212529' : '#5c3c24'),
+          shirt: ['#1971c2','#2f9e44','#d6336c','#f08c00','#5f3dc4','#495057'][i % 6],
+          flush: bp.triage === 'red',
+          sweat: bp.triage !== 'green',
+          cyanosis: bp.vit.includes('84') || bp.vit.includes('85') || bp.vit.includes('88'),
+          pupils: bp.pupil.includes('ANİZOKORİ') ? 'anisocoria' : (bp.pupil.includes('dilate') ? 'midriasis_fixed' : (bp.pupil.includes('Miyozis') ? 'miosis' : 'normal'))
+        },
+        complaint: `${bp.comp} (${ctxNote})`,
+        vitals: bp.vit,
+        lung: bp.exam,
+        pupil: bp.pupil,
+        radType: bp.radType,
+        radTitle: bp.radTitle,
+        radFinding: bp.rad,
+        labs: bp.labs,
+        enabiz: i % 4 === 0 ? `Öykü: ${bp.diag} açısından yüksek risk profili.` : 'Kronik ilaç alerjisi kaydı yok.',
+        correctAction: bp.action,
+        targetService: bp.srv,
+        targetReason: bp.diag,
+        miniGame: bp.mg || null,
+        treatLabel: bp.treat || 'Acil Müdahale Uygula',
+        hint: bp.hint
+      });
+    }
+  });
+
+  // Genel Acil (Pratisyen) havuzu için 30 vaka
+  const genTemplates = [
+    { diag: 'Lober Pnömoni + Hipoksi', triage: 'yellow', action: 'admit', srv: 'Göğüs Hastalıkları', radType: 'chest', radTitle: 'AKCİĞER GRAFİSİ',
+      comp: 'Üç gündür ateşim ve öksürüğüm var, nefesim daralıyor.', vit: 'Ateş: 38.9°C | Nabız: 108 | SpO2: %91', exam: 'Sağ alt lobda krepitan raller.', pupil: 'Pupiller izokorik.',
+      rad: 'Sağ alt zonda lober pnömoni infiltrasyonu.', labs: 'WBC: 18.400 | CRP: 142', hint: 'SpO2 %91 + pnömoni -> Göğüs Hastalıklarına yatır.' },
+    { diag: 'Narkotik İlaç Suistimali & Rüşvet', triage: 'yellow', action: 'police', srv: 'Adli Bildirim', radType: 'leg', radTitle: 'ÜRİNER GRAFİ',
+      comp: 'Böbrek taşım düştü ölüyorum, bana kırmızı reçeteli morfin yaz çorbana bakarız...', vit: 'Nabız: 62 | Solunum: 10/dk', exam: 'Solunum yüzeysel.', pupil: 'İğne başı pupilla (Miyozis)!',
+      rad: 'Taş yok, idrar temiz! E-Nabız: 7 acilden narkotik talebi!', labs: 'İdrar temiz.', hint: 'Miyozis + sahte ağrı -> Hastane Polisine bildir.', bribe: true },
+    { diag: 'Panik Atak (Kardiyak Dışlandı)', triage: 'green', action: 'discharge', srv: 'Taburcu', radType: 'ecg', radTitle: '12-DERİVASYON EKG',
+      comp: 'Maçta son dakika golü yiyince göğsüm sıkıştı ölüyorum sandım!', vit: 'TA: 140/85 | Nabız: 112 | SpO2: %99', exam: 'Hiperventilasyon, akciğerler temiz.', pupil: 'Pupiller izokorik.',
+      rad: 'Normal sinüs taşikardisi, iskemi YOK!', labs: 'Troponin-I: 0.01 (Normal).', hint: 'EKG ve Troponin normal -> Panik atak, taburcu et.' }
+  ];
+  for (let g = 0; g < 30; g++) {
+    const gt = genTemplates[g % genTemplates.length];
+    const fn = firstNames[(g * 3) % firstNames.length];
     list.push({
-      id: 'c' + idx, name: `${fn} (${age})`, triage: t.triage,
-      pitch: age > 55 ? 210 : (idx % 2 === 0 ? 340 : 280),
-      appearance: {
-        skin: idx % 3 === 0 ? '#dfb195' : '#f1c2a5',
-        hair: age > 55 ? '#adb5bd' : (idx % 2 === 0 ? '#212529' : '#5c3c24'),
-        shirt: ['#1971c2','#2f9e44','#d6336c','#f08c00','#5f3dc4','#495057'][idx % 6],
-        flush: t.triage === 'red', sweat: t.triage !== 'green', pupils: 'normal'
-      },
-      complaint: t.comp, vitals: t.vit, lung: t.lung,
-      pupil: 'Pupiller izokorik, ışık refleksi +/+.',
-      radType: t.radType, radTitle: t.radTitle, radFinding: t.radFinding,
-      labs: t.labs,
-      enabiz: idx % 5 === 0 ? 'Not: NSAİİ mide hassasiyeti mevcut.' : 'Kronik ek hastalık kaydı yok.',
-      correctAction: t.action, targetService: t.service, targetReason: t.reason,
-      treatLabel: t.treatLabel || 'Acil Müdahale Uygula',
-      doorThreat: !!t.door,
-      hint: `${t.title}: Bulguları kontrol edip ${t.service} yönlendirmesini yap.`
+      id: `gen_${g + 1}`, spec: 'general', name: `${fn} (${25 + (g % 45)})`, triage: gt.triage, pitch: 290,
+      appearance: { skin: '#f1c2a5', hair: '#212529', shirt: '#495057', flush: false, sweat: true, pupils: gt.pupil.includes('Miyozis') ? 'miosis' : 'normal' },
+      complaint: gt.comp, vitals: gt.vit, lung: gt.exam, pupil: gt.pupil,
+      radType: gt.radType, radTitle: gt.radTitle, radFinding: gt.rad, labs: gt.labs,
+      enabiz: 'Genel acil servis başvurusu.',
+      correctAction: gt.action, targetService: gt.srv, targetReason: gt.diag,
+      bribe: gt.bribe ? { amount: 2000, text: 'Masanın altına 2.000₺ zarf uzattı: "Yaz şu ilacı hocam kimse bilmesin."' } : null,
+      hint: gt.hint
     });
-    idx++;
   }
+
   return list;
 }
-const ALL_CASES = build165Cases();
+const ALL_CASES = buildAllCases();
 
 /* ================= START & CORE FLOW ================= */
 document.querySelectorAll('.av-btn').forEach(btn => {
@@ -914,17 +1053,20 @@ document.getElementById('btnStartGame').addEventListener('click', () => {
   playSfx('coin');
   document.getElementById('startScreen').style.display = 'none';
   updateHud();
+  saveCareer();
   nextPatient();
 });
 
 function updateHud() {
   document.getElementById('hudDay').textContent = `G${state.day} ${state.seenToday}/5`;
   document.getElementById('hudMoney').textContent = `${state.money.toLocaleString('tr-TR')}₺`;
-  document.getElementById('hudRep').textContent = `⭐${state.rep}`;
-  document.getElementById('hudStress').textContent = `🧠${state.stress}%`;
+  document.getElementById('repFill').style.width = `${Math.max(10, state.rep)}%`;
+  document.getElementById('hudTus').textContent = `TUS:${state.tusScore}`;
   document.getElementById('hudWarn').textContent = `⚠️${state.warnings}/3`;
   const hStr = String(state.hour % 24).padStart(2, '0');
-  document.getElementById('clockTag').textContent = `🕒 ${hStr}:00`;
+  document.getElementById('clockTag').textContent = `${hStr}:00`;
+  const sp = SPECIALTIES[state.specialty] || SPECIALTIES.none;
+  document.getElementById('rankTag').textContent = `${sp.icon} ${sp.title.toUpperCase()}`;
 }
 
 let typeTimer = null;
@@ -943,11 +1085,12 @@ function say(speaker, text, badgeText = '', badgeClass = 't-green', pitch = 300)
       if (i % 3 === 0 && text[i] !== ' ') playBlip(pitch);
       i++;
     } else clearInterval(typeTimer);
-  }, 14);
+  }, 12);
 }
 
 function nextPatient() {
   if (state.warnings >= 3) {
+    localStorage.removeItem(SAVE_KEY);
     gameOver('3 İdari Uyarı aldın! Başhekimlik sözleşmeni feshetti — Kırsal Sağlık Ocağına Sürgün Edildin.');
     return;
   }
@@ -957,25 +1100,46 @@ function nextPatient() {
   }
   state.location = 'er';
   state.activeStaffIdx = null;
-  document.getElementById('sceneTag').textContent = `🏥 ${state.hospName.toUpperCase()} — ODA 1`;
+  const sp = SPECIALTIES[state.specialty];
+  document.getElementById('sceneTag').textContent = state.specialty === 'none'
+    ? `${state.hospName.toUpperCase()} — ODA 1`
+    : `${sp.icon} ${sp.title.toUpperCase()} POLİKLİNİĞİ`;
   document.getElementById('zoomHint').style.display = 'none';
 
-  if (Math.random() < (state.diff === 'hard' ? 0.55 : 0.42)) triggerRandomLoanRequest();
+  if (Math.random() < (state.diff === 'hard' ? 0.55 : 0.40)) triggerRandomLoanRequest();
   checkLoanRepayments();
 
-  const pool = ALL_CASES.filter(c => !state.usedCaseIds.has(c.id));
+  const usedSet = new Set(state.usedCaseIds);
+  let pool = ALL_CASES.filter(c => !usedSet.has(c.id));
+
+  if (state.specialty !== 'none' && Math.random() < 0.80) {
+    const specPool = pool.filter(c => c.spec === state.specialty);
+    if (specPool.length > 0) pool = specPool;
+    else {
+      const anySpec = ALL_CASES.filter(c => c.spec === state.specialty);
+      if (anySpec.length > 0) pool = anySpec;
+    }
+  } else if (state.specialty === 'none') {
+    const genPool = pool.filter(c => c.spec === 'general' || Math.random() < 0.35);
+    if (genPool.length > 0) pool = genPool;
+  }
+
   const chosen = pool.length ? pool[Math.floor(Math.random() * pool.length)] : ALL_CASES[Math.floor(Math.random() * ALL_CASES.length)];
-  state.usedCaseIds.add(chosen.id);
+  state.usedCaseIds.push(chosen.id);
+  if (state.usedCaseIds.length > 200) state.usedCaseIds.shift();
+
   state.currentPatient = chosen;
   state.examDone = { vitals: false, lung: false, pupil: false, rad: false, labs: false, enabiz: false };
   state.ppeOn = false;
-  state.doorThreat = !!chosen.doorThreat || (state.diff === 'hard' && Math.random() < 0.25);
+  state.doorThreat = !!chosen.doorThreat || (state.diff === 'hard' && Math.random() < 0.20);
   state.bribePending = !!chosen.bribe;
 
   const badgeMap = { red: ['KIRMIZI ALAN', 't-red'], yellow: ['SARI ALAN', 't-yellow'], green: ['YEŞİL ALAN', 't-green'] };
   const [bt, bc] = badgeMap[chosen.triage];
-  say(chosen.name, `"${chosen.complaint}"`, bt, bc, chosen.pitch);
+  const specLabel = chosen.spec && chosen.spec !== 'general' ? ` [${SPECIALTIES[chosen.spec]?.serviceName}]` : '';
+  say(chosen.name + specLabel, `"${chosen.complaint}"`, bt, bc, chosen.pitch);
   setTab('talk');
+  saveCareer();
 }
 
 function setTab(tab) {
@@ -990,25 +1154,25 @@ function setTab(tab) {
   if (!p || state.location !== 'er') return;
 
   if (tab === 'talk') {
-    addChoice(panel, '🗣️ Şikayeti Detaylandır & Klinik İpucu', () => {
-      say(p.name, `"${p.complaint}" (İpucu: ${p.hint})`, 'ANAMNEZ', 't-yellow', p.pitch);
+    addChoice(panel, 'Şikayeti Detaylandır & Klinik İpucu', () => {
+      say(p.name, `"${p.complaint}"\n(Klinik İpucu: ${p.hint})`, 'ANAMNEZ', 't-yellow', p.pitch);
     });
     const intern = INTERNS[state.internIdx];
-    addChoice(panel, `👨‍⚕️ ${intern.name}'e Danış / Gözlemle`, () => runInternSupervision());
+    addChoice(panel, `${intern.name}'e Danış / Gözlemle`, () => runInternSupervision());
     if (state.doorThreat) {
-      addChoice(panel, '🚨 1111 BEYAZ KOD BAS! (Kapıda Saldırı Tehdidi)', () => {
+      addChoice(panel, '1111 BEYAZ KOD BAS! (Kapıda Saldırı Tehdidi)', () => {
         playSfx('alarm');
-        state.doorThreat = false; state.rep += 4; updateHud();
+        state.doorThreat = false; state.rep = Math.min(100, state.rep + 4); updateHud();
         say('GÜVENLİK EKİBİ', '1111 Beyaz Kod! Güvenlik saldırganı etkisiz hale getirdi.', 'GÜVENLİ', 't-green', 220);
         if (p.correctAction === 'whitecode') completeCase(true, 'Beyaz Kod zamanında verildi, personel korundu! +450₺');
         else setTab('talk');
       }, 'danger');
     }
     if (state.bribePending && p.bribe) {
-      addChoice(panel, `✉️ Rüşvet Teklifini Gör (${p.bribe.amount}₺)`, () => {
+      addChoice(panel, `Rüşvet Teklifini Gör (${p.bribe.amount}₺)`, () => {
         say('ETİK İKİLEM', p.bribe.text, 'RÜŞVET', 't-red', 190);
         panel.innerHTML = '';
-        addChoice(panel, `💰 Zarfı Al (+${p.bribe.amount}₺, Disiplin Riski)`, () => {
+        addChoice(panel, `Zarfı Al (+${p.bribe.amount}₺, Disiplin Riski)`, () => {
           state.money += p.bribe.amount; state.bribePending = false;
           addTx('Kayıt Dışı Zarf Geliri', p.bribe.amount, 'pos');
           if (Math.random() < 0.55) {
@@ -1020,8 +1184,8 @@ function setTab(tab) {
           }
           setTab('decide');
         }, 'danger');
-        addChoice(panel, '🛡️ "Burası Devletin Hastanesi!" (Reddet & İtibar Kazan)', () => {
-          state.bribePending = false; state.rep += 6; updateHud();
+        addChoice(panel, '"Burası Devletin Hastanesi!" (Reddet & İtibar Kazan)', () => {
+          state.bribePending = false; state.rep = Math.min(100, state.rep + 6); updateHud();
           say(state.docName, '"Paranı da al çık dışarı, burada sadece tıbbi gerçekler geçer!"', 'ONURLU', 't-green', 340);
           setTab('decide');
         }, 'success');
@@ -1029,73 +1193,147 @@ function setTab(tab) {
     }
   }
   else if (tab === 'exam') {
-    addChoice(panel, `😷 KKE N95 Maske Tak (${state.ppeOn ? 'TAKILI ✓' : 'KAPALI'})`, () => {
+    addChoice(panel, `KKE N95 Maske Tak (${state.ppeOn ? 'TAKILI ✓' : 'KAPALI'})`, () => {
       state.ppeOn = true;
       say('SİSTEM', 'N95 maske ve koruyucu eldiven giyildi.', 'KORUMALI', 't-green', 420);
       setTab('exam');
     }, state.ppeOn ? 'success' : '');
-    addChoice(panel, `💓 Vital Bulgular (Nabız / TA / Ateş) ${state.examDone.vitals ? '✓' : ''}`, () => {
+    addChoice(panel, `Vital Bulgular (Nabız / TA / GİB) ${state.examDone.vitals ? '✓' : ''}`, () => {
       state.examDone.vitals = true; playSfx('heart');
       say('VİTAL MONİTÖR', p.vitals, 'VİTALLER', 't-yellow', 380);
       setTab('exam');
     });
-    addChoice(panel, `🩺 Stetoskop İle Dinle ${state.examDone.lung ? '✓' : ''}`, () => {
+    addChoice(panel, `Fizik Muayene & Oskültasyon ${state.examDone.lung ? '✓' : ''}`, () => {
       state.examDone.lung = true;
-      say('STETOSKOP BULGUSU', p.lung, 'OSKÜLTASYON', 't-yellow', 250);
+      say('FİZİK MUAYENE', p.lung, 'MUAYENE', 't-yellow', 250);
       setTab('exam');
     });
-    addChoice(panel, `🔦 Göz Feneri (Pupilla Refleksi) ${state.examDone.pupil ? '✓' : ''}`, () => {
+    addChoice(panel, `Göz Feneri (Pupilla / RAPD Refleksi) ${state.examDone.pupil ? '✓' : ''}`, () => {
       state.examDone.pupil = true;
-      say('NÖROLOJİK MUAYENE', p.pupil, 'PUPILLA', 't-yellow', 440);
+      say('PUPILLA & NÖRO-OFTALMOLOJİ', p.pupil, 'PUPILLA', 't-yellow', 440);
       setTab('exam');
     });
   }
   else if (tab === 'file') {
-    addChoice(panel, `🩻 ${p.radTitle} İste & Yakınlaştır ${state.examDone.rad ? '✓' : ''}`, () => {
+    addChoice(panel, `${p.radTitle} İste & Yakınlaştır ${state.examDone.rad ? '✓' : ''}`, () => {
       state.examDone.rad = true;
       document.getElementById('zoomHint').style.display = 'block';
-      say(p.radTitle, p.radFinding, 'RADYOLOJİ', 't-yellow', 360);
+      say(p.radTitle, p.radFinding, 'GÖRÜNTÜLEME', 't-yellow', 360);
       openModal('radiology');
     });
-    addChoice(panel, `🧪 Kan & Biyokimya Tahlilleri ${state.examDone.labs ? '✓' : ''}`, () => {
+    addChoice(panel, `Kan & Biyokimya Tahlilleri ${state.examDone.labs ? '✓' : ''}`, () => {
       state.examDone.labs = true;
       say('LABORATUVAR SONUCU', p.labs, 'TAHLİL', 't-yellow', 390);
       setTab('file');
     });
-    addChoice(panel, `💻 E-Nabız & Alerji Geçmişi ${state.examDone.enabiz ? '✓' : ''}`, () => {
+    addChoice(panel, `E-Nabız & Alerji Geçmişi ${state.examDone.enabiz ? '✓' : ''}`, () => {
       state.examDone.enabiz = true;
       say('E-NABIZ SİSTEMİ', p.enabiz, 'KAYIT', 't-red', 310);
       setTab('file');
     });
   }
   else if (tab === 'decide') {
-    addChoice(panel, '🏥 Servise Yatış Yap (Servis & Gerekçe Seç)', () => openAdmissionFlow(), 'success');
-    addChoice(panel, `💉 Acilde Müdahale Et (${p.treatLabel || 'Tedavi Uygula'})`, () => {
-      if (p.correctAction === 'quarantine' && !state.ppeOn) {
-        state.warnings++; updateHud();
-        completeCase(false, 'Maskesiz bulaşıcı hastaya yaklaştın ve enfekte oldun! +1 Uyarı.');
-        return;
+    addChoice(panel, 'Servise Yatış Yap (Klinik & Endikasyon Seç)', () => openAdmissionFlow(), 'success');
+    addChoice(panel, `Poliklinikte / Acilde Müdahale Et (${p.treatLabel || 'Tedavi Uygula'})`, () => {
+      if (p.correctAction === 'treat') {
+        if (p.miniGame) startMedicalMiniGame(p.miniGame, p.treatLabel || 'Acil Müdahale');
+        else completeCase(true, 'Müdahale tam isabet! Hasta stabilize edildi. +450₺');
+      } else {
+        completeCase(false, 'Bu hastanın servise yatışı, adli bildirimi veya taburculuğu gerekiyordu!');
       }
-      const ok = p.correctAction === 'treat';
-      completeCase(ok, ok ? 'Acil müdahale tam isabet! Hasta stabilize edildi. +450₺' : 'Bu hastanın servise yatışı veya karantinası gerekiyordu!');
     });
-    addChoice(panel, '☣️ Karantina / İzolasyon Odasına Al', () => {
-      if (p.correctAction === 'quarantine') {
-        if (!state.ppeOn) {
-          state.warnings++; updateHud();
-          completeCase(false, 'Doğru tanı ama N95 maske takmadan temas ettin! +1 Uyarı.');
-        } else completeCase(true, 'Salgın vakası KKE korumasıyla izolasyona alındı! +600₺');
-      } else completeCase(false, 'Bulaşıcı olmayan hastayı karantinaya kapattın!');
-    });
-    addChoice(panel, '👮 Hastane Polisi / Adli Bildirim', () => {
+    addChoice(panel, 'Hastane Polisi / Adli Bildirim', () => {
       const ok = p.correctAction === 'police' || p.correctAction === 'whitecode';
       completeCase(ok, ok ? 'Sahte reçete / adli vaka polise teslim edildi! +450₺' : 'Masum hastaya polis çağırdın!');
     });
-    addChoice(panel, '🏠 Reçete Yaz & Taburcu Et', () => {
+    addChoice(panel, 'Reçete Yaz & Taburcu Et', () => {
       const ok = p.correctAction === 'discharge';
-      completeCase(ok, ok ? 'Gereksiz yatış yapılmadı, hasta güvenle taburcu edildi. +350₺' : 'KRİTİK HATA! Yatması gereken ağır hastayı eve gönderdin!');
+      completeCase(ok, ok ? 'Gereksiz yatış yapılmadı, hasta güvenle taburcu edildi. +350₺' : 'KRİTİK HATA! Yatması veya müdahale edilmesi gereken hastayı eve gönderdin!');
     });
   }
+}
+
+/* ================= 4 INTERACTIVE MEDICAL MINI-GAMES ================= */
+let mgLoopId = null;
+function startMedicalMiniGame(type, label) {
+  const modal = document.getElementById('modal');
+  const title = document.getElementById('modalTitle');
+  const body = document.getElementById('modalBody');
+  modal.style.display = 'flex';
+  if (mgLoopId) cancelAnimationFrame(mgLoopId);
+
+  const titles = {
+    cardioversion: 'SENKRONİZE KARDİYOVERSİYON',
+    iv: 'IV DAMAR YOLU & İLAÇ BOLUSU',
+    fracture: 'KIRIK / ÇIKIK REDÜKSİYON HİZALAMA',
+    decon: 'İĞNE DEKOMPRESYON / OKÜLER YIKAMA'
+  };
+  title.textContent = titles[type] || 'KLİNİK MÜDAHALE';
+
+  body.innerHTML = `
+    <div class="mg-box">
+      <div style="font-size:11.5px;color:var(--accent-gold);font-weight:900;">${label}</div>
+      <canvas id="mgCanvas" width="320" height="150"></canvas>
+      <div style="font-size:11px;color:var(--accent-green);">Hareketli gösterge YEŞİL hedef bölgeye geldiğinde müdahaleyi uygula!</div>
+      <button id="mgActionBtn" class="mg-action-btn">🩺 MÜDAHALEYİ UYGULA</button>
+    </div>
+  `;
+
+  const c = document.getElementById('mgCanvas');
+  const x = c.getContext('2d');
+  let cursor = 20, dir = 1, speed = 3.8, targetStart = 128, targetW = 64, finished = false;
+
+  function renderMg() {
+    if (finished) return;
+    cursor += dir * speed;
+    if (cursor >= 295) { cursor = 295; dir = -1; }
+    if (cursor <= 25) { cursor = 25; dir = 1; }
+
+    x.fillStyle = '#05070c'; x.fillRect(0, 0, 320, 150);
+
+    if (type === 'cardioversion') {
+      x.strokeStyle = '#ff5252'; x.lineWidth = 2; x.beginPath();
+      for (let i = 10; i < 310; i += 4) {
+        const py = 52 + Math.sin(i * 0.22 + cursor * 0.05) * 24;
+        if (i === 10) x.moveTo(i, py); else x.lineTo(i, py);
+      }
+      x.stroke();
+    } else if (type === 'fracture') {
+      x.fillStyle = '#f8f9fa';
+      x.fillRect(70, 42, 85, 16);
+      x.fillRect(162, 42 + (cursor - 160) * 0.14, 85, 16);
+    } else if (type === 'iv') {
+      x.fillStyle = '#3bc9db'; x.fillRect(20, 45, 280, 18);
+      x.fillStyle = '#ffffff'; x.fillRect(20, 51, 280, 5);
+    } else {
+      x.strokeStyle = '#51cf66'; x.lineWidth = 2;
+      x.strokeRect(85, 24, 150, 56);
+      x.fillStyle = '#ffd43b'; x.fillText('ANATOMİK HEDEF', 112, 55);
+    }
+
+    x.fillStyle = '#1c2333'; x.fillRect(20, 102, 280, 22);
+    x.fillStyle = '#51cf66'; x.fillRect(targetStart, 102, targetW, 22);
+    x.strokeStyle = '#ffffff'; x.lineWidth = 2; x.strokeRect(targetStart, 102, targetW, 22);
+
+    x.fillStyle = '#ffd43b'; x.fillRect(cursor - 4, 96, 8, 34);
+
+    mgLoopId = requestAnimationFrame(renderMg);
+  }
+  renderMg();
+
+  document.getElementById('mgActionBtn').onclick = () => {
+    if (finished) return;
+    finished = true;
+    cancelAnimationFrame(mgLoopId);
+    const hit = cursor >= targetStart && cursor <= (targetStart + targetW);
+    closeModal();
+    if (hit) {
+      state.tusScore += 1;
+      completeCase(true, `MÜKEMMEL ZAMANLAMA! ${label} başarıyla uygulandı! (+1 TUS Puanı & +500₺)`);
+    } else {
+      completeCase(true, `Müdahale tamamlandı; hasta stabilize edildi. (+300₺)`);
+    }
+  };
 }
 
 /* ================= 2-STEP ADMISSION & INTERN ================= */
@@ -1103,8 +1341,8 @@ function openAdmissionFlow() {
   const panel = document.getElementById('subPanel');
   panel.innerHTML = '';
   say('YATIŞ PROTOKOLÜ — ADIM 1/2', 'Hastayı hangi kliniğe / servise yatırıyorsun?', 'SERVİS SEÇ', 't-yellow', 330);
-  ['Kardiyoloji','Göğüs Hastalıkları','Genel Cerrahi','Ortopedi','Kadın Doğum','Nöroloji / Beyin Cerrahi','Dahiliye / Yoğun Bakım'].forEach(srv => {
-    addChoice(panel, `🏥 ${srv}`, () => openAdmissionReason(srv));
+  ['Göz Hastalıkları','Kardiyoloji','Göğüs Hastalıkları','Genel Cerrahi','Ortopedi','Pediatri','KBB','Kadın Doğum','Nöroloji / Beyin Cerrahi'].forEach(srv => {
+    addChoice(panel, srv, () => openAdmissionReason(srv));
   });
 }
 
@@ -1112,33 +1350,39 @@ function openAdmissionReason(selectedService) {
   const p = state.currentPatient;
   const panel = document.getElementById('subPanel');
   panel.innerHTML = '';
-  say(`YATIŞ: ${selectedService.toUpperCase()} — ADIM 2/2`, 'Konsültan uzmana iletilecek tıbbi yatış gerekçesini seç:', 'ENDİKASYON', 't-yellow', 350);
+  say(`YATIŞ: ${selectedService.toUpperCase()} — ADIM 2/2`, 'Konsültan uzmana iletilecek tıbbi yatış tanısını seç:', 'ENDİKASYON', 't-yellow', 350);
 
   const distractorReasons = [
-    'Akut İnferior Miyokard İnfarktüsü (STEMI)',
-    'Lober Pnömoni + Hipoksi (SpO2 %91)',
-    'Akut Apandisit (Cerrahi Endikasyon)',
-    'Deplase Tibia Kırığı (Cerrahi/Atel)',
-    'Aktif Doğum Eylemi (38 Hafta Gebelik)',
-    'Epidural Hematom + KİBAS (Anizokori)',
-    'Vertebral Arter Diseksiyonu (Akut İnme)',
-    'Diyabetik Ketoasidoz + Ağır Asidoz',
-    'Genel Halsizlik ve Vitamin Eksikliği'
+    'Santral Retinal Arter Tıkanıklığı (CRAO)',
+    'Macula-On Retina Dekolmanı',
+    'Akut Anterior STEMI',
+    'Kardiyak Tamponad (Beck Triadı)',
+    'Akut İskemik İnme (tPA Penceresi)',
+    'Akut Kompartman Sendromu',
+    'Akut Epiglottit (Çocuk Acil)',
+    'Peritonsiller Apse (Quinsy)',
+    'Akut Apandisit',
+    'Lober Pnömoni + Hipoksi'
   ];
   const options = new Set([p.targetReason || 'Klinik Takip ve Tedavi']);
   while (options.size < 4) options.add(distractorReasons[Math.floor(Math.random() * distractorReasons.length)]);
 
   Array.from(options).sort(() => Math.random() - 0.5).forEach(reason => {
-    addChoice(panel, `📋 Gerekçe: ${reason}`, () => {
+    addChoice(panel, `Tanı: ${reason}`, () => {
       if (p.correctAction !== 'admit') {
         completeCase(false, `${selectedService} uzmanı reddetti: "Bu hastanın yatış endikasyonu yok!"`);
         return;
       }
       const serviceMatch = selectedService === p.targetService;
       const reasonMatch = reason === p.targetReason;
-      if (serviceMatch && reasonMatch) completeCase(true, `${selectedService} kabul etti! Gerekçe (${reason}) eksiksiz. +550₺`);
-      else if (serviceMatch) completeCase(true, `${selectedService} hastayı aldı ama uzman yatış notunu düzeltti. +300₺`);
-      else completeCase(false, `YANLIŞ SERVİS! ${selectedService} yerine ${p.targetService} olmalıydı!`);
+      if (serviceMatch && reasonMatch) {
+        state.tusScore += 1;
+        completeCase(true, `${selectedService} kabul etti! Tanı eksiksiz. (+1 TUS Puanı & +550₺)`);
+      } else if (serviceMatch) {
+        completeCase(true, `${selectedService} hastayı aldı ama uzman yatış notunu düzeltti. +300₺`);
+      } else {
+        completeCase(false, `YANLIŞ SERVİS! ${selectedService} yerine ${p.targetService} olmalıydı!`);
+      }
     });
   });
 }
@@ -1151,21 +1395,21 @@ function runInternSupervision() {
 
   let internProposal = '', isMistake = true;
   if (intern.flaw === 'allergy') internProposal = `"Hocam vakit kaybetmeyelim, ben hemen 1000 mg Penisilin iğnesi yapıp gönderiyorum!"`;
-  else if (intern.flaw === 'sleepy') internProposal = `*Esner* "Hocam akciğerleri dinledim ama stetoskopun kulaklığını takmayı unutmuşum..."`;
-  else if (intern.flaw === 'rude') internProposal = `"Abartmayın, Google'dan bakıp acili meşgul etmeyin!" (Hasta yakını sinirlendi!)`;
+  else if (intern.flaw === 'sleepy') internProposal = `*Esner* "Hocam muayene ettim ama cihazın fişini takmayı unutmuşum..."`;
+  else if (intern.flaw === 'rude') internProposal = `"Abartmayın, internetten okuyup polikliniği meşgul etmeyin!" (Hasta yakını sinirlendi!)`;
   else {
     internProposal = `"Hocam ellerim titriyor ama ${p.radTitle} istemini ve vitalleri hazırladım, doğru mu?"`;
     isMistake = false;
   }
 
-  say(`${intern.name.toUpperCase()} (${intern.trait})`, internProposal, 'SÜPERVİZYON', isMistake ? 't-red' : 't-green', 270);
+  say(`${intern.name.toUpperCase()}`, internProposal, 'SÜPERVİZYON', isMistake ? 't-red' : 't-green', 270);
   if (isMistake) {
-    addChoice(panel, '✋ "DUR! Hata Yapıyorsun, Doğrusunu Göstereyim"', () => {
-      state.internTrust += 10; state.rep += 3; updateHud();
+    addChoice(panel, '"DUR! Hata Yapıyorsun, Doğrusunu Göstereyim"', () => {
+      state.internTrust += 10; state.rep = Math.min(100, state.rep + 3); updateHud();
       say(intern.name, '"Çok haklısınız hocam, az kalsın büyük hata yapıyordum!"', 'EĞİTİLDİ', 't-green', 320);
       setTab('exam');
     }, 'success');
-    addChoice(panel, '☕ İntörne Sıcak Çay Ismarla (-30₺, Odak Artar)', () => {
+    addChoice(panel, 'İntörne Sıcak Çay Ismarla (-30₺, Odak Artar)', () => {
       if (state.money >= 30) {
         state.money -= 30; state.internTrust += 15; addTx('Kantin Çay İkramı', -30, 'neg'); updateHud();
         say(intern.name, '"İlaç gibi geldi hocam, zihnim açıldı!"', 'MORAL +15', 't-green', 360);
@@ -1173,8 +1417,8 @@ function runInternSupervision() {
       setTab('exam');
     });
   } else {
-    addChoice(panel, '👏 "Aferin, Aynen Böyle Devam Et!"', () => {
-      state.internTrust += 12; state.rep += 2; updateHud();
+    addChoice(panel, '"Aferin, Aynen Böyle Devam Et!"', () => {
+      state.internTrust += 12; state.rep = Math.min(100, state.rep + 2); updateHud();
       say(intern.name, '"Teşekkürler hocam, sayenizde kendime güvenim geldi!"', 'MOTİVE', 't-green', 370);
       setTab('exam');
     }, 'success');
@@ -1185,32 +1429,45 @@ function completeCase(success, msg) {
   playSfx('stamp');
   state.seenToday++;
   state.hour += 2;
+  const spBonus = SPECIALTIES[state.specialty]?.bonusPay || 0;
+
   if (success) {
-    state.money += 450;
+    state.dailyCorrect++;
+    state.totalSaved++;
+    const earned = 450 + spBonus;
+    state.money += earned;
     state.rep = Math.min(100, state.rep + 4);
     state.stress = Math.max(0, state.stress - 3);
-    addTx(`Vaka Performans Ödemesi (${state.currentPatient.name})`, 450, 'pos');
+    addTx(`Vaka Performans (${state.currentPatient.name})`, earned, 'pos');
   } else {
-    state.rep = Math.max(0, state.rep - 6);
+    state.dailyWrong++;
+    state.rep = Math.max(0, state.rep - 8);
     state.stress = Math.min(100, state.stress + 12);
     state.warnings++;
   }
   updateHud();
-  say(success ? 'VAKA BAŞARILI ✓' : 'KLİNİK HATA ✕', msg, success ? '+İTİBAR' : 'UYARI', success ? 't-green' : 't-red', success ? 420 : 160);
+  saveCareer();
+  say(success ? 'VAKA BAŞARILI ✓' : 'KLİNİK HATA ✕', msg, success ? '+KAZANÇ' : 'UYARI', success ? 't-green' : 't-red', success ? 420 : 160);
   const panel = document.getElementById('subPanel');
   panel.innerHTML = '';
-  addChoice(panel, '▶ Sıradaki Hastayı Çağır', () => nextPatient(), 'success');
+  addChoice(panel, 'Sıradaki Hastayı Çağır', () => nextPatient(), 'success');
 }
 
-/* ================= END OF SHIFT + CAR FUEL/BREAKDOWN EVENTS ================= */
+/* ================= END OF SHIFT + EPİKRİZ KARNESİ ================= */
 function endOfShiftSummary() {
+  const correctToday = state.dailyCorrect;
+  const wrongToday = state.dailyWrong;
+
   state.day++;
   state.hour = 20;
   state.seenToday = 0;
+  state.dailyCorrect = 0;
+  state.dailyWrong = 0;
   state.coffeeGivenToday = false;
   state.internIdx = (state.internIdx + 1) % INTERNS.length;
 
-  let payroll = 1100 + (state.rep * 5);
+  const spBonus = SPECIALTIES[state.specialty]?.bonusPay || 0;
+  let payroll = 1100 + (state.rep * 5) + spBonus;
   if (state.bankDebt > 0) {
     const cut = Math.min(state.bankDebt, 600);
     state.bankDebt -= cut; payroll -= cut;
@@ -1219,24 +1476,29 @@ function endOfShiftSummary() {
   state.money += payroll;
   addTx(`Gün ${state.day - 1} Döner Sermaye & Nöbet Bordrosu`, payroll, 'pos');
   updateHud();
+  saveCareer();
 
   const nextInt = INTERNS[state.internIdx];
   const hasCar = state.assets.car !== 'Yok (Belediye Otobüsü)';
-  say('NÖBET TESLİMİ & BORDRO', `TıpBank hesabına +${payroll}₺ Nöbet & Döner Sermaye yattı! Yarın yanında ${nextInt.name} olacak.`, 'NÖBET BİTTİ', 't-green', 390);
+  say(
+    `GÜN ${state.day - 1} NÖBET EPİKRİZ KARNESİ`,
+    `• Doğru Müdahale: ${correctToday} | Hata: ${wrongToday} | Toplam Kurtarılan: ${state.totalSaved}\n• Hesaba Yatan: +${payroll}₺ | Yarın Ekip: ${nextInt.name}`,
+    'NÖBET BİTTİ', 't-green', 390
+  );
+
   const panel = document.getElementById('subPanel');
   panel.innerHTML = '';
 
+  addChoice(panel, 'TUS Çalış & 8 Uzmanlık Dalından Birini Seç', () => openModal('tus'), 'purple');
   if (hasCar) {
-    addChoice(panel, `🚗 ${state.assets.car} İle Eve Sür (Yakıt: %${state.assets.fuel} | Kondisyon: %${state.assets.carHealth})`, () => {
-      driveHomeWithCar();
-    }, 'success');
+    addChoice(panel, `${state.assets.car} İle Eve Sür (Yakıt: %${state.assets.fuel} | Kondisyon: %${state.assets.carHealth})`, () => driveHomeWithCar(), 'success');
   } else {
-    addChoice(panel, '🚌 Belediye Otobüsüyle Eve Dön (%30 Rastgele Acil Durum)', () => {
+    addChoice(panel, 'Belediye Otobüsüyle Eve Dön (%30 Acil Durum)', () => {
       if (Math.random() < 0.30) startBusEmergency();
       else goLocation('home');
     });
   }
-  addChoice(panel, '☕ Hastane Kantinine Uğra (Personel & AI Sohbet)', () => goLocation('canteen'));
+  addChoice(panel, 'Hastane Kantinine Uğra (Personel & AI Sohbet)', () => goLocation('canteen'));
 }
 
 function driveHomeWithCar() {
@@ -1258,12 +1520,13 @@ function driveHomeWithCar() {
     const cost = isSahin ? 450 : 850;
     state.money = Math.max(0, state.money - cost);
     addTx(`Oto Sanayi / Servis Arıza Masrafı (${state.assets.car})`, -cost, 'neg');
-    updateHud();
+    updateHud(); saveCareer();
     goLocation('dealer');
-    say('SANAYİ YOLU GÖRÜNDÜ! 🔧', `${issue} (Kalan Kondisyon: %${state.assets.carHealth})`, 'ARIZA', 't-red', 180);
+    say('SANAYİ YOLU GÖRÜNDÜ!', `${issue} (Kalan Kondisyon: %${state.assets.carHealth})`, 'ARIZA', 't-red', 180);
   } else {
+    saveCareer();
     goLocation('home');
-    say('KEYİFLİ SÜRÜŞ 🚗', `${state.assets.car} ile müzik eşliğinde evine ulaştın! (Kalan Yakıt: %${state.assets.fuel})`, 'EV', 't-green', 360);
+    say('KEYİFLİ SÜRÜŞ', `${state.assets.car} ile müzik eşliğinde evine ulaştın! (Kalan Yakıt: %${state.assets.fuel})`, 'EV', 't-green', 360);
   }
 }
 
@@ -1276,23 +1539,23 @@ function startBusEmergency() {
   panel.innerHTML = '';
   const btn = document.createElement('button');
   btn.className = 'choice-btn danger';
-  btn.innerHTML = '<span>💓 GÖĞÜS BASISI UYGULA (0 / 10)</span><span>110 BPM</span>';
+  btn.innerHTML = '<span>GÖĞÜS BASISI UYGULA (0 / 10)</span><span>110 BPM</span>';
   btn.onclick = () => {
     compressions++; playSfx('heart');
-    btn.innerHTML = `<span>💓 GÖĞÜS BASISI UYGULA (${compressions} / 10)</span><span>DEVAM!</span>`;
+    btn.innerHTML = `<span>GÖĞÜS BASISI UYGULA (${compressions} / 10)</span><span>DEVAM!</span>`;
     if (compressions >= 10) {
       state.money += 600; state.rep = Math.min(100, state.rep + 8);
       addTx('Belediye / Bakanlık Kahramanlık Ödülü', 600, 'pos');
-      updateHud();
+      updateHud(); saveCareer();
       say('YEREL HABERLER MANŞETİ!', `"${state.docName}, otobüste kalbi duran vatandaşı hayata döndürdü!" (+600₺ & +8 İtibar)`, 'KAHRAMAN', 't-green', 440);
       panel.innerHTML = '';
-      addChoice(panel, '☀️ Yeni Nöbete Geç', () => nextPatient(), 'success');
+      addChoice(panel, 'Yeni Nöbete Geç', () => nextPatient(), 'success');
     }
   };
   panel.appendChild(btn);
 }
 
-/* ================= SMARTPHONE APPS (TIPBANK, WHATSDOC AI, FOTOGRAM, CALL, BETTIP) ================= */
+/* ================= SMARTPHONE APPS ================= */
 function openPhone() {
   document.getElementById('phoneDot').style.display = 'none';
   openPhoneApp('home');
@@ -1303,77 +1566,65 @@ function openPhoneApp(app) {
   const title = document.getElementById('modalTitle');
   const body = document.getElementById('modalBody');
   modal.style.display = 'flex';
-  title.textContent = `📱 ${state.assets.phone.toUpperCase()}`;
+  title.textContent = `${state.assets.phone.toUpperCase()}`;
 
   const hStr = String(state.hour % 24).padStart(2, '0');
   body.innerHTML = `<div class="phone-frame">
-    <div class="phone-status"><span>📶 TıpCell 5G</span><span>🕒 ${hStr}:00</span><span>${state.apiKey ? '🤖 AI BAĞLI' : '🧠 DAHİLİ AI'}</span></div>
+    <div class="phone-status"><span>TıpCell 5G</span><span>${hStr}:00</span><span>${state.apiKey ? 'AI BAĞLI' : 'DAHİLİ AI'}</span></div>
     <div id="phoneScreen" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px;"></div>
-    <button class="choice-btn" style="margin-top:8px;justify-content:center;" onclick="openPhoneApp('home')">⭕ ANA EKRAN</button>
+    <button class="choice-btn" style="margin-top:8px;justify-content:center;" onclick="openPhoneApp('home')">ANA EKRAN</button>
   </div>`;
   const scr = document.getElementById('phoneScreen');
 
   if (app === 'home') {
     const reqBadge = state.loanRequests.length ? `<span class="badge-dot" style="display:block;"></span>` : '';
     scr.innerHTML = `
-      <div style="text-align:center;font-size:11px;color:var(--amber);padding:4px;">Hoş geldin, ${state.docName}</div>
+      <div style="text-align:center;font-size:11px;color:var(--accent-gold);padding:4px;">${state.docName}<br><span style="color:var(--accent-purple)">${SPECIALTIES[state.specialty].title}</span></div>
       <div class="app-grid">
         <div class="app-icon" onclick="openPhoneApp('bank')">${reqBadge}<span class="ico">💳</span><span>TıpBank</span></div>
         <div class="app-icon" onclick="openPhoneApp('whatsdoc')"><span class="ico">💬</span><span>WhatsDoc AI</span></div>
         <div class="app-icon" onclick="openPhoneApp('fotogram')"><span class="ico">📸</span><span>FotoGram</span></div>
-        <div class="app-icon" onclick="openPhoneApp('call')"><span class="ico">📞</span><span>Arama</span></div>
+        <div class="app-icon" onclick="openModal('tus')"><span class="ico">🎓</span><span>TUS Portal</span></div>
         <div class="app-icon" onclick="openPhoneApp('bettip')"><span class="ico">🎰</span><span>BetTıp</span></div>
         <div class="app-icon" onclick="openModal('map')"><span class="ico">🗺️</span><span>Harita</span></div>
-      </div>
-      <div style="font-size:10px;color:var(--text-muted);text-align:center;margin-top:auto;">
-        Bekleyen Borç Talebi: <strong style="color:var(--crimson)">${state.loanRequests.length}</strong> | Alacakların: <strong style="color:var(--teal)">${state.activeLoansOut.length}</strong>
       </div>`;
   }
   else if (app === 'bank') {
     scr.innerHTML = `
       <div class="bank-card">
-        <div style="font-size:10px;color:var(--teal)">TIPBANK VADESİZ HESAP</div>
+        <div style="font-size:10px;color:var(--accent-green)">TIPBANK VADESİZ HESAP</div>
         <div style="font-size:20px;font-weight:900;margin:4px 0;">${state.money.toLocaleString('tr-TR')} ₺</div>
-        <div style="font-size:9px;color:#cbd5e1;">IBAN: ${state.iban}</div>
-        ${state.bankDebt > 0 ? `<div style="font-size:10px;color:#ff8787;margin-top:4px;">Aktif Kredi Borcu: ${state.bankDebt}₺</div>` : ''}
+        <div style="font-size:9px;color:#ccc;">IBAN: ${state.iban}</div>
+        ${state.bankDebt > 0 ? `<div style="font-size:10px;color:var(--accent-red);margin-top:4px;">Aktif Kredi Borcu: ${state.bankDebt}₺</div>` : ''}
       </div>
-      <div style="font-size:11px;color:var(--amber);font-weight:800;margin-top:4px;">💸 DOKTOR & PERSONEL BORÇ TALEPLERİ (${state.loanRequests.length})</div>
+      <div style="font-size:11px;color:var(--accent-gold);font-weight:900;margin-top:4px;">BORÇ TALEPLERİ (${state.loanRequests.length})</div>
     `;
-    if (!state.loanRequests.length) {
-      scr.innerHTML += `<div style="font-size:11px;color:var(--text-muted);padding:6px;background:#121829;">Şu an senden borç isteyen meslektaşın yok.</div>`;
-    } else {
-      state.loanRequests.forEach(req => {
-        const box = document.createElement('div');
-        box.style.cssText = 'background:#161f36;border:2px solid var(--gold);padding:8px;display:flex;flex-direction:column;gap:6px;';
-        box.innerHTML = `
-          <div style="display:flex;justify-content:space-between;font-weight:800;color:var(--amber);">
-            <span>${req.from}</span><span>İstenen: ${req.amount}₺</span>
-          </div>
-          <div style="font-size:11px;line-height:1.4;">"${req.story}"</div>
-          <div style="font-size:9.5px;color:var(--sky);">IBAN: ${req.iban} • Geri Ödeme: ${req.returnAmt}₺</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
-            <button class="choice-btn success" style="justify-content:center;" onclick="resolveLoan('${req.id}', true)">✓ FAST Gönder</button>
-            <button class="choice-btn danger" style="justify-content:center;" onclick="resolveLoan('${req.id}', false)">✕ Reddet</button>
-          </div>`;
-        scr.appendChild(box);
-      });
-    }
+    state.loanRequests.forEach(req => {
+      const box = document.createElement('div');
+      box.style.cssText = 'background:#080b12;border:2px solid var(--accent-gold);padding:8px;display:flex;flex-direction:column;gap:6px;';
+      box.innerHTML = `
+        <div style="display:flex;justify-content:space-between;font-weight:900;color:var(--accent-gold);">
+          <span>${req.from}</span><span>İstenen: ${req.amount}₺</span>
+        </div>
+        <div style="font-size:11px;line-height:1.4;">"${req.story}"</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+          <button class="choice-btn success" style="justify-content:center;" onclick="resolveLoan('${req.id}', true)">FAST Gönder</button>
+          <button class="choice-btn danger" style="justify-content:center;" onclick="resolveLoan('${req.id}', false)">Reddet</button>
+        </div>`;
+      scr.appendChild(box);
+    });
 
     const loanBtn = document.createElement('button');
     loanBtn.className = 'choice-btn';
-    loanBtn.textContent = '🏦 TıpBank Anında İhtiyaç Kredisi Çek (+2.000₺)';
+    loanBtn.textContent = 'TıpBank Anında İhtiyaç Kredisi Çek (+2.000₺)';
     loanBtn.onclick = () => {
       if (state.bankDebt >= 4000) { alert('Kredi limitin doldu!'); return; }
       state.money += 2000; state.bankDebt += 2400;
       addTx('TıpBank Anında Kredi Kullanımı', 2000, 'pos');
-      playSfx('coin'); updateHud(); openPhoneApp('bank');
+      playSfx('coin'); updateHud(); saveCareer(); openPhoneApp('bank');
     };
     scr.appendChild(loanBtn);
 
-    const txHead = document.createElement('div');
-    txHead.style.cssText = 'font-size:11px;color:var(--teal);font-weight:800;margin-top:4px;';
-    txHead.textContent = '📜 SON HESAP HAREKETLERİ';
-    scr.appendChild(txHead);
     state.transactions.forEach(t => {
       const r = document.createElement('div');
       r.className = 'tx-row ' + t.type;
@@ -1382,58 +1633,42 @@ function openPhoneApp(app) {
     });
   }
   else if (app === 'whatsdoc') {
-    scr.innerHTML = `<div style="font-size:12px;color:var(--teal);font-weight:800;">💬 WHATSDOC AI SOHBETLER</div>`;
+    scr.innerHTML = `<div style="font-size:12px;color:var(--accent-green);font-weight:900;">WHATSDOC AI SOHBETLER</div>`;
     state.chats.forEach((ch, idx) => {
       const last = ch.msgs[ch.msgs.length - 1];
       const b = document.createElement('div');
-      b.style.cssText = 'background:#141d33;border:1px solid #32436b;padding:8px;cursor:pointer;';
-      b.innerHTML = `<div style="font-weight:800;color:var(--amber);">${ch.name}</div><div style="font-size:11px;color:#cbd5e1;margin-top:3px;">${last.from}: ${last.text}</div>`;
+      b.style.cssText = 'background:#0d111a;border:2px solid #495057;padding:8px;cursor:pointer;';
+      b.innerHTML = `<div style="font-weight:900;color:var(--accent-gold);">${ch.name}</div><div style="font-size:11px;color:#ccc;margin-top:3px;">${last.from}: ${last.text}</div>`;
       b.onclick = () => openChatThread(idx);
       scr.appendChild(b);
     });
   }
   else if (app === 'fotogram') {
     scr.innerHTML = `
-      <div style="font-size:12px;color:var(--amber);font-weight:800;">📸 FOTOGRAM — PİKSEL PAYLAŞIM</div>
+      <div style="font-size:12px;color:var(--accent-gold);font-weight:900;">FOTOGRAM — PİKSEL PAYLAŞIM</div>
       <canvas id="photoCanvas" width="280" height="120"></canvas>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;">
-        <button class="choice-btn" onclick="takePhoto('tea','Nöbet masasında çay ve EKG keyfi ☕🩺')">☕ Nöbet Çayı Çek</button>
-        <button class="choice-btn" onclick="takePhoto('car','Nöbet çıkışı direksiyon başı 🚗💨')">🚗 Araç Pozu Çek</button>
+        <button class="choice-btn" onclick="takePhoto('tea','Nöbet masasında çay ve EKG keyfi ☕🩺')">Nöbet Çayı Çek</button>
+        <button class="choice-btn" onclick="takePhoto('car','Nöbet çıkışı direksiyon başı 🚗💨')">Araç Pozu Çek</button>
       </div>
     `;
     drawRetroPhoto('tea');
     state.posts.forEach(pt => {
       const d = document.createElement('div');
-      d.style.cssText = 'background:#131a2e;border:1px solid #2c3b5e;padding:7px;font-size:11px;';
-      d.innerHTML = `<strong style="color:var(--teal)">@${pt.author.replace(/\s+/g,'').toLowerCase()}</strong><br>${pt.caption}<br><span style="color:var(--crimson)">❤️ ${pt.likes} Beğeni</span> • <span style="color:var(--text-muted)">${pt.comment}</span>`;
+      d.style.cssText = 'background:#0d111a;border:2px solid #343a40;padding:7px;font-size:11px;';
+      d.innerHTML = `<strong style="color:var(--accent-cyan)">@${pt.author.replace(/\s+/g,'').toLowerCase()}</strong><br>${pt.caption}<br><span style="color:var(--accent-red)">♥ ${pt.likes} Beğeni</span>`;
       scr.appendChild(d);
-    });
-  }
-  else if (app === 'call') {
-    scr.innerHTML = `<div style="font-size:12px;color:var(--sky);font-weight:800;">📞 HIZLI ARAMA REHBERİ</div>`;
-    const contacts = [
-      ['👔 Başhekimlik Sekreterliği', 'Başhekim: "Nöbet performansını takip ediyoruz doktor, böyle devam et."'],
-      ['🚑 112 Komuta Kontrol', '112 Komuta: "Bölgede trafik kazası var, 15 dakikaya ambulans giriş yapacak."'],
-      ['🩺 Asistan Dr. Elif', 'Dr. Elif: "Sesini duymak iyi geldi, birazdan kantinde buluşalım!"'],
-      ['🔧 Sanayi Ustası Mehmet', 'Usta: "Hocam arabanın yağına suyuna baktır, yolda kalırsan çekici gönderirim."']
-    ];
-    contacts.forEach(([name, reply]) => {
-      addChoice(scr, name, () => {
-        playSfx('msg');
-        scr.innerHTML = `<div style="padding:14px;background:#14242b;border:2px solid var(--teal);line-height:1.5;">
-          <strong style="color:var(--amber)">${name} ARANIYOR...</strong><br><br>${reply}</div>`;
-      });
     });
   }
   else if (app === 'bettip') {
     scr.innerHTML = `
-      <div style="background:#2b0d16;border:2px solid var(--crimson);padding:9px;">
-        <div style="color:#ff8787;font-weight:900;">🎰 BETTIP — KAÇAK KRİPTO SLOT</div>
+      <div style="background:#1c0b0e;border:2px solid var(--accent-red);padding:9px;">
+        <div style="color:var(--accent-red);font-weight:900;">BETTIP — KAÇAK KRİPTO SLOT</div>
         <div style="font-size:11px;margin-top:4px;">Yüksek risk! Kaybedersen stres artar, çok oynarsan Başhekimlik soruşturma açar.</div>
       </div>
-      <button class="choice-btn" onclick="playBet(300)">🎲 300₺ Bahis Oyna (2.1x Kazanç Şansı)</button>
-      <button class="choice-btn danger" onclick="playBet(1000)">🔥 1.000₺ Yüksek Bahis Oyna (2.4x Şans / Soruşturma Riski)</button>
-      <div id="betResult" style="padding:8px;font-size:12px;color:var(--amber);"></div>
+      <button class="choice-btn" onclick="playBet(300)">300₺ Bahis Oyna (2.1x Kazanç Şansı)</button>
+      <button class="choice-btn danger" onclick="playBet(1000)">1.000₺ Yüksek Bahis Oyna</button>
+      <div id="betResult" style="padding:8px;font-size:12px;color:var(--accent-gold);"></div>
     `;
   }
 }
@@ -1441,13 +1676,13 @@ function openPhoneApp(app) {
 async function openChatThread(idx) {
   const ch = state.chats[idx];
   const scr = document.getElementById('phoneScreen');
-  scr.innerHTML = `<div style="font-weight:800;color:var(--amber);border-bottom:1px solid #334;padding-bottom:4px;">${ch.name}</div>`;
+  scr.innerHTML = `<div style="font-weight:900;color:var(--accent-gold);border-bottom:2px solid #2b3344;padding-bottom:4px;">${ch.name}</div>`;
   const list = document.createElement('div');
   list.style.cssText = 'flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:6px;';
   ch.msgs.forEach(m => {
     const d = document.createElement('div');
-    d.style.cssText = 'background:#162038;padding:7px;font-size:11px;line-height:1.4;white-space:pre-line;';
-    d.innerHTML = `<strong style="color:var(--teal)">${m.from}:</strong> ${m.text}`;
+    d.style.cssText = 'background:#0d111a;border:1px solid #2b3344;padding:7px;font-size:11px;line-height:1.4;white-space:pre-line;';
+    d.innerHTML = `<strong style="color:var(--accent-cyan)">${m.from}:</strong> ${m.text}`;
     list.appendChild(d);
   });
   scr.appendChild(list);
@@ -1465,9 +1700,10 @@ async function openChatThread(idx) {
     ch.msgs.push({ from: state.docName, text: txt });
     playSfx('msg');
     openChatThread(idx);
-    const reply = await generateAIReply(ch.name, ch.persona || ch.name, txt, ch.msgs);
+    const reply = await generateAIReply(ch.name, ch.persona || ch.name, txt);
     ch.msgs.push({ from: ch.name.replace(/^[^\wğüşöçıİĞÜŞÖÇ]+\s*/, ''), text: reply });
     playSfx('msg');
+    saveCareer();
     if (document.getElementById('phoneMsgInp')) openChatThread(idx);
   };
   document.getElementById('phoneMsgSend').onclick = sendFn;
@@ -1478,12 +1714,13 @@ function drawRetroPhoto(mode) {
   const c = document.getElementById('photoCanvas');
   if (!c) return;
   const x = c.getContext('2d');
-  x.fillStyle = mode === 'tea' ? '#1a2540' : '#0f292e';
+  x.fillStyle = '#07090e';
   x.fillRect(0, 0, 280, 120);
-  x.fillStyle = '#f5b942'; x.font = 'bold 12px monospace';
-  x.fillText(mode === 'tea' ? '☕ ACİL NÖBET HATIRASI' : `🚗 ${state.assets.car.toUpperCase()}`, 16, 26);
-  x.fillStyle = '#38d9a9'; x.fillRect(110, 46, 56, 48);
-  x.fillStyle = '#fff'; x.fillText('16-BIT CAM', 102, 108);
+  x.strokeStyle = '#3bc9db'; x.strokeRect(4, 4, 272, 112);
+  x.fillStyle = '#ffd43b'; x.font = 'bold 12px monospace';
+  x.fillText(mode === 'tea' ? 'ACİL NÖBET HATIRASI' : `${state.assets.car.toUpperCase()}`, 16, 26);
+  x.fillStyle = '#51cf66'; x.fillRect(110, 46, 56, 48);
+  x.fillStyle = '#000'; x.fillText('16-BIT', 116, 74);
 }
 
 function takePhoto(mode, caption) {
@@ -1493,8 +1730,7 @@ function takePhoto(mode, caption) {
     likes: 18 + Math.floor(Math.random() * 45),
     comment: 'İntörn Berk: Hocam ateş ediyorsunuz 🔥'
   });
-  playSfx('coin');
-  openPhoneApp('fotogram');
+  playSfx('coin'); saveCareer(); openPhoneApp('fotogram');
 }
 
 function playBet(stake) {
@@ -1507,18 +1743,18 @@ function playBet(stake) {
     state.money += prize;
     addTx('BetTıp Bahis Kazancı', prize - stake, 'pos');
     playSfx('coin');
-    res.textContent = `🎉 KAZANDIN! +${prize}₺ hesabına geçti!`;
+    res.textContent = `KAZANDIN! +${prize}₺ hesabına geçti!`;
   } else {
     state.stress = Math.min(100, state.stress + 14);
     addTx('BetTıp Bahis Kaybı', -stake, 'neg');
     playSfx('alarm');
-    res.textContent = `💀 KAYBETTİN! -${stake}₺ gitti ve stresin %14 arttı!`;
+    res.textContent = `KAYBETTİN! -${stake}₺ gitti ve stresin %14 arttı!`;
     if (stake >= 1000 && Math.random() < 0.35) {
       state.warnings++;
-      res.textContent += ' ⚠️ Başhekimlik şüpheli hesap hareketi tespit etti (+1 Uyarı)!';
+      res.textContent += ' Başhekimlik şüpheli hesap hareketi tespit etti (+1 Uyarı)!';
     }
   }
-  updateHud();
+  updateHud(); saveCareer();
 }
 
 /* ================= OUTSIDE LOCATIONS + LIVE AI CHAT ================= */
@@ -1530,65 +1766,59 @@ function goLocation(loc) {
   panel.innerHTML = '';
 
   if (loc === 'canteen') {
-    document.getElementById('sceneTag').textContent = '☕ HASTANE KANTİNİ — PERSONEL MOLA ALANI';
-    say('HASTANE KANTİNİ', `Sohbet etmek (elle yazarak AI konuşması!) veya günde 1 kez kahve ısmarlamak için personel seç (Kahve hakkı: ${state.coffeeGivenToday ? 'KULLANILDI' : '1 MEVCUT'}):`, 'SOSYAL', 't-yellow', 340);
-    state.staff.forEach((st, i) => addChoice(panel, `${st.name} (${st.role}) — ❤️${st.love}`, () => interactStaff(i)));
-    addChoice(panel, '🏥 Acil Servise Dön', () => nextPatient(), 'success');
+    document.getElementById('sceneTag').textContent = 'HASTANE KANTİNİ — PERSONEL MOLA';
+    say('HASTANE KANTİNİ', `Sohbet etmek veya günde 1 kez kahve ısmarlamak için personel seç:`, 'SOSYAL', 't-yellow', 340);
+    state.staff.forEach((st, i) => addChoice(panel, `${st.name} (${st.role}) — Dostluk: ${st.love}`, () => interactStaff(i)));
+    addChoice(panel, 'Polikliniğe / Acile Dön', () => nextPatient(), 'success');
   }
   else if (loc === 'diner') {
-    document.getElementById('sceneTag').textContent = '🍲 MAHALLE ESNAF LOKANTASI';
+    document.getElementById('sceneTag').textContent = 'MAHALLE ESNAF LOKANTASI';
     say('USTA AŞÇI', '"Hoş geldin doktor bey! Mercimek çorbası ve kavurma taze çıktı, stresini ve yorgunluğunu alır."', 'LOKANTA', 't-yellow', 240);
-    addChoice(panel, '🍲 Mercimek Çorbası + Kavurma Ye (-90₺, -15 Stres)', () => {
+    addChoice(panel, 'Mercimek Çorbası + Kavurma Ye (-90₺, -15 Stres)', () => {
       if (state.money >= 90) {
         state.money -= 90; state.stress = Math.max(0, state.stress - 15);
-        addTx('Esnaf Lokantası Akşam Yemeği', -90, 'neg'); updateHud();
+        addTx('Esnaf Lokantası Akşam Yemeği', -90, 'neg'); updateHud(); saveCareer();
         say('LEZİZ!', 'Sıcacık çorba ve kavurma stresini azalttı!', 'ENERJİ FULL', 't-green', 380);
       }
     });
-    addChoice(panel, '🏥 Acil Servise Dön', () => nextPatient(), 'success');
+    addChoice(panel, 'Polikliniğe / Acile Dön', () => nextPatient(), 'success');
   }
   else if (loc === 'dealer') {
-    document.getElementById('sceneTag').textContent = '🚗 OTO GALERİ, AKARYAKIT & SANAYİ';
+    document.getElementById('sceneTag').textContent = 'OTO GALERİ, AKARYAKIT & SANAYİ';
     const hasCar = state.assets.car !== 'Yok (Belediye Otobüsü)';
     say('GALERİ & SANAYİ USTASI', hasCar
       ? `Aracın: ${state.assets.car} | Yakıt: %${state.assets.fuel} | Mekanik Kondisyon: %${state.assets.carHealth}`
       : 'Henüz aracın yok, belediye otobüsüyle gidip geliyorsun. Bütçene göre araç seç!', 'GALERİ', 't-yellow', 260);
-    addChoice(panel, '🚘 1998 Modifiyeli Şahin Al (2.800₺ — Sık Sanayi Riski)', () => buyAsset('car', 'Modifiyeli Şahin', 2800));
-    addChoice(panel, '🚙 2024 Alman Sedan Al (7.500₺ — Sağlam & Konforlu)', () => buyAsset('car', 'Alman Sedan', 7500));
+    addChoice(panel, '1998 Modifiyeli Şahin Al (2.800₺ — Sık Sanayi Riski)', () => buyAsset('car', 'Modifiyeli Şahin', 2800));
+    addChoice(panel, '2024 Alman Sedan Al (7.500₺ — Sağlam & Konforlu)', () => buyAsset('car', 'Alman Sedan', 7500));
     if (hasCar) {
-      addChoice(panel, '⛽ Depoyu Full Yap (-220₺, Yakıt %100)', () => {
+      addChoice(panel, 'Depoyu Full Yap (-220₺, Yakıt %100)', () => {
         if (state.money >= 220) {
           state.money -= 220; state.assets.fuel = 100;
-          addTx('Akaryakıt İstasyonu (Full Depo)', -220, 'neg'); updateHud(); goLocation('dealer');
+          addTx('Akaryakıt İstasyonu (Full Depo)', -220, 'neg'); updateHud(); saveCareer(); goLocation('dealer');
         }
       }, 'success');
-      addChoice(panel, '🔧 Sanayi Genel Bakım & Tamir (-400₺, Kondisyon %100)', () => {
+      addChoice(panel, 'Sanayi Genel Bakım & Tamir (-400₺, Kondisyon %100)', () => {
         if (state.money >= 400) {
           state.money -= 400; state.assets.carHealth = 100;
-          addTx('Oto Sanayi Bakım & Tamir', -400, 'neg'); updateHud(); goLocation('dealer');
+          addTx('Oto Sanayi Bakım & Tamir', -400, 'neg'); updateHud(); saveCareer(); goLocation('dealer');
         }
       });
     }
-    addChoice(panel, '🏥 Acil Servise Dön', () => nextPatient(), 'success');
-  }
-  else if (loc === 'tech') {
-    document.getElementById('sceneTag').textContent = '📱 TEKNOLOJİ & HEDİYE MAĞAZASI';
-    say('TEKNOLOJİ MAĞAZASI', `Telefonun: ${state.assets.phone}. Kendine son model telefon veya sevdiğin kişiye hediye al!`, 'MAĞAZA', 't-yellow', 360);
-    addChoice(panel, '📱 Pro Akıllı Telefon Al (3.200₺)', () => buyAsset('phone', 'Pro Akıllı Telefon', 3200));
-    addChoice(panel, '💐 Özel Tasarım Çiçek & Akıllı Saat Hediyesi Al (450₺)', () => {
-      if (state.money >= 450) {
-        state.money -= 450; addTx('Teknoloji & Çiçek Hediye Alımı', -450, 'neg'); updateHud();
-        state.staff[0].love = Math.min(100, state.staff[0].love + 20);
-        say('HEDİYE VERİLDİ!', `${state.staff[0].name} hediyene bayıldı! Yakınlık +20 arttı.`, '❤️ +20', 't-green', 440);
-      }
-    });
-    addChoice(panel, '🏥 Acil Servise Dön', () => nextPatient(), 'success');
+    addChoice(panel, 'Polikliniğe / Acile Dön', () => nextPatient(), 'success');
   }
   else if (loc === 'home') {
-    document.getElementById('sceneTag').textContent = '🏠 KENDİ EVİN — SALON';
-    say('EVİM GÜZEL EVİM', `Araç: ${state.assets.car} | Telefon: ${state.assets.phone}. Dinlenince stres azalır.`, 'EV', 't-green', 320);
-    addChoice(panel, '📺 4K Dev Ekran TV & Konsol Kur (2.200₺)', () => buyAsset('homeLevel', 2, 2200));
-    addChoice(panel, '☀️ Yeni Nöbete Başla', () => nextPatient(), 'success');
+    document.getElementById('sceneTag').textContent = 'KENDİ EVİN — SALON';
+    say('EVİM GÜZEL EVİM', `Unvan: ${SPECIALTIES[state.specialty].title} | Araç: ${state.assets.car}`, 'EV', 't-green', 320);
+    addChoice(panel, 'Evde TUS Çalışma Masası Kur (-350₺, +3 TUS Puanı)', () => {
+      if (state.money >= 350) {
+        state.money -= 350; state.tusScore += 3;
+        addTx('TUS Konu & Deneme Seti', -350, 'neg'); updateHud(); saveCareer();
+        say('TUS ÇALIŞMASI', `Harika verimli bir etüt oldu! Güncel TUS Puanın: ${state.tusScore}`, 'TUS +3', 't-green', 420);
+      }
+    }, 'purple');
+    addChoice(panel, '4K Dev Ekran TV & Konsol Kur (2.200₺)', () => buyAsset('homeLevel', 2, 2200));
+    addChoice(panel, 'Yeni Nöbete Başla', () => nextPatient(), 'success');
   }
 }
 
@@ -1599,7 +1829,7 @@ function interactStaff(idx) {
   panel.innerHTML = '';
   const line = st.stories[Math.min(st.stage, st.stories.length - 1)];
   st.stage = Math.min(st.stories.length - 1, st.stage + 1);
-  say(`${st.name} (${st.role})`, `"${line}"`, `❤️ ${st.love}/100`, 't-green', 340);
+  say(`${st.name} (${st.role})`, `"${line}"`, `DOSTLUK ${st.love}/100`, 't-green', 340);
 
   const bar = document.createElement('div');
   bar.className = 'chat-input-bar';
@@ -1614,22 +1844,23 @@ function interactStaff(idx) {
     say(st.name, '...', 'YAZIYOR', 't-yellow', 300);
     const reply = await generateAIReply(st.name, st.persona, msg);
     st.love = Math.min(100, st.love + 3);
-    say(`${st.name} (${st.role})`, `"${reply}"`, `❤️ ${st.love}/100`, 't-green', 340);
+    saveCareer();
+    say(`${st.name} (${st.role})`, `"${reply}"`, `DOSTLUK ${st.love}/100`, 't-green', 340);
   };
   document.getElementById('canteenChatBtn').onclick = askStaff;
   document.getElementById('canteenChatInp').addEventListener('keydown', e => { if (e.key === 'Enter') askStaff(); });
 
   if (!state.coffeeGivenToday) {
-    addChoice(panel, '☕ Kahve Ismarla (-45₺, Günde 1 Kez, ❤️ +15)', () => {
+    addChoice(panel, 'Kahve Ismarla (-45₺, Günde 1 Kez, Dostluk +15)', () => {
       if (state.money >= 45) {
         state.money -= 45; state.coffeeGivenToday = true;
         st.love = Math.min(100, st.love + 15);
-        addTx(`Kantin Kahve İkramı (${st.name})`, -45, 'neg'); updateHud();
+        addTx(`Kantin Kahve İkramı (${st.name})`, -45, 'neg'); updateHud(); saveCareer();
         interactStaff(idx);
       }
     }, 'success');
   }
-  addChoice(panel, '← Kantin Listesine Dön', () => goLocation('canteen'));
+  addChoice(panel, 'Kantin Listesine Dön', () => goLocation('canteen'));
 }
 
 function buyAsset(key, val, cost) {
@@ -1642,14 +1873,14 @@ function buyAsset(key, val, cost) {
   if (key === 'car') {
     state.assets.fuel = 100;
     state.assets.carHealth = 100;
-    state.assets.carColor = val.includes('Alman') ? '#38d9a9' : '#ff6b6b';
+    state.assets.carColor = val.includes('Alman') ? '#51cf66' : '#ff5252';
   }
   addTx(`Satın Alma: ${val}`, -cost, 'neg');
-  playSfx('coin'); updateHud();
+  playSfx('coin'); updateHud(); saveCareer();
   say('SATIN ALINDI!', `Hayırlı olsun ${state.docName}! Yeni eşyan doğrudan yaşam sahnene eklendi.`, 'YENİ EŞYA', 't-green', 420);
 }
 
-/* ================= MODALS ================= */
+/* ================= MODALS (RADIOLOGY, 8 SPECIALTIES TUS CENTER, MAP, SHOP) ================= */
 function openModal(type) {
   const modal = document.getElementById('modal');
   const title = document.getElementById('modalTitle');
@@ -1659,59 +1890,91 @@ function openModal(type) {
 
   if (type === 'radiology') {
     const p = state.currentPatient;
-    title.textContent = p ? `🔍 ${p.radTitle}` : 'RADYOLOJİ EKRANI';
+    title.textContent = p ? `${p.radTitle}` : 'GÖRÜNTÜLEME EKRANI';
     if (!p) { body.textContent = 'Aktif hasta yok.'; return; }
     const c = document.createElement('canvas');
     c.id = 'zoomCanvas'; c.width = 320; c.height = 185;
     body.appendChild(c);
     drawRadiologyZoom(c, p.radType);
     const info = document.createElement('div');
-    info.style.cssText = 'padding:8px;background:#101726;border:1px solid var(--teal);color:var(--text-main);line-height:1.5;';
-    info.innerHTML = `<strong style="color:var(--amber)">RADYOLOJİ RAPORU:</strong><br>${p.radFinding}`;
+    info.style.cssText = 'padding:8px;background:#080b12;border:2px solid var(--accent-green);color:#fff;line-height:1.5;';
+    info.innerHTML = `<strong style="color:var(--accent-gold)">KLİNİK GÖRÜNTÜLEME RAPORU:</strong><br>${p.radFinding}`;
     body.appendChild(info);
   }
-  else if (type === 'guide') {
-    title.textContent = '📖 ACİL TIP & OYUN CEP REHBERİ';
+  else if (type === 'tus') {
+    title.textContent = 'TUS & 8 KLİNİK UZMANLIK MERKEZİ';
+    const curSp = SPECIALTIES[state.specialty];
     body.innerHTML = `
-      <div style="line-height:1.55;">
-        <p><strong style="color:var(--amber)">1. Kalp Krizi (MI):</strong> Diş, çene veya mide ağrısı + soğuk terlemede mutlaka <b>EKG</b> çek!</p>
-        <p><strong style="color:var(--amber)">2. Kafa Travması & İnme:</strong> Göz feneriyle <b>Anizokori</b> veya boyun kıtlattırma sonrası baş dönmesinde <b>Beyin BT</b> iste.</p>
-        <p><strong style="color:var(--amber)">3. Serbest AI Sohbet:</strong> Kantinde ve telefondaki WhatsDoc uygulamasında istediğin mesajı elle yazabilirsin.</p>
-        <p><strong style="color:var(--amber)">4. Araç & Sanayi:</strong> Aldığın aracın yakıtı azalır ve arıza yapabilir; Galeri & Sanayi sekmesinden bakım yaptır.</p>
-        <p style="margin-top:8px;border-top:1px dashed #334;padding-top:6px;">Geliştirici: <a href="https://github.com/kurtulustas" target="_blank" style="color:var(--teal)">developer=kurtulustas</a></p>
-      </div>`;
+      <div style="background:#080b12;border:2px solid var(--accent-purple);padding:9px;line-height:1.5;">
+        <div><strong style="color:var(--accent-gold)">Mevcut Unvan:</strong> ${curSp.icon} ${curSp.title}</div>
+        <div><strong style="color:var(--accent-green)">TUS Puanın:</strong> ${state.tusScore} Puan | <strong style="color:var(--accent-cyan)">İtibar:</strong> ${state.rep}/100</div>
+        <div style="font-size:10.5px;color:#ccc;margin-top:3px;">Her uzmanlık dalının kendine özel poliklinik sahne atmosferi ve 30 benzersiz branş vakası vardır!</div>
+      </div>
+    `;
+    addChoice(body, 'Hızlı TUS Denemesi Çöz (-300₺ -> +3 TUS Puanı)', () => {
+      if (state.money >= 300) {
+        state.money -= 300; state.tusScore += 3;
+        addTx('TUS Deneme Sınavı & Soru Bankası', -300, 'neg');
+        playSfx('coin'); updateHud(); saveCareer(); openModal('tus');
+      } else alert('Yetersiz bakiye!');
+    }, 'purple');
+
+    Object.values(SPECIALTIES).filter(s => s.id !== 'none').forEach(sp => {
+      const active = state.specialty === sp.id;
+      const unlocked = state.tusScore >= sp.reqTus && state.rep >= sp.reqRep;
+      const label = active
+        ? `${sp.icon} ${sp.title} [AKTİF • 30 VAKA HAVUZU ✓]`
+        : `${sp.icon} ${sp.title} (Şart: ${sp.reqTus} TUS & ${sp.reqRep} İtibar | +${sp.bonusPay}₺)`;
+      addChoice(body, label, () => {
+        if (active) return;
+        if (!unlocked) {
+          alert(`Bu branş için en az ${sp.reqTus} TUS Puanı ve ${sp.reqRep} İtibar gerekiyor!`);
+          return;
+        }
+        state.specialty = sp.id;
+        playSfx('coin'); updateHud(); saveCareer();
+        closeModal();
+        nextPatient();
+      }, active ? 'success' : (unlocked ? 'purple' : ''));
+    });
   }
   else if (type === 'map') {
-    title.textContent = '🗺️ HASTANE & ŞEHİR HARİTASI';
+    title.textContent = 'HASTANE & ŞEHİR HARİTASI';
     [
-      ['🏥 Acil Servis Muayene Odası', 'er'],
-      ['☕ Hastane Kantini (Personel & AI Sohbet)', 'canteen'],
-      ['🍲 Mahalle Esnaf Lokantası', 'diner'],
-      ['🚗 Oto Galeri, Akaryakıt & Sanayi', 'dealer'],
-      ['📱 Teknoloji & Hediye Mağazası', 'tech'],
-      ['🏠 Kendi Evim', 'home']
-    ].forEach(([label, id]) => addChoice(body, label, () => goLocation(id)));
+      ['Acil Servis & Uzmanlık Polikliniği', 'er'],
+      ['TUS & 8 Uzmanlık Kariyer Merkezi', 'tus_modal'],
+      ['Hastane Kantini (Personel & AI Sohbet)', 'canteen'],
+      ['Mahalle Esnaf Lokantası', 'diner'],
+      ['Oto Galeri, Akaryakıt & Sanayi', 'dealer'],
+      ['Kendi Evim (TUS Çalışma Masası)', 'home']
+    ].forEach(([label, id]) => addChoice(body, label, () => {
+      if (id === 'tus_modal') openModal('tus');
+      else goLocation(id);
+    }));
   }
   else if (type === 'shop') {
-    title.textContent = '🛒 MASA ÖZELLEŞTİRME DÜKKÂNI';
+    title.textContent = 'MASA ÖZELLEŞTİRME DÜKKÂNI';
     [
-      ['thermos', '☕ Çelik Nöbet Termosu (400₺)', 400],
-      ['cactus', '🌵 Masaüstü Saksı Kaktüsü (250₺)', 250],
-      ['littmann', '🩺 Littmann Profesyonel Stetoskop (700₺)', 700],
-      ['dualMonitor', '🖥️ Çift Ekranlı Negatoskop (950₺)', 950]
+      ['thermos', 'Çelik Nöbet Termosu (400₺)', 400],
+      ['cactus', 'Masaüstü Saksı Kaktüsü (250₺)', 250],
+      ['littmann', 'Littmann Profesyonel Stetoskop (700₺)', 700],
+      ['dualMonitor', 'Çift Ekranlı Negatoskop (950₺)', 950]
     ].forEach(([key, label, cost]) => {
       const owned = state.upgrades[key];
       addChoice(body, owned ? `${label} [ALINDI ✓]` : label, () => {
         if (!owned && state.money >= cost) {
           state.money -= cost; state.upgrades[key] = true;
           addTx(`Masa Ekipmanı: ${label}`, -cost, 'neg');
-          playSfx('coin'); updateHud(); openModal('shop');
+          playSfx('coin'); updateHud(); saveCareer(); openModal('shop');
         }
       }, owned ? 'success' : '');
     });
   }
 }
-function closeModal() { document.getElementById('modal').style.display = 'none'; }
+function closeModal() {
+  if (mgLoopId) { cancelAnimationFrame(mgLoopId); mgLoopId = null; }
+  document.getElementById('modal').style.display = 'none';
+}
 function addChoice(parent, label, onClick, extraClass = '') {
   const b = document.createElement('button');
   b.className = 'choice-btn ' + extraClass;
@@ -1723,23 +1986,23 @@ function gameOver(reason) {
   say('OYUN BİTTİ — İDARİ KARAR', reason, 'MESLEKTEN MEN', 't-red', 140);
   const panel = document.getElementById('subPanel');
   panel.innerHTML = '';
-  addChoice(panel, '🔄 Yeni Kariyer Başlat', () => location.reload(), 'danger');
+  addChoice(panel, 'Yeni Kariyer Başlat', () => location.reload(), 'danger');
 }
 
-/* ================= 16-BIT PIXEL CANVAS (LOCATION-SPECIFIC SCENES!) ================= */
+/* ================= 16-BIT CLINICAL SCENE & 8-SPECIALTY ATMOSPHERES ================= */
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 let tick = 0;
 
 function drawRadiologyZoom(c, type) {
   const x = c.getContext('2d');
-  x.fillStyle = '#040a14'; x.fillRect(0, 0, 320, 185);
-  x.strokeStyle = '#16324f';
+  x.fillStyle = '#05080f'; x.fillRect(0, 0, 320, 185);
+  x.strokeStyle = '#1b3a4b';
   for (let i = 0; i < 320; i += 16) { x.beginPath(); x.moveTo(i, 0); x.lineTo(i, 185); x.stroke(); }
   for (let j = 0; j < 185; j += 16) { x.beginPath(); x.moveTo(0, j); x.lineTo(320, j); x.stroke(); }
 
   if (type === 'ecg') {
-    x.strokeStyle = '#38d9a9'; x.lineWidth = 2.5;
+    x.strokeStyle = '#51cf66'; x.lineWidth = 2.5;
     x.beginPath();
     for (let px = 10; px < 310; px += 2) {
       const m = px % 48;
@@ -1751,20 +2014,25 @@ function drawRadiologyZoom(c, type) {
       if (px === 10) x.moveTo(px, py); else x.lineTo(px, py);
     }
     x.stroke();
+  } else if (type === 'eye') {
+    x.fillStyle = '#d9480f'; x.beginPath(); x.arc(160, 92, 66, 0, Math.PI * 2); x.fill();
+    x.fillStyle = '#ffa8a8'; x.beginPath(); x.arc(160, 92, 56, 0, Math.PI * 2); x.fill();
+    x.fillStyle = '#ff5252'; x.beginPath(); x.arc(160, 92, 10, 0, Math.PI * 2); x.fill();
+    x.fillStyle = '#ffd43b'; x.beginPath(); x.arc(118, 92, 14, 0, Math.PI * 2); x.fill();
   } else if (type === 'leg') {
-    x.fillStyle = '#cbe4ff';
+    x.fillStyle = '#e9ecef';
     x.fillRect(142, 16, 18, 72); x.fillRect(146, 96, 18, 74);
-    x.fillStyle = '#89b4e0'; x.fillRect(168, 22, 8, 142);
-    x.strokeStyle = '#ff4d5e'; x.lineWidth = 2; x.strokeRect(134, 80, 42, 24);
+    x.fillStyle = '#3bc9db'; x.fillRect(168, 22, 8, 142);
+    x.strokeStyle = '#ff5252'; x.lineWidth = 2; x.strokeRect(134, 80, 42, 24);
   } else if (type === 'brain') {
     x.fillStyle = '#6c7a89'; x.beginPath(); x.ellipse(160, 92, 60, 72, 0, 0, Math.PI * 2); x.fill();
-    x.fillStyle = '#ff4d5e'; x.beginPath(); x.ellipse(108, 90, 14, 32, 0.15, 0, Math.PI * 2); x.fill();
+    x.fillStyle = '#ff5252'; x.beginPath(); x.ellipse(108, 90, 14, 32, 0.15, 0, Math.PI * 2); x.fill();
   } else {
-    x.fillStyle = '#9ec5fe'; x.fillRect(154, 22, 12, 138);
+    x.fillStyle = '#3bc9db'; x.fillRect(154, 22, 12, 138);
     for (let r = 0; r < 5; r++) {
       x.fillRect(102, 40 + r * 22, 48, 8); x.fillRect(170, 40 + r * 22, 48, 8);
     }
-    x.fillStyle = 'rgba(255, 193, 7, 0.55)'; x.fillRect(104, 106, 44, 34);
+    x.fillStyle = 'rgba(255, 212, 59, 0.65)'; x.fillRect(104, 106, 44, 34);
   }
 }
 
@@ -1772,94 +2040,179 @@ function drawCarSprite(cx, cy, scale = 1) {
   ctx.save();
   ctx.translate(cx, cy);
   ctx.scale(scale, scale);
-  ctx.fillStyle = 'rgba(0,0,0,0.45)';
-  ctx.fillRect(-56, 22, 112, 8);
-  ctx.fillStyle = state.assets.carColor || '#ff6b6b';
+  ctx.fillStyle = state.assets.carColor || '#ff5252';
   ctx.fillRect(-52, -4, 104, 24);
   ctx.fillRect(-32, -20, 62, 18);
-  ctx.fillStyle = '#74c0fc';
+  ctx.fillStyle = '#3bc9db';
   ctx.fillRect(-26, -16, 22, 12);
   ctx.fillRect(2, -16, 22, 12);
   ctx.fillStyle = '#ffd43b'; ctx.fillRect(46, 2, 6, 7);
-  ctx.fillStyle = '#ff4d5e'; ctx.fillRect(-52, 2, 5, 7);
-  ctx.fillStyle = '#090c14';
-  ctx.fillRect(-38, 14, 20, 14); ctx.fillRect(20, 14, 20, 14);
-  ctx.fillStyle = '#adb5bd';
-  ctx.fillRect(-33, 18, 10, 6); ctx.fillRect(25, 18, 10, 6);
+  ctx.fillStyle = '#ff5252'; ctx.fillRect(-52, 2, 5, 7);
+  ctx.fillStyle = '#111'; ctx.strokeStyle = '#fff';
+  ctx.fillRect(-38, 14, 20, 14); ctx.strokeRect(-38, 14, 20, 14);
+  ctx.fillRect(20, 14, 20, 14); ctx.strokeRect(20, 14, 20, 14);
   ctx.restore();
 }
 
 function renderLocationScene() {
   const loc = state.location;
-  if (loc === 'canteen') {
-    ctx.fillStyle = '#231915'; ctx.fillRect(0, 0, 340, 145);
-    ctx.fillStyle = '#3d2b22'; ctx.fillRect(0, 145, 340, 65);
-    ctx.fillStyle = '#5c3d2e'; ctx.fillRect(18, 92, 120, 54);
-    ctx.fillStyle = '#adb5bd'; ctx.fillRect(34, 64, 36, 28);
-    ctx.fillStyle = '#38d9a9'; ctx.fillRect(40, 70, 10, 8);
-    ctx.fillStyle = '#111625'; ctx.fillRect(24, 24, 96, 32);
-    ctx.strokeStyle = '#f5b942'; ctx.strokeRect(24, 24, 96, 32);
-    ctx.fillStyle = '#ffd175'; ctx.font = 'bold 9px monospace';
-    ctx.fillText('ÇAY 15₺ | KAHVE 45₺', 30, 42);
+  ctx.fillStyle = '#07090e'; ctx.fillRect(0, 0, 340, 210);
 
+  if (loc === 'canteen') {
+    ctx.fillStyle = '#101622'; ctx.fillRect(0, 0, 340, 142);
+    ctx.strokeStyle = '#e9ecef'; ctx.lineWidth = 2;
+    ctx.strokeRect(18, 92, 120, 54);
+    ctx.fillStyle = '#ffd43b'; ctx.font = 'bold 9px monospace';
+    ctx.fillText('ÇAY 15₺ | KAHVE 45₺', 24, 42);
     const st = state.activeStaffIdx !== null ? state.staff[state.activeStaffIdx] : state.staff[0];
     const bob = Math.sin(tick * 0.08) * 1.5;
     const sx = 225, sy = 68 + bob;
-    ctx.fillStyle = st.coat || '#f8f9fa'; ctx.fillRect(sx - 16, sy + 30, 36, 48);
+    ctx.fillStyle = st.coat || '#fff'; ctx.fillRect(sx - 16, sy + 30, 36, 48);
     ctx.fillStyle = '#f1c2a5'; ctx.fillRect(sx - 9, sy + 4, 24, 24);
-    ctx.fillStyle = st.hair || '#212529'; ctx.fillRect(sx - 11, sy, 28, 8);
-    ctx.fillStyle = '#090c14';
-    ctx.fillRect(sx - 4, sy + 13, 3, 3); ctx.fillRect(sx + 7, sy + 13, 3, 3);
-    ctx.fillStyle = '#ffd175'; ctx.font = 'bold 10px monospace';
-    ctx.fillText(st.name, sx - 36, sy - 6);
+    ctx.fillStyle = st.hair || '#333'; ctx.fillRect(sx - 11, sy, 28, 8);
+    ctx.fillStyle = '#000'; ctx.fillRect(sx - 4, sy + 13, 3, 3); ctx.fillRect(sx + 7, sy + 13, 3, 3);
+    ctx.fillStyle = '#ffd43b'; ctx.fillText(st.name, sx - 36, sy - 6);
   }
   else if (loc === 'diner') {
-    ctx.fillStyle = '#2b1d14'; ctx.fillRect(0, 0, 340, 145);
-    ctx.fillStyle = '#4a3222'; ctx.fillRect(0, 145, 340, 65);
-    ctx.fillStyle = '#ced4da'; ctx.fillRect(40, 84, 150, 60);
-    ctx.fillStyle = '#f59f00'; ctx.fillRect(54, 76, 34, 10);
-    ctx.fillStyle = '#e03131'; ctx.fillRect(102, 76, 34, 10);
-    ctx.fillStyle = 'rgba(255,255,255,0.45)';
-    ctx.fillRect(68, 62 - (tick % 14), 4, 6);
-    ctx.fillRect(116, 58 - (tick % 14), 4, 6);
-    ctx.fillStyle = '#fff'; ctx.fillRect(225, 114, 80, 32);
-    ctx.fillStyle = '#e03131'; ctx.fillRect(225, 114, 80, 8);
+    ctx.fillStyle = '#17110c'; ctx.fillRect(0, 0, 340, 142);
+    ctx.strokeStyle = '#ffd43b'; ctx.strokeRect(40, 84, 150, 60);
+    ctx.fillStyle = '#ff922b'; ctx.fillRect(54, 76, 34, 10);
+    ctx.fillStyle = '#ff5252'; ctx.fillRect(102, 76, 34, 10);
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(68, 62 - (tick % 14), 3, 5);
+    ctx.fillRect(116, 58 - (tick % 14), 3, 5);
   }
   else if (loc === 'dealer') {
-    ctx.fillStyle = '#121826'; ctx.fillRect(0, 0, 340, 145);
-    ctx.fillStyle = '#252e42'; ctx.fillRect(0, 145, 340, 65);
-    ctx.strokeStyle = '#38d9a9'; ctx.strokeRect(20, 26, 150, 24);
-    ctx.fillStyle = '#38d9a9'; ctx.font = 'bold 10px monospace';
-    ctx.fillText('GALERİ & OTO SANAYİ', 30, 42);
-    if (state.assets.car !== 'Yok (Belediye Otobüsü)') {
-      drawCarSprite(170, 126, 1.15);
-    } else {
-      ctx.fillStyle = '#9aa6c4'; ctx.fillText('Henüz aracın yok — aşağıdan seç!', 75, 110);
-    }
-  }
-  else if (loc === 'tech') {
-    ctx.fillStyle = '#0d1b2a'; ctx.fillRect(0, 0, 340, 145);
-    ctx.fillStyle = '#1b263b'; ctx.fillRect(0, 145, 340, 65);
-    for (let i = 0; i < 3; i++) {
-      ctx.fillStyle = '#1e293b'; ctx.fillRect(36 + i * 96, 56, 68, 88);
-      ctx.strokeStyle = '#5cc8ff'; ctx.strokeRect(36 + i * 96, 56, 68, 88);
-      ctx.fillStyle = i === 1 ? '#ff4d5e' : '#38d9a9';
-      ctx.fillRect(58 + i * 96, 76, 24, 38);
-    }
+    ctx.fillStyle = '#0a1219'; ctx.fillRect(0, 0, 340, 142);
+    ctx.strokeStyle = '#51cf66'; ctx.strokeRect(20, 26, 155, 24);
+    ctx.fillStyle = '#51cf66'; ctx.font = 'bold 10px monospace';
+    ctx.fillText('GALERİ & OTO SANAYİ', 28, 42);
+    if (state.assets.car !== 'Yok (Belediye Otobüsü)') drawCarSprite(170, 126, 1.15);
+    else { ctx.fillStyle = '#fff'; ctx.fillText('Henüz aracın yok!', 95, 110); }
   }
   else if (loc === 'home') {
-    ctx.fillStyle = '#182036'; ctx.fillRect(0, 0, 340, 145);
-    ctx.fillStyle = '#3b281e'; ctx.fillRect(0, 145, 340, 65);
-    ctx.fillStyle = '#090d1a'; ctx.fillRect(28, 34, 96, 68);
-    ctx.strokeStyle = '#f5b942'; ctx.strokeRect(28, 34, 96, 68);
-    ctx.fillStyle = '#ffd43b'; ctx.fillRect(42, 44, 10, 10);
-    if (state.assets.car !== 'Yok (Belediye Otobüsü)') {
-      drawCarSprite(76, 86, 0.45);
-    }
-    ctx.fillStyle = '#090c14';
-    ctx.fillRect(175, 52, state.assets.homeLevel > 1 ? 115 : 74, state.assets.homeLevel > 1 ? 62 : 44);
-    ctx.strokeStyle = '#38d9a9';
+    ctx.fillStyle = '#0f131f'; ctx.fillRect(0, 0, 340, 142);
+    ctx.strokeStyle = '#ffd43b'; ctx.strokeRect(28, 34, 96, 68);
+    if (state.assets.car !== 'Yok (Belediye Otobüsü)') drawCarSprite(76, 86, 0.45);
+    ctx.strokeStyle = '#51cf66';
     ctx.strokeRect(175, 52, state.assets.homeLevel > 1 ? 115 : 74, state.assets.homeLevel > 1 ? 62 : 44);
+  }
+}
+
+/* HER 8 UZMANLIK DALI İÇİN ÖZGÜN POLİKLİNİK / AMELİYATHANE SAHNE ATMOSFERİ */
+function drawSpecialtyBackdrop(spec) {
+  if (spec === 'ophth') {
+    // Karanlık Oftalmoloji Muayene Odası + Işıklı Snellen Eşeli + Biyomikroskop
+    ctx.fillStyle = '#050811'; ctx.fillRect(0, 0, 340, 140);
+    ctx.fillStyle = '#0a1224'; ctx.fillRect(16, 26, 44, 72);
+    ctx.strokeStyle = '#3bc9db'; ctx.lineWidth = 2; ctx.strokeRect(16, 26, 44, 72);
+    ctx.fillStyle = '#ffffff'; ctx.font = 'bold 11px monospace';
+    ctx.fillText('E', 34, 42);
+    ctx.font = 'bold 8px monospace'; ctx.fillText('F P', 30, 56);
+    ctx.font = 'bold 6px monospace'; ctx.fillText('T O Z', 28, 68);
+    ctx.fillText('L P E D', 25, 80);
+    ctx.fillStyle = '#091915'; ctx.fillRect(236, 32, 68, 44);
+    ctx.strokeStyle = '#51cf66'; ctx.strokeRect(236, 32, 68, 44);
+    ctx.fillStyle = '#51cf66'; ctx.fillText('SLIT-LAMP', 244, 52);
+    ctx.fillText('GİB: TONO', 244, 66);
+  }
+  else if (spec === 'cardio') {
+    // Koroner Yoğun Bakım + Telemetri Monitörü + Defibrilatör
+    ctx.fillStyle = '#12070b'; ctx.fillRect(0, 0, 340, 140);
+    ctx.fillStyle = '#1d0b12'; ctx.fillRect(16, 28, 62, 54);
+    ctx.strokeStyle = '#ff5252'; ctx.lineWidth = 2; ctx.strokeRect(16, 28, 62, 54);
+    ctx.fillStyle = '#ff5252'; ctx.font = 'bold 9px monospace';
+    ctx.fillText('TELEMETRİ', 22, 42);
+    ctx.strokeStyle = '#51cf66'; ctx.beginPath();
+    for (let x = 20; x < 74; x += 3) {
+      const y = 62 + (((x + tick) % 18 === 0) ? -14 : 0);
+      if (x === 20) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+    ctx.strokeStyle = '#ffd43b'; ctx.strokeRect(236, 30, 66, 44);
+    ctx.fillStyle = '#ffd43b'; ctx.fillText('DEFİB 200J', 242, 55);
+  }
+  else if (spec === 'emerg') {
+    // Kırmızı Alan Travma Resüsitasyon + Siren + Crash Cart
+    ctx.fillStyle = '#130909'; ctx.fillRect(0, 0, 340, 140);
+    const sirenOn = Math.floor(tick / 12) % 2 === 0;
+    ctx.fillStyle = sirenOn ? '#ff5252' : '#4a1111';
+    ctx.fillRect(24, 22, 34, 16);
+    ctx.strokeStyle = '#e9ecef'; ctx.strokeRect(24, 22, 34, 16);
+    ctx.fillStyle = '#ffd43b'; ctx.font = 'bold 9px monospace';
+    ctx.fillText('KIRMIZI ALAN', 14, 52);
+    ctx.strokeStyle = '#ff5252'; ctx.strokeRect(236, 30, 68, 44);
+    ctx.fillStyle = '#ff5252'; ctx.fillText('CRASH CART', 242, 55);
+  }
+  else if (spec === 'neuro') {
+    // İnme Merkezi + Beyin BT Negatoskopu + EEG
+    ctx.fillStyle = '#0c0917'; ctx.fillRect(0, 0, 340, 140);
+    ctx.strokeStyle = '#b197fc'; ctx.lineWidth = 2; ctx.strokeRect(16, 26, 56, 66);
+    ctx.beginPath(); ctx.ellipse(44, 58, 16, 22, 0, 0, Math.PI * 2); ctx.stroke();
+    ctx.fillStyle = '#b197fc'; ctx.font = 'bold 8px monospace';
+    ctx.fillText('BEYİN BT', 24, 86);
+    ctx.strokeStyle = '#3bc9db'; ctx.strokeRect(236, 30, 68, 44);
+    ctx.fillStyle = '#3bc9db'; ctx.fillText('EEG / NIHSS', 242, 55);
+  }
+  else if (spec === 'ortho') {
+    // Ortopedi & Alçı Odası + Kemik Röntgen Panosu
+    ctx.fillStyle = '#0b1017'; ctx.fillRect(0, 0, 340, 140);
+    ctx.strokeStyle = '#e9ecef'; ctx.lineWidth = 2; ctx.strokeRect(18, 26, 50, 68);
+    ctx.fillStyle = '#e9ecef';
+    ctx.fillRect(40, 34, 6, 22); ctx.fillRect(42, 60, 6, 22);
+    ctx.fillStyle = '#ffd43b'; ctx.font = 'bold 8px monospace';
+    ctx.fillText('ALÇI & ATEL', 238, 55);
+    ctx.strokeStyle = '#ffd43b'; ctx.strokeRect(234, 30, 72, 44);
+  }
+  else if (spec === 'peds') {
+    // Pediatri & Çocuk Acil + Yıldız/Gökkuşağı Süslemeleri + Tartı
+    ctx.fillStyle = '#0a141c'; ctx.fillRect(0, 0, 340, 140);
+    ctx.fillStyle = '#ffd43b'; ctx.font = 'bold 12px monospace';
+    ctx.fillText('★  ☆  ★', 18, 40);
+    ctx.fillStyle = '#3bc9db'; ctx.fillText('☆  ★  ☆', 22, 58);
+    ctx.strokeStyle = '#51cf66'; ctx.strokeRect(236, 30, 68, 44);
+    ctx.fillStyle = '#51cf66'; ctx.font = 'bold 8.5px monospace';
+    ctx.fillText('PEDİATRİ TARTI', 239, 55);
+  }
+  else if (spec === 'ent') {
+    // KBB Polikliniği + Odyometri Grafiği + Endoskopi Kulesi
+    ctx.fillStyle = '#081217'; ctx.fillRect(0, 0, 340, 140);
+    ctx.strokeStyle = '#3bc9db'; ctx.lineWidth = 2; ctx.strokeRect(16, 28, 58, 56);
+    ctx.fillStyle = '#3bc9db'; ctx.font = 'bold 8px monospace';
+    ctx.fillText('ODYOMETRİ', 22, 40);
+    ctx.strokeStyle = '#ff5252'; ctx.beginPath();
+    ctx.moveTo(22, 50); ctx.lineTo(42, 54); ctx.lineTo(66, 74); ctx.stroke();
+    ctx.strokeStyle = '#ffd43b'; ctx.strokeRect(236, 30, 68, 44);
+    ctx.fillStyle = '#ffd43b'; ctx.fillText('ENDOSKOPİ', 244, 55);
+  }
+  else if (spec === 'surg') {
+    // Genel Cerrahi + Ameliyathane Tavan Lambası + Steril Kule
+    ctx.fillStyle = '#061412'; ctx.fillRect(0, 0, 340, 140);
+    ctx.strokeStyle = '#51cf66'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(170, 14, 32, 0, Math.PI); ctx.stroke();
+    ctx.fillStyle = '#ffd43b'; ctx.fillRect(156, 16, 28, 4);
+    ctx.strokeStyle = '#51cf66'; ctx.strokeRect(16, 28, 56, 56);
+    ctx.fillStyle = '#51cf66'; ctx.font = 'bold 8px monospace';
+    ctx.fillText('STERİL ALAN', 20, 58);
+    ctx.strokeStyle = '#3bc9db'; ctx.strokeRect(236, 30, 68, 44);
+    ctx.fillStyle = '#3bc9db'; ctx.fillText('LAPAROSKOPİ', 240, 55);
+  }
+  else {
+    // Standart Pratisyen Acil Odası
+    ctx.fillStyle = '#0a0e17'; ctx.fillRect(0, 0, 340, 140);
+    const shakeX = state.doorThreat ? Math.sin(tick * 0.8) * 3 : 0;
+    ctx.strokeStyle = '#e9ecef'; ctx.lineWidth = 2;
+    ctx.strokeRect(14 + shakeX, 32, 48, 108);
+    ctx.strokeStyle = '#3bc9db'; ctx.strokeRect(24 + shakeX, 44, 28, 30);
+    if (state.doorThreat) {
+      ctx.fillStyle = '#ff5252'; ctx.fillRect(30 + shakeX, 15, 16, 15);
+      ctx.fillStyle = '#fff'; ctx.font = 'bold 12px monospace'; ctx.fillText('!', 35 + shakeX, 27);
+    }
+    ctx.strokeStyle = '#51cf66';
+    ctx.strokeRect(236, 30, state.upgrades.dualMonitor ? 86 : 54, 42);
+    if (state.examDone.rad && state.currentPatient) {
+      ctx.fillStyle = '#51cf66'; ctx.fillRect(244, 38, 38, 26);
+    }
   }
 }
 
@@ -1873,64 +2226,44 @@ function renderScene() {
     return;
   }
 
-  const isLateNight = (state.hour % 24) >= 2 && (state.hour % 24) < 6;
-  const grad = ctx.createLinearGradient(0, 0, 0, 140);
-  grad.addColorStop(0, isLateNight ? '#0b1021' : '#141c33');
-  grad.addColorStop(1, isLateNight ? '#15203b' : '#1f2d4d');
-  ctx.fillStyle = grad; ctx.fillRect(0, 0, 340, 140);
+  // 1. Seçili uzmanlık dalının sahne atmosferi
+  drawSpecialtyBackdrop(state.specialty);
 
-  ctx.fillStyle = '#153a42'; ctx.fillRect(0, 94, 340, 46);
-  ctx.fillStyle = '#2b6cb0'; ctx.fillRect(0, 92, 340, 3);
-
-  ctx.fillStyle = isLateNight ? '#a5f3fc' : '#e6fcf5';
-  ctx.fillRect(110, 8, 120, 6);
-
-  const shakeX = state.doorThreat ? Math.sin(tick * 0.8) * 3 : 0;
-  ctx.fillStyle = '#2c3654'; ctx.fillRect(14 + shakeX, 32, 48, 108);
-  ctx.strokeStyle = '#f5b942'; ctx.strokeRect(14 + shakeX, 32, 48, 108);
-  ctx.fillStyle = '#4dabf7'; ctx.fillRect(24 + shakeX, 44, 28, 30);
-  if (state.doorThreat) {
-    ctx.fillStyle = '#ff4d5e'; ctx.fillRect(30 + shakeX, 15, 16, 15);
-    ctx.fillStyle = '#fff'; ctx.font = 'bold 12px monospace'; ctx.fillText('!', 35 + shakeX, 27);
-  }
-
-  ctx.fillStyle = '#0b1324';
-  ctx.fillRect(236, 30, state.upgrades.dualMonitor ? 86 : 54, 42);
-  ctx.strokeStyle = '#38d9a9';
-  ctx.strokeRect(236, 30, state.upgrades.dualMonitor ? 86 : 54, 42);
-  if (state.examDone.rad && state.currentPatient) {
-    ctx.fillStyle = '#63e6be'; ctx.fillRect(244, 38, 38, 26);
-    ctx.fillStyle = '#0b1324'; ctx.fillRect(256, 42, 14, 18);
-  }
-
+  // 2. Hasta Sprite
   const p = state.currentPatient;
   if (p) {
     const bob = Math.sin(tick * 0.08) * 1.5;
-    const px = 118, py = 60 + bob;
-    ctx.fillStyle = p.appearance.shirt; ctx.fillRect(px - 18, py + 34, 44, 46);
+    const px = 148, py = 58 + bob;
+    ctx.fillStyle = p.appearance.shirt; ctx.fillRect(px - 18, py + 34, 44, 48);
+    ctx.strokeStyle = '#e9ecef'; ctx.lineWidth = 1.5; ctx.strokeRect(px - 18, py + 34, 44, 48);
     ctx.fillStyle = p.appearance.skin; ctx.fillRect(px - 10, py + 4, 28, 28);
     ctx.fillStyle = p.appearance.hair; ctx.fillRect(px - 12, py, 32, 9);
     if (p.appearance.flush) {
-      ctx.fillStyle = 'rgba(255, 77, 94, 0.55)';
+      ctx.fillStyle = '#ff5252';
       ctx.fillRect(px - 8, py + 20, 6, 4); ctx.fillRect(px + 10, py + 20, 6, 4);
+    }
+    if (p.appearance.cyanosis) {
+      ctx.fillStyle = '#748ffc';
+      ctx.fillRect(px - 1, py + 24, 10, 3);
     }
     const blink = (tick % 140) < 4;
     if (!blink) {
-      ctx.fillStyle = '#fff';
+      ctx.fillStyle = '#ffffff';
       ctx.fillRect(px - 5, py + 13, 6, 5); ctx.fillRect(px + 7, py + 13, 6, 5);
-      ctx.fillStyle = '#0b0e17';
+      ctx.fillStyle = '#000000';
       const p1 = p.appearance.pupils === 'miosis' ? 1 : 3;
-      const p2 = p.appearance.pupils === 'anisocoria' ? 5 : p1;
+      const p2 = (p.appearance.pupils === 'anisocoria' || p.appearance.pupils === 'midriasis_fixed') ? 5 : p1;
       ctx.fillRect(px - 3, py + 14, p1, p1); ctx.fillRect(px + 9, py + 14, p2, p2);
     } else {
-      ctx.fillStyle = '#2b2d42';
+      ctx.fillStyle = '#000000';
       ctx.fillRect(px - 5, py + 15, 6, 2); ctx.fillRect(px + 7, py + 15, 6, 2);
     }
     if (p.appearance.sweat) {
-      ctx.fillStyle = '#5cc8ff'; ctx.fillRect(px + 20, py + 10 + (tick % 12) * 0.5, 3, 5);
+      ctx.fillStyle = '#3bc9db'; ctx.fillRect(px + 21, py + 10 + (tick % 12) * 0.5, 3, 5);
     }
   }
 
+  // 3. İntörn Hekim Sprite
   const intern = INTERNS[state.internIdx];
   const ix = 264, iy = 82 + Math.cos(tick * 0.07) * 1;
   ctx.fillStyle = '#f8f9fa'; ctx.fillRect(ix - 14, iy + 26, 34, 36);
@@ -1938,36 +2271,41 @@ function renderScene() {
   ctx.fillStyle = '#f1c2a5'; ctx.fillRect(ix - 7, iy + 2, 22, 22);
   ctx.fillStyle = '#212529'; ctx.fillRect(ix - 8, iy - 1, 24, 7);
 
-  ctx.fillStyle = '#3b281e'; ctx.fillRect(0, 140, 340, 70);
-  ctx.fillStyle = '#5c3d2e'; ctx.fillRect(0, 140, 340, 8);
-  ctx.fillStyle = '#f5b942'; ctx.fillRect(0, 139, 340, 2);
+  // 4. Klinik Muayene Masası
+  ctx.fillStyle = '#111622'; ctx.fillRect(0, 140, 340, 70);
+  ctx.fillStyle = '#e9ecef'; ctx.fillRect(0, 139, 340, 3);
 
-  ctx.fillStyle = '#1a202c'; ctx.fillRect(14, 114, 54, 36);
-  ctx.fillStyle = '#0ca678'; ctx.fillRect(18, 118, 46, 26);
-  ctx.fillStyle = '#e6fcf5';
-  ctx.fillRect(22, 122, 26, 3); ctx.fillRect(22, 128, 34, 3); ctx.fillRect(22, 134, 20, 3);
+  // Canlı EKG Monitörü
+  ctx.strokeStyle = '#e9ecef'; ctx.lineWidth = 2; ctx.strokeRect(14, 114, 54, 36);
+  ctx.fillStyle = '#05070c'; ctx.fillRect(16, 116, 50, 32);
+  ctx.fillStyle = '#51cf66';
+  const pulseX = (tick * 2) % 44;
+  ctx.fillRect(18 + pulseX, 130 - (pulseX > 18 && pulseX < 24 ? 8 : 0), 3, 3);
 
-  ctx.fillStyle = '#f59f00'; ctx.fillRect(128, 150, 62, 42);
-  ctx.fillStyle = '#fff9db'; ctx.fillRect(134, 154, 50, 34);
-  ctx.fillStyle = '#495057';
+  // Epikriz Dosyası
+  ctx.strokeStyle = '#ffd43b'; ctx.strokeRect(128, 150, 62, 42);
+  ctx.fillStyle = '#e9ecef';
   ctx.fillRect(138, 160, 36, 2); ctx.fillRect(138, 166, 42, 2); ctx.fillRect(138, 172, 28, 2);
 
-  ctx.strokeStyle = state.upgrades.littmann ? '#ff4d5e' : '#adb5bd';
-  ctx.lineWidth = 3;
+  // Stetoskop
+  ctx.strokeStyle = state.upgrades.littmann ? '#ff5252' : '#3bc9db';
+  ctx.lineWidth = 2.5;
   ctx.beginPath(); ctx.arc(216, 168, 12, 0, Math.PI * 1.4); ctx.stroke();
 
-  ctx.fillStyle = state.upgrades.thermos ? '#38d9a9' : '#ff6b6b';
-  ctx.fillRect(256, 148, 14, 22);
-  ctx.fillStyle = 'rgba(255,255,255,0.45)';
-  ctx.fillRect(261, 138 - (tick % 10), 3, 4);
+  // Termos
+  ctx.strokeStyle = state.upgrades.thermos ? '#51cf66' : '#ff922b';
+  ctx.strokeRect(256, 148, 14, 22);
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(261, 138 - (tick % 10), 2, 4);
 
   if (state.upgrades.cactus) {
-    ctx.fillStyle = '#d9480f'; ctx.fillRect(82, 158, 16, 14);
-    ctx.fillStyle = '#40c057'; ctx.fillRect(86, 144, 8, 14);
+    ctx.strokeStyle = '#51cf66'; ctx.strokeRect(86, 144, 8, 14);
+    ctx.strokeStyle = '#ff922b'; ctx.strokeRect(82, 158, 16, 14);
   }
 
-  ctx.fillStyle = '#c92a2a'; ctx.fillRect(292, 156, 30, 22);
-  ctx.fillStyle = '#ff8787'; ctx.fillRect(296, 159, 22, 14);
+  // Acil Çanta
+  ctx.strokeStyle = '#ff5252'; ctx.strokeRect(292, 156, 30, 22);
+  ctx.fillStyle = '#ff5252'; ctx.fillRect(305, 161, 4, 12); ctx.fillRect(301, 165, 12, 4);
 
   requestAnimationFrame(renderScene);
 }
