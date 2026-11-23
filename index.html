@@ -3,13 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>AÇILIN BEN DOKTORUM! v5.0 — 16-Bit Açık Dünya & Konsol Sürümü</title>
+<title>AÇILIN BEN DOKTORUM! v5.5 — 16-Bit Piksel Art Klinik, Açık Dünya & PS5 Konsol</title>
+<meta name="description" content="16-Bit Piksel Art Tıp Simülasyonu, 8 Uzmanlık Dalı, Açık Dünya Aydın, Evde PS5 GTA 6 & EA FC 27, Blackjack, Poker, At Yarışı, WhatsDoc AI. developer=kurtulustas">
 <style>
   :root {
     --bg-main: #0b101b;
     --bg-panel: #121927;
     --bg-card: #182234;
     --border-subtle: #2c3b57;
+    --border-bright: #4c6ef5;
     --accent-cyan: #3bc9db;
     --accent-gold: #fcc419;
     --accent-red: #ff6b6b;
@@ -17,99 +19,325 @@
     --accent-purple: #b197fc;
     --text-main: #f1f3f5;
     --text-muted: #90a4ae;
-    --font-ui: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    --font-pixel: ui-monospace, 'Cascadia Mono', Menlo, Consolas, monospace;
+    --font-ui: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    --font-pixel: ui-monospace, 'Cascadia Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  html, body { width: 100%; height: 100dvh; overflow: hidden; background: #06090f; color: var(--text-main); font-family: var(--font-ui); }
-  #app { width: 100%; height: 100dvh; background: var(--bg-main); display: flex; flex-direction: column; position: relative; overflow: hidden; }
-  #workspace { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
-  #primaryCol { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
-  #sideDrawer { display: none; background: #0d1320; border-left: 2px solid var(--border-subtle); flex-direction: column; overflow: hidden; }
+  html, body {
+    width: 100%; height: 100dvh; overflow: hidden;
+    background: #06090f; color: var(--text-main);
+    font-family: var(--font-ui);
+  }
+
+  #app {
+    width: 100%; height: 100dvh;
+    background: var(--bg-main);
+    display: flex; flex-direction: column;
+    position: relative; overflow: hidden;
+  }
+  #workspace {
+    flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative;
+  }
+  #primaryCol {
+    flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0;
+  }
+  #sideDrawer {
+    display: none;
+    background: #0d1320;
+    border-left: 2px solid var(--border-subtle);
+    flex-direction: column;
+    overflow: hidden;
+  }
 
   @media (min-width: 960px) {
     #workspace { flex-direction: row; }
-    #app.split-open #sideDrawer { display: flex; width: 450px; min-width: 450px; }
-    #sceneWrap { height: 50% !important; min-height: 280px !important; }
+    #app.split-open #sideDrawer {
+      display: flex;
+      width: 440px;
+      min-width: 440px;
+      max-width: 460px;
+      animation: slideInRight 0.18s ease-out;
+    }
+    #sceneWrap { height: 49% !important; min-height: 270px !important; }
+    #dialogueText { font-size: 14.5px !important; }
+    .choice-btn { font-size: 13px !important; padding: 9px 12px !important; }
+    .act-btn { font-size: 13px !important; }
   }
   @media (max-width: 959px) {
-    #app.split-open #sideDrawer { display: flex; position: absolute; inset: 46px 0 0 0; z-index: 45; border-left: none; }
+    #app.split-open #sideDrawer {
+      display: flex;
+      position: absolute;
+      inset: 46px 0 0 0;
+      z-index: 45;
+      border-left: none;
+    }
+  }
+  @keyframes slideInRight {
+    from { opacity: 0.4; transform: translateX(18px); }
+    to { opacity: 1; transform: translateX(0); }
   }
 
-  .card-box { background: var(--bg-panel); border: 1.5px solid var(--border-subtle); border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.35); }
+  .card-box {
+    background: var(--bg-panel);
+    border: 1.5px solid var(--border-subtle);
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.35);
+  }
 
   /* START SCREEN */
   #startScreen {
     position: absolute; inset: 0; z-index: 60;
     background: radial-gradient(circle at top, #162238 0%, #080c14 100%);
-    display: flex; justify-content: center; align-items: center; padding: 16px; overflow-y: auto;
+    display: flex; justify-content: center; align-items: center;
+    padding: 16px; overflow-y: auto;
   }
-  .start-container { width: 100%; max-width: 560px; display: flex; flex-direction: column; gap: 12px; }
-  .title-banner { text-align: center; padding: 18px 14px; background: linear-gradient(135deg, #131d31 0%, #0d1422 100%); border: 1.5px solid #364fc7; border-radius: 10px; }
-  .title-badge { display: inline-block; background: rgba(59,201,219,0.14); color: var(--accent-cyan); font-family: var(--font-pixel); font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 20px; border: 1px solid var(--accent-cyan); margin-bottom: 6px; }
-  .game-title { font-family: var(--font-pixel); font-size: clamp(22px, 4vw, 30px); font-weight: 900; color: #fff; }
+  .start-container {
+    width: 100%; max-width: 560px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .title-banner {
+    text-align: center; padding: 18px 14px;
+    background: linear-gradient(135deg, #131d31 0%, #0d1422 100%);
+    border: 1.5px solid #364fc7; border-radius: 10px;
+  }
+  .title-badge {
+    display: inline-block; background: rgba(59, 201, 219, 0.14); color: var(--accent-cyan);
+    font-family: var(--font-pixel); font-size: 11px; font-weight: 800; padding: 4px 10px;
+    border-radius: 20px; border: 1px solid var(--accent-cyan); margin-bottom: 6px;
+  }
+  .game-title {
+    font-family: var(--font-pixel); font-size: clamp(22px, 4vw, 30px); font-weight: 900;
+    color: #fff; letter-spacing: 0.5px;
+  }
   .game-sub { font-size: 12px; color: var(--accent-green); margin-top: 5px; font-weight: 600; }
   .setup-card { padding: 14px; display: flex; flex-direction: column; gap: 10px; }
-  .field-row { display: flex; flex-direction: column; gap: 4px; }
-  .field-row label { font-size: 11px; color: var(--accent-gold); font-weight: 700; }
-  .pixel-input, .pixel-select { width: 100%; padding: 9px 11px; background: #090d16; border: 1.5px solid var(--border-subtle); border-radius: 6px; color: #fff; font-size: 13px; outline: none; }
-  .start-btn { width: 100%; padding: 13px; background: linear-gradient(90deg, #2b8a3e, #37b24d); border: none; border-radius: 8px; color: #fff; font-family: var(--font-pixel); font-size: 15px; font-weight: 900; cursor: pointer; }
-  .continue-btn { width: 100%; padding: 10px; background: rgba(252,196,25,0.14); border: 1.5px solid var(--accent-gold); border-radius: 7px; color: var(--accent-gold); font-family: var(--font-pixel); font-size: 13px; font-weight: 800; cursor: pointer; display: none; }
+  .field-row { display: flex; flex-direction: column; gap: 4px; text-align: left; }
+  .field-row label { font-size: 11px; color: var(--accent-gold); font-weight: 700; letter-spacing: 0.3px; }
+  .pixel-input, .pixel-select {
+    width: 100%; padding: 9px 11px; background: #090d16;
+    border: 1.5px solid var(--border-subtle); border-radius: 6px; color: #fff;
+    font-family: var(--font-ui); font-size: 13px; outline: none;
+  }
+  .pixel-input:focus { border-color: var(--accent-cyan); }
+  .avatar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .av-btn {
+    padding: 8px 4px; background: #0e1420; border: 1.5px solid var(--border-subtle);
+    border-radius: 6px; color: #dee2e6; font-size: 12px; font-weight: 600; cursor: pointer;
+  }
+  .av-btn.active { border-color: var(--accent-cyan); color: var(--accent-cyan); background: rgba(59,201,219,0.12); font-weight: 800; }
+  .start-btn {
+    width: 100%; padding: 13px; background: linear-gradient(90deg, #2b8a3e, #37b24d);
+    border: none; border-radius: 8px; color: #fff; font-family: var(--font-pixel);
+    font-size: 15px; font-weight: 900; cursor: pointer; letter-spacing: 0.5px;
+    box-shadow: 0 4px 14px rgba(55, 178, 77, 0.35);
+  }
+  .start-btn:hover { filter: brightness(1.08); }
+  .continue-btn {
+    width: 100%; padding: 10px; background: rgba(252, 196, 25, 0.14);
+    border: 1.5px solid var(--accent-gold); border-radius: 7px; color: var(--accent-gold);
+    font-family: var(--font-pixel); font-size: 13px; font-weight: 800; cursor: pointer; display: none;
+  }
+  .dev-footer { text-align: center; font-size: 11px; color: var(--text-muted); }
+  .dev-footer a {
+    color: var(--accent-cyan); text-decoration: none; font-weight: 700;
+    padding: 3px 9px; border-radius: 5px; border: 1px solid var(--border-subtle); background: #0d1320;
+  }
 
   /* HUD */
-  #hud { height: 46px; min-height: 46px; padding: 0 12px; background: #0d1320; border-bottom: 1.5px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  #hud {
+    height: 46px; min-height: 46px; padding: 0 12px;
+    background: #0d1320; border-bottom: 1.5px solid var(--border-subtle);
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  }
   .hud-stats { display: flex; align-items: center; gap: 10px; overflow-x: auto; font-family: var(--font-pixel); font-size: 11.5px; font-weight: 800; }
   .stat-pill { white-space: nowrap; display: inline-flex; align-items: center; gap: 4px; }
-  .rep-bar { width: 44px; height: 9px; background: #1e2738; border-radius: 4px; overflow: hidden; display: inline-block; border: 1px solid #495057; }
+  .rep-bar {
+    width: 44px; height: 9px; background: #1e2738; border-radius: 4px; overflow: hidden; display: inline-block; border: 1px solid #495057;
+  }
   .rep-fill { height: 100%; background: linear-gradient(90deg, #22b8cf, #51cf66); width: 50%; }
   .hud-btns { display: flex; gap: 5px; flex-shrink: 0; }
-  .icon-btn { background: var(--bg-card); border: 1.5px solid var(--border-subtle); border-radius: 6px; color: #fff; padding: 5px 8px; font-size: 12px; font-weight: 700; cursor: pointer; position: relative; display: inline-flex; align-items: center; gap: 4px; }
+  .icon-btn {
+    background: var(--bg-card); border: 1.5px solid var(--border-subtle); border-radius: 6px;
+    color: #fff; padding: 5px 8px; font-size: 12px; font-weight: 700; cursor: pointer;
+    position: relative; display: inline-flex; align-items: center; gap: 4px;
+  }
   .icon-btn:hover { border-color: var(--accent-cyan); background: #1f2b42; }
-  .badge-dot { position: absolute; top: -3px; right: -3px; width: 9px; height: 9px; background: var(--accent-red); border-radius: 50%; display: none; }
+  .badge-dot {
+    position: absolute; top: -3px; right: -3px; width: 9px; height: 9px;
+    background: var(--accent-red); border: 1.5px solid #0d1320; border-radius: 50%; display: none;
+  }
 
-  /* 16-BIT SCENE */
-  #sceneWrap { position: relative; width: 100%; height: 44%; min-height: 220px; background: #090d16; border-bottom: 2px solid #2b3a55; overflow: hidden; }
-  #gameCanvas { width: 100%; height: 100%; display: block; image-rendering: pixelated; }
-  .scene-tag { position: absolute; top: 8px; left: 10px; background: rgba(9,13,22,0.9); border: 1.5px solid #3b4d6b; border-radius: 4px; padding: 3px 8px; font-family: var(--font-pixel); font-size: 10.5px; color: var(--accent-gold); font-weight: 800; }
-  .clock-tag { position: absolute; top: 8px; right: 10px; background: rgba(9,13,22,0.9); border: 1.5px solid #3b4d6b; border-radius: 4px; padding: 3px 8px; font-family: var(--font-pixel); font-size: 10.5px; color: var(--accent-cyan); font-weight: 800; }
-  .rank-tag { position: absolute; bottom: 8px; left: 10px; background: rgba(9,13,22,0.9); border: 1.5px solid var(--accent-purple); border-radius: 4px; padding: 3px 8px; font-family: var(--font-pixel); font-size: 10.5px; color: var(--accent-purple); font-weight: 800; }
-  .world-hint { position: absolute; bottom: 8px; right: 10px; background: rgba(9,13,22,0.92); border: 1.5px solid var(--accent-green); border-radius: 4px; padding: 3px 8px; font-family: var(--font-pixel); font-size: 10px; color: var(--accent-green); font-weight: 800; }
+  /* TOP 16-BIT PIXEL ART SCENE */
+  #sceneWrap {
+    position: relative; width: 100%; height: 43%; min-height: 215px;
+    background: #090d16; border-bottom: 2px solid #2b3a55; overflow: hidden;
+  }
+  #gameCanvas {
+    width: 100%; height: 100%; display: block;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -webkit-crisp-edges;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+  }
+  .scene-tag {
+    position: absolute; top: 8px; left: 10px;
+    background: rgba(9, 13, 22, 0.9); border: 1.5px solid #3b4d6b; border-radius: 4px;
+    padding: 3px 8px; font-family: var(--font-pixel); font-size: 10.5px; color: var(--accent-gold); font-weight: 800;
+  }
+  .clock-tag {
+    position: absolute; top: 8px; right: 10px;
+    background: rgba(9, 13, 22, 0.9); border: 1.5px solid #3b4d6b; border-radius: 4px;
+    padding: 3px 8px; font-family: var(--font-pixel); font-size: 10.5px; color: var(--accent-cyan); font-weight: 800;
+  }
+  .rank-tag {
+    position: absolute; bottom: 8px; left: 10px;
+    background: rgba(9, 13, 22, 0.9); border: 1.5px solid var(--accent-purple); border-radius: 4px;
+    padding: 3px 8px; font-family: var(--font-pixel); font-size: 10.5px; color: var(--accent-purple); font-weight: 800;
+  }
+  .zoom-hint {
+    position: absolute; bottom: 8px; right: 10px;
+    background: rgba(9, 13, 22, 0.94); border: 1.5px solid var(--accent-green); border-radius: 4px;
+    padding: 4px 9px; font-family: var(--font-pixel); font-size: 10.5px; color: var(--accent-green); cursor: pointer; display: none; font-weight: 800;
+  }
 
-  /* D-PAD FOR MOBILE OPEN WORLD */
-  #mobileDpad { display: none; position: absolute; bottom: 34px; right: 12px; grid-template-columns: repeat(3, 34px); gap: 3px; z-index: 15; }
-  .dpad-btn { width: 34px; height: 34px; background: rgba(18,25,39,0.85); border: 1.5px solid var(--accent-cyan); color: #fff; border-radius: 6px; font-weight: 900; cursor: pointer; }
+  /* MOBILE D-PAD FOR OPEN WORLD */
+  #mobileDpad {
+    display: none; position: absolute; bottom: 34px; right: 12px;
+    grid-template-columns: repeat(3, 34px); gap: 3px; z-index: 15;
+  }
+  .dpad-btn {
+    width: 34px; height: 34px; background: rgba(18, 25, 39, 0.88);
+    border: 1.5px solid var(--accent-cyan); color: #fff; border-radius: 6px; font-weight: 900; cursor: pointer;
+  }
 
   /* BOTTOM CLINICAL ZONE */
-  #bottomZone { flex: 1; display: flex; flex-direction: column; background: var(--bg-main); padding: 10px; gap: 8px; overflow: hidden; }
-  #dialogueBox { flex: 1; padding: 12px 14px; display: flex; flex-direction: column; justify-content: space-between; overflow-y: auto; }
-  .speaker-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; margin-bottom: 8px; }
-  .speaker-name { color: var(--accent-gold); font-weight: 800; font-size: 13.5px; }
+  #bottomZone {
+    flex: 1; display: flex; flex-direction: column;
+    background: var(--bg-main); padding: 10px; gap: 8px; overflow: hidden;
+  }
+  #dialogueBox {
+    flex: 1; padding: 12px 14px; display: flex; flex-direction: column;
+    justify-content: space-between; overflow-y: auto; text-align: left;
+  }
+  .speaker-header {
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; margin-bottom: 8px;
+  }
+  .speaker-name { color: var(--accent-gold); font-weight: 800; font-size: 13.5px; text-align: left; }
   .triage-badge { font-family: var(--font-pixel); font-size: 10px; padding: 2px 8px; font-weight: 800; border-radius: 4px; }
   .t-red { background: rgba(255,107,107,0.16); color: var(--accent-red); border: 1px solid var(--accent-red); }
   .t-yellow { background: rgba(252,196,25,0.16); color: var(--accent-gold); border: 1px solid var(--accent-gold); }
   .t-green { background: rgba(81,207,102,0.16); color: var(--accent-green); border: 1px solid var(--accent-green); }
 
-  #dialogueText { font-size: 13.5px; line-height: 1.55; color: var(--text-main); min-height: 38px; white-space: pre-line; }
+  #dialogueText {
+    font-size: 13.5px; line-height: 1.55; color: var(--text-main);
+    min-height: 40px; white-space: pre-line; text-align: left;
+  }
   #subPanel { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; width: 100%; }
 
-  .choice-btn { width: 100%; text-align: left; padding: 9px 12px; background: var(--bg-card); border: 1.5px solid var(--border-subtle); border-radius: 6px; color: var(--text-main); font-size: 12.5px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; }
-  .choice-btn::before { content: "▸"; color: var(--accent-cyan); font-weight: 900; }
-  .choice-btn:hover { border-color: var(--accent-cyan); background: #1f2c44; }
+  .choice-btn {
+    width: 100%; text-align: left; padding: 9px 12px;
+    background: var(--bg-card); border: 1.5px solid var(--border-subtle); border-radius: 6px;
+    color: var(--text-main); font-family: var(--font-ui); font-size: 12.5px; font-weight: 600;
+    cursor: pointer; display: flex; align-items: center; justify-content: flex-start; gap: 8px;
+    transition: all 0.12s ease;
+  }
+  .choice-btn::before { content: "▸"; color: var(--accent-cyan); font-weight: 900; flex-shrink: 0; }
+  .choice-btn:hover, .choice-btn:active { border-color: var(--accent-cyan); color: #fff; background: #1f2c44; transform: translateX(2px); }
   .choice-btn.danger { border-color: rgba(255,107,107,0.65); color: #ffa8a8; }
+  .choice-btn.danger::before { color: var(--accent-red); }
   .choice-btn.success { border-color: rgba(81,207,102,0.65); color: #b2f2bb; }
+  .choice-btn.success::before { color: var(--accent-green); }
   .choice-btn.purple { border-color: rgba(177,151,252,0.65); color: #d0bfff; }
+  .choice-btn.purple::before { color: var(--accent-purple); }
   .choice-btn.center { justify-content: center; text-align: center; }
-  .choice-btn.center::before { display: none; }
+  .choice-btn.center::before { content: ""; display: none; }
+
+  .chat-input-bar { display: flex; gap: 6px; margin-top: 6px; }
+  .chat-input-bar input {
+    flex: 1; background: #090d16; border: 1.5px solid var(--border-subtle); border-radius: 6px;
+    color: #fff; padding: 8px 10px; font-family: var(--font-ui); font-size: 12.5px; outline: none;
+  }
+  .chat-input-bar input:focus { border-color: var(--accent-cyan); }
+  .chat-send-btn {
+    background: #1c7ed6; color: #fff; border: none; border-radius: 6px;
+    padding: 0 14px; font-weight: 700; font-size: 12px; cursor: pointer;
+  }
 
   #mainActions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; height: 46px; min-height: 46px; }
-  .act-btn { background: var(--bg-panel); border: 1.5px solid var(--border-subtle); border-radius: 7px; color: var(--text-main); font-size: 12.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
-  .act-btn.active, .act-btn:hover { border-color: var(--accent-cyan); color: var(--accent-cyan); background: rgba(59,201,219,0.12); }
+  .act-btn {
+    background: var(--bg-panel); border: 1.5px solid var(--border-subtle); border-radius: 7px;
+    color: var(--text-main); font-family: var(--font-ui); font-size: 12.5px; font-weight: 700;
+    cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .act-btn.active, .act-btn:hover {
+    border-color: var(--accent-cyan); color: var(--accent-cyan); background: rgba(59, 201, 219, 0.12);
+  }
 
-  /* DRAWER & SMARTPHONE */
-  .drawer-head { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: #121927; border-bottom: 1.5px solid var(--border-subtle); }
+  /* SIDE DRAWER */
+  .drawer-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 14px; background: #121927; border-bottom: 1.5px solid var(--border-subtle);
+  }
   .drawer-title { font-family: var(--font-pixel); font-size: 12.5px; font-weight: 800; color: var(--accent-gold); }
-  .close-btn { background: rgba(255,107,107,0.16); color: var(--accent-red); border: 1px solid var(--accent-red); border-radius: 5px; padding: 4px 10px; font-size: 11.5px; font-weight: 800; cursor: pointer; }
-  .drawer-body { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 9px; }
+  .close-btn {
+    background: rgba(255,107,107,0.16); color: var(--accent-red); border: 1px solid var(--accent-red);
+    border-radius: 5px; padding: 4px 10px; font-size: 11.5px; font-weight: 800; cursor: pointer;
+  }
+  .drawer-body {
+    flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 9px; text-align: left;
+  }
+
+  /* SMARTPHONE UI */
+  .phone-shell {
+    border: 2px solid #364fc7; border-radius: 16px; background: #090d16;
+    padding: 12px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; overflow: hidden;
+  }
+  .phone-status {
+    display: flex; justify-content: space-between; font-family: var(--font-pixel); font-size: 10px; color: var(--accent-green);
+    border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; margin-bottom: 8px;
+  }
+  .app-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 4px 0; }
+  .app-icon {
+    background: var(--bg-card); border: 1.5px solid var(--border-subtle); border-radius: 10px; padding: 11px 4px;
+    text-align: center; cursor: pointer; display: flex; flex-direction: column; gap: 5px; align-items: center;
+    font-size: 11.5px; color: #f1f3f5; font-weight: 700; position: relative; transition: 0.12s;
+  }
+  .app-icon:hover { border-color: var(--accent-cyan); transform: translateY(-2px); background: #202d46; }
+  .app-icon span.ico { font-size: 22px; }
+
+  .casino-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
+  .c-tab {
+    padding: 7px 4px; background: var(--bg-card); border: 1.5px solid var(--border-subtle); border-radius: 6px;
+    color: #dee2e6; font-size: 11.5px; font-weight: 700; cursor: pointer; text-align: center;
+  }
+  .c-tab.active { border-color: var(--accent-gold); color: var(--accent-gold); background: rgba(252,196,25,0.12); }
+  .card-row { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin: 6px 0; }
+  .p-card {
+    width: 48px; height: 68px; background: #f8f9fa; color: #111; border-radius: 6px;
+    border: 2px solid #adb5bd; display: flex; flex-direction: column; justify-content: space-between;
+    padding: 4px 5px; font-family: var(--font-pixel); font-weight: 900; font-size: 13px;
+    cursor: pointer; user-select: none; position: relative;
+  }
+  .p-card.red { color: #e03131; }
+  .p-card.held { border-color: var(--accent-gold); box-shadow: 0 0 0 2px var(--accent-gold); transform: translateY(-4px); }
+  .p-card .hold-tag {
+    position: absolute; bottom: -14px; left: 50%; transform: translateX(-50%);
+    font-size: 8.5px; background: var(--accent-gold); color: #000; padding: 1px 4px; border-radius: 3px;
+  }
+  #raceCanvas, #mgCanvas, #zoomCanvas, #photoCanvas {
+    width: 100%; background: #06090f; border: 1.5px solid var(--border-subtle); border-radius: 8px; image-rendering: pixelated;
+  }
+  .bank-card {
+    background: linear-gradient(135deg, #0f2922 0%, #122036 100%);
+    border: 1.5px solid var(--accent-green); border-radius: 10px; padding: 12px; color: #fff;
+  }
+  .tx-row {
+    display: flex; justify-content: space-between; font-size: 11.5px;
+    padding: 6px 8px; background: var(--bg-card); border-radius: 5px; border-left: 3px solid var(--accent-gold);
+  }
+  .tx-row.neg { border-left-color: var(--accent-red); color: #ffa8a8; }
+  .tx-row.pos { border-left-color: var(--accent-green); color: #b2f2bb; }
 
   /* FULLSCREEN TV CONSOLE OVERLAY (GTA 6 & EA FC 27) */
   #consoleOverlay {
@@ -119,10 +347,10 @@
   #consoleOverlay.open { display: flex; }
   .console-bar {
     height: 48px; background: #0f172a; border-bottom: 2px solid var(--accent-cyan);
-    display: flex; align-items: center; justify-content: space-between; padding: 0 14px;
+    display: flex; align-items: center; justify-content: space-between; padding: 0 14px; gap: 8px;
   }
-  .console-title { font-family: var(--font-pixel); font-size: 13px; color: var(--accent-gold); font-weight: 900; }
-  .console-controls { display: flex; gap: 8px; }
+  .console-title { font-family: var(--font-pixel); font-size: 12.5px; color: var(--accent-gold); font-weight: 900; }
+  .console-controls { display: flex; gap: 6px; flex-wrap: wrap; }
   #arcadeCanvas { flex: 1; width: 100%; height: 100%; display: block; image-rendering: pixelated; background: #090d16; }
   .arcade-footer {
     padding: 8px 14px; background: #0d1320; border-top: 1px solid var(--border-subtle);
@@ -137,9 +365,9 @@
   <div id="startScreen">
     <div class="start-container">
       <div class="title-banner">
-        <div class="title-badge">16-BIT AÇIK DÜNYA & KONSOL SÜRÜMÜ • v5.0</div>
+        <div class="title-badge">16-BIT KLİNİK, AÇIK DÜNYA & PS5 KONSOL • v5.5</div>
         <div class="game-title">AÇILIN BEN DOKTORUM!</div>
-        <div class="game-sub">8 Uzmanlık • Açık Dünya Aydın • Evde PS5: GTA 6 & EA FC 27 • Tam Ekran TV</div>
+        <div class="game-sub">8 Uzmanlık Dalı • Açık Dünya Aydın • Evde Tam Ekran GTA 6 & EA FC 27 • WhatsDoc AI</div>
       </div>
 
       <div class="setup-card card-box">
@@ -153,12 +381,35 @@
           <input id="inpHospName" class="pixel-input" type="text" value="Aydın Merkez Acil Eğitim Hast." maxlength="34">
         </div>
         <div class="field-row">
-          <label>OPSİYONEL AI API ANAHTARI (GEMINI / OPENAI)</label>
-          <input id="inpApiKey" class="pixel-input" type="password" placeholder="AIza... veya sk-... (Boşsa dahili AI aktif)">
+          <label>DOKTOR TARZI</label>
+          <div class="avatar-grid" id="avatarGrid">
+            <button type="button" class="av-btn active" data-av="0">Klasik</button>
+            <button type="button" class="av-btn" data-av="1">Gözlüklü</button>
+            <button type="button" class="av-btn" data-av="2">Uykusuz</button>
+            <button type="button" class="av-btn" data-av="3">Karizma</button>
+          </div>
+        </div>
+        <div class="field-row">
+          <label>OPSİYONEL AI API ANAHTARI (GEMINI / OPENAI — BOŞSA DAHİLİ AI ÇALIŞIR)</label>
+          <input id="inpApiKey" class="pixel-input" type="password" placeholder="AIza... veya sk-... (İsteğe bağlı gerçek AI sohbeti)">
+        </div>
+        <div class="field-row">
+          <label>NÖBET MODU</label>
+          <select id="inpDiff" class="pixel-select">
+            <option value="normal">Standart Nöbet (8 Uzmanlık x 30 Vaka + Açık Dünya + PS5)</option>
+            <option value="hard">Cuma Gece Acili (Yüksek Beyaz Kod, Rüşvet & Borç Talebi)</option>
+          </select>
         </div>
       </div>
 
       <button id="btnStartGame" class="start-btn">NÖBETİ & ŞEHRİ DEVRAL ▸</button>
+
+      <div class="dev-footer">
+        <div>16-Bit Piksel Klinik • Açık Dünya Keşif • Evde Tam Ekran GTA 6 & EA FC 27</div>
+        <div style="margin-top:6px;">
+          <a href="https://github.com/kurtulustas" target="_blank" rel="noopener noreferrer">developer=kurtulustas</a>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -166,18 +417,19 @@
   <div id="hud">
     <div class="hud-stats">
       <span class="stat-pill" style="color:var(--accent-gold)" id="hudDay">G1 0/5</span>
-      <span class="stat-pill" style="color:var(--accent-green)" id="hudMoney">3.500₺</span>
+      <span class="stat-pill" style="color:var(--accent-green)" id="hudMoney">1.500₺</span>
       <span class="stat-pill" style="color:var(--accent-cyan)">İTİBAR <span class="rep-bar"><span class="rep-fill" id="repFill"></span></span></span>
-      <span class="stat-pill" style="color:var(--accent-purple)" id="hudTus">TUS:45</span>
+      <span class="stat-pill" style="color:var(--accent-purple)" id="hudTus">TUS:42</span>
       <span class="stat-pill" style="color:var(--accent-red)" id="hudWarn">⚠️0/3</span>
     </div>
     <div class="hud-btns">
       <button class="icon-btn" onclick="enterOpenWorld()" title="Şehirde Yürü / Araba Sür">🌆 Açık Dünya</button>
-      <button class="icon-btn" onclick="openDrawer('tus')">🎓 Uzmanlık</button>
-      <button class="icon-btn" onclick="openPhone()">📱 Telefon<span class="badge-dot" id="phoneDot"></span></button>
-      <button class="icon-btn" onclick="openDrawer('map')">🗺️ Hızlı Git</button>
-      <button class="icon-btn" onclick="openDrawer('shop')">🛒 Ekipman</button>
-      <button class="icon-btn" id="btnSound" onclick="toggleSound()">🔊</button>
+      <button class="icon-btn" onclick="openDrawer('tus')" title="TUS & 8 Uzmanlık">🎓 Uzmanlık</button>
+      <button class="icon-btn" onclick="openPhone()" title="Akıllı Telefon">📱 Telefon<span class="badge-dot" id="phoneDot"></span></button>
+      <button class="icon-btn" onclick="openDrawer('map')" title="Hastane ve Şehir">🗺️ Harita</button>
+      <button class="icon-btn" onclick="openDrawer('shop')" title="Masa Dükkânı">🛒 Ekipman</button>
+      <button class="icon-btn" id="btnMusic" onclick="toggleMusic()" title="16-Bit Gece Müziği">🎵</button>
+      <button class="icon-btn" id="btnSound" onclick="toggleSound()" title="Ses Efektleri">🔊</button>
     </div>
   </div>
 
@@ -189,14 +441,14 @@
         <div class="scene-tag" id="sceneTag">ACİL SERVİS — ODA 1</div>
         <div class="clock-tag" id="clockTag">20:00</div>
         <div class="rank-tag" id="rankTag">🩺 PRATİSYEN HEKİM</div>
-        <div class="world-hint" id="worldHint">🌆 Açık Dünya için üstten "Açık Dünya"ya bas</div>
+        <div class="zoom-hint" id="zoomHint" onclick="openDrawer('radiology')">🔍 GÖRÜNTÜLEME YAKINLAŞTIR</div>
 
         <!-- MOBİL D-PAD -->
         <div id="mobileDpad">
-          <div></div><button class="dpad-btn" onpointerdown="keys['ArrowUp']=true" onpointerup="keys['ArrowUp']=false">▲</button><div></div>
-          <button class="dpad-btn" onpointerdown="keys['ArrowLeft']=true" onpointerup="keys['ArrowLeft']=false">◀</button>
-          <button class="dpad-btn" onpointerdown="keys['ArrowDown']=true" onpointerup="keys['ArrowDown']=false">▼</button>
-          <button class="dpad-btn" onpointerdown="keys['ArrowRight']=true" onpointerup="keys['ArrowRight']=false">▶</button>
+          <div></div><button class="dpad-btn" onpointerdown="worldKeys['ArrowUp']=true" onpointerup="worldKeys['ArrowUp']=false">▲</button><div></div>
+          <button class="dpad-btn" onpointerdown="worldKeys['ArrowLeft']=true" onpointerup="worldKeys['ArrowLeft']=false">◀</button>
+          <button class="dpad-btn" onpointerdown="worldKeys['ArrowDown']=true" onpointerup="worldKeys['ArrowDown']=false">▼</button>
+          <button class="dpad-btn" onpointerdown="worldKeys['ArrowRight']=true" onpointerup="worldKeys['ArrowRight']=false">▶</button>
         </div>
       </div>
 
@@ -223,35 +475,2711 @@
 
     <div id="sideDrawer">
       <div class="drawer-head">
-        <span class="drawer-title" id="drawerTitle">PANEL</span>
+        <span class="drawer-title" id="drawerTitle">AKILLI TELEFON</span>
         <button class="close-btn" onclick="closeDrawer()">KAPAT ✕</button>
       </div>
       <div class="drawer-body" id="drawerBody"></div>
     </div>
   </div>
 
-  <!-- FULLSCREEN CONSOLE OVERLAY (PS5: GTA 6 & EA FC 27) -->
+  <!-- FULLSCREEN TV CONSOLE OVERLAY (PS5 PRO: GTA 6 & EA FC 27) -->
   <div id="consoleOverlay">
     <div class="console-bar">
       <div class="console-title" id="consoleTitle">🎮 PS5 PRO — 4K TV TAM EKRAN MODU</div>
       <div class="console-controls">
         <button class="icon-btn" onclick="launchConsoleGame('gta6')">🚗 GTA 6: Aydın Vice</button>
         <button class="icon-btn" onclick="launchConsoleGame('fifa')">⚽ EA FC 27: Kanat Forvet</button>
-        <button class="icon-btn" onclick="toggleBrowserFullscreen()">⛶ Gerçek Tam Ekran</button>
+        <button class="icon-btn" onclick="toggleBrowserFullscreen()">⛶ Gerçek Tam Ekran (F)</button>
         <button class="close-btn" onclick="closeConsole()">KONSOLU KAPAT ✕</button>
       </div>
     </div>
     <canvas id="arcadeCanvas" width="640" height="360"></canvas>
     <div class="arcade-footer">
-      <span id="arcadeHelp">Yön Tuşları / WASD ile oyna • SPACE: Aksiyon / Şut / El Freni</span>
-      <span id="arcadeScore">SKOR / PARA: 0</span>
+      <span id="arcadeHelp">WASD / Ok Tuşları ile oyna • SPACE: Aksiyon / Plase Şut / El Freni</span>
+      <span id="arcadeScore">SKOR / PRİM: 0</span>
     </div>
   </div>
 </div>
 
-<!-- MODÜLER OYUN MOTORU DOSYALARI -->
-<script src="world_data.js"></script>
-<script src="minigames_arcade.js"></script>
-<script src="engine_16bit.js"></script>
+<script>
+/* ================= AUDIO & 16-BIT CHIP SYNTH ================= */
+let audioCtx = null, soundOn = true, musicOn = false, musicTimer = null, noteStep = 0;
+
+function initAudio() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+}
+
+function toggleSound() {
+  soundOn = !soundOn;
+  document.getElementById('btnSound').textContent = soundOn ? '🔊' : '🔇';
+}
+
+function toggleMusic() {
+  musicOn = !musicOn;
+  document.getElementById('btnMusic').textContent = musicOn ? '🎶' : '🎵';
+  if (musicOn) startNightMusic();
+  else if (musicTimer) { clearInterval(musicTimer); musicTimer = null; }
+}
+
+function startNightMusic() {
+  if (musicTimer) clearInterval(musicTimer);
+  const seq = [220, 261.6, 329.6, 392, 174.6, 220, 261.6, 329.6, 146.8, 174.6, 220, 261.6, 164.8, 196, 246.9, 293.6];
+  musicTimer = setInterval(() => {
+    if (!musicOn) return;
+    try {
+      initAudio();
+      const freq = seq[noteStep % seq.length];
+      noteStep++;
+      const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+      o.type = 'triangle';
+      o.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      g.gain.setValueAtTime(0.016, audioCtx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.0008, audioCtx.currentTime + 0.36);
+      o.connect(g); g.connect(audioCtx.destination);
+      o.start(); o.stop(audioCtx.currentTime + 0.38);
+    } catch (e) {}
+  }, 420);
+}
+
+function playBlip(pitch = 320, type = 'triangle', dur = 0.032, vol = 0.028) {
+  if (!soundOn) return;
+  try {
+    initAudio();
+    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+    o.type = type;
+    o.frequency.setValueAtTime(pitch + (Math.random() * 14 - 7), audioCtx.currentTime);
+    g.gain.setValueAtTime(vol, audioCtx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+    o.connect(g); g.connect(audioCtx.destination);
+    o.start(); o.stop(audioCtx.currentTime + dur);
+  } catch (e) {}
+}
+
+function playSfx(kind) {
+  if (!soundOn) return;
+  if (kind === 'stamp') playBlip(120, 'sawtooth', 0.14, 0.08);
+  else if (kind === 'alarm') { playBlip(780, 'square', 0.16, 0.07); setTimeout(() => playBlip(620, 'square', 0.16, 0.07), 150); }
+  else if (kind === 'coin') { playBlip(660, 'triangle', 0.08, 0.07); setTimeout(() => playBlip(990, 'triangle', 0.14, 0.07), 80); }
+  else if (kind === 'heart') { playBlip(95, 'sine', 0.11, 0.11); setTimeout(() => playBlip(80, 'sine', 0.13, 0.09), 135); }
+  else if (kind === 'msg') { playBlip(520, 'sine', 0.07, 0.06); setTimeout(() => playBlip(780, 'sine', 0.09, 0.06), 75); }
+  else if (kind === 'card') { playBlip(480, 'triangle', 0.04, 0.05); }
+}
+
+/* ================= 8 SPECIALTIES ================= */
+const SPECIALTIES = {
+  none:   { id: 'none',   title: 'Pratisyen Hekim',           icon: '🩺', reqTus: 40, reqRep: 40, bonusPay: 0,   serviceName: 'Acil Servis' },
+  ophth:  { id: 'ophth',  title: 'Göz Hastalıkları Uzmanı',   icon: '👁️', reqTus: 54, reqRep: 50, bonusPay: 220, serviceName: 'Göz Hastalıkları' },
+  cardio: { id: 'cardio', title: 'Kardiyoloji Uzmanı',        icon: '❤️', reqTus: 60, reqRep: 55, bonusPay: 260, serviceName: 'Kardiyoloji' },
+  emerg:  { id: 'emerg',  title: 'Acil Tıp Uzmanı',           icon: '🚨', reqTus: 50, reqRep: 48, bonusPay: 200, serviceName: 'Acil Resüsitasyon' },
+  neuro:  { id: 'neuro',  title: 'Nöroloji & Beyin Cerrahi',  icon: '🧠', reqTus: 58, reqRep: 54, bonusPay: 250, serviceName: 'Nöroloji / Beyin Cerrahi' },
+  ortho:  { id: 'ortho',  title: 'Ortopedi & Travmatoloji',   icon: '🦴', reqTus: 52, reqRep: 50, bonusPay: 210, serviceName: 'Ortopedi' },
+  peds:   { id: 'peds',   title: 'Pediatri & Çocuk Acil',     icon: '🧸', reqTus: 52, reqRep: 50, bonusPay: 210, serviceName: 'Pediatri' },
+  ent:    { id: 'ent',    title: 'Kulak Burun Boğaz (KBB)',   icon: '👂', reqTus: 50, reqRep: 48, bonusPay: 195, serviceName: 'KBB' },
+  surg:   { id: 'surg',   title: 'Genel Cerrahi Uzmanı',      icon: '🔪', reqTus: 56, reqRep: 52, bonusPay: 240, serviceName: 'Genel Cerrahi' }
+};
+
+/* ================= GAME STATE ================= */
+const SAVE_KEY = 'acilin_ben_doktorum_v5_5';
+
+const state = {
+  docName: 'Dr. Muhammed Kurtuluş Taş',
+  hospName: 'Aydın Merkez Acil Eğitim Hast.',
+  avatar: 0,
+  apiKey: '',
+  diff: 'normal',
+  day: 1,
+  hour: 20,
+  seenToday: 0,
+  dailyCorrect: 0,
+  dailyWrong: 0,
+  totalSaved: 0,
+  money: 1500,
+  bankDebt: 0,
+  rep: 50,
+  tusScore: 42,
+  specialty: 'none',
+  stress: 10,
+  warnings: 0,
+  location: 'er',
+  activeStaffIdx: null,
+  tab: 'talk',
+  currentPatient: null,
+  usedCaseIds: [],
+  examDone: { vitals: false, lung: false, pupil: false, rad: false, labs: false, enabiz: false },
+  ppeOn: false,
+  doorThreat: false,
+  bribePending: false,
+  internIdx: 0,
+  internTrust: 50,
+  coffeeGivenToday: false,
+  upgrades: { thermos: false, cactus: false, littmann: false, dualMonitor: false },
+  assets: {
+    car: 'Yok (Belediye Otobüsü)',
+    carColor: '#ff6b6b',
+    fuel: 100,
+    carHealth: 100,
+    phone: 'TıpPhone 17 Pro',
+    homeLevel: 1,
+    ps5Owned: true
+  },
+  worldPlayer: { x: 86, y: 88, dir: 'down' },
+  crypto: {
+    btcPrice: 1200,
+    goldPrice: 450,
+    btcQty: 0,
+    goldQty: 0
+  },
+  news: [
+    'SAĞLIK BÜLTENİ: Aydın Merkez Acil servisinde gece nöbeti yoğunluğu %40 arttı.',
+    'TUS MERKEZİ: Klinik branş kadroları için taban puanlar güncellendi.'
+  ],
+  iban: 'TR42 0006 1000 1907 2026 0001 09',
+  transactions: [{ desc: 'Nöbet Avansı Açılış Bakiyesi', amt: 1500, type: 'pos' }],
+  loanRequests: [],
+  activeLoansOut: [],
+  chats: [
+    { id: 'grp', name: '🏥 Acil Nöbet Grubu', role: 'Hastane Ekibi', persona: 'Acil servis doktor ve hemşirelerinin yoğun nöbet grubu, esprili ve destekleyici', unread: true, msgs: [
+      { from: 'Başhemşire Zeynep', text: 'Arkadaşlar 2. ambulans yolda, Kırmızı Alanı boş tutalım.' },
+      { from: 'Uzm. Dr. Mert', text: 'Tüm görüntüleme cihazları (BT, Biyomikroskop, Odyometri) aktif!' }
+    ]},
+    { id: 'elif', name: '🩺 Asistan Dr. Elif', role: 'Dahiliye Asistanı', persona: 'Dahiliye asistanı, esprili, zeki, sana ilgi duyan ve flörtöz meslektaşın', unread: true, msgs: [
+      { from: 'Dr. Elif', text: 'Nöbet nasıl gidiyor? Kahve molası verirsen kantindeyim ☕' }
+    ]},
+    { id: 'kaan', name: '🎓 Lise Arkadaşı Kaan', role: 'Yazılımcı / Yakın Dost', persona: 'Liseden en yakın arkadaşın, yazılımcı, PS5 GTA 6 / EA FC 27 ve halı sahadan konuşmayı seven samimi dost', unread: true, msgs: [
+      { from: 'Kaan', text: 'Kanka PS5 Pro eve kurulmuş! Nöbet çıkışı GTA 6 ve EA FC 27 atalım, halı sahaya da adam lazım ⚽' }
+    ]},
+    { id: 'riza', name: '🏠 Ev Sahibi Rıza Bey', role: 'Daire Sahibi', persona: 'Hafif pimpirikli ama doktor kiracısıyla gurur duyan, arada komşuların tansiyonunu soran ev sahibi', unread: false, msgs: [
+      { from: 'Rıza Bey', text: 'Doktor oğlum hayırlı nöbetler, üst kattaki teyze tansiyon aleti bozuldu diye seni sordu.' }
+    ]},
+    { id: 'mahmut', name: '🔧 Sanayi Ustası Mahmut', role: 'Oto Tamir & Modifiye', persona: 'Eski toprak sanayi ustası, Şahin ve Alman arabalarının dilinden anlayan babacan usta', unread: false, msgs: [
+      { from: 'Mahmut Usta', text: 'Doktorum arabanın yağını suyunu eksik etme, sanayiye yolun düşerse çayımız demli.' }
+    ]},
+    { id: 'chief', name: '👔 Başhekimlik Makamı', role: 'Hastane Yönetimi', persona: 'Hastane Başhekimi, disiplinli, kurallara önem veren ama başarılı hekimleri takdir eden yönetici', unread: false, msgs: [
+      { from: 'Başhekim', text: '8 farklı uzmanlık dalımızda asistan kadroları TUS puanına göre açılmıştır.' }
+    ]}
+  ],
+  posts: [
+    { author: 'Dr. Muhammed Kurtuluş Taş', caption: 'Gece 02:00 acil nöbeti, TUS soruları ve piksel EKG... ☕🩺', likes: 34 }
+  ],
+  staff: [
+    { id: 'elif', name: 'Asistan Dr. Elif', role: 'Dahiliye Asistanı', coat: '#ffffff', hair: '#4a2511', love: 25, stage: 0,
+      persona: 'Dahiliye asistanı, zeki, esprili, yorgun ama sana sıcak davranan ve yakınlaşan meslektaşın.',
+      stories: [
+        'Nöbetten çıktım, 3. kahvemdeyim. Acildeki soğukkanlılığın serviste konuşuluyor.',
+        'TUS denemelerinde netlerin uçuşa geçmiş diyorlar, hangi branşı seçeceksin?',
+        'Hafta sonu nöbetimiz çakışmazsa sahilde gerçek bir kahve içelim mi?',
+        'Seninle çalışmak bu hastanedeki en güzel tesadüf oldu...',
+        'Artık nöbet listelerinde ilk senin adını arıyorum.'
+      ]},
+    { id: 'zeynep', name: 'Başhemşire Zeynep', role: 'Acil Sorumlu Hemşiresi', coat: '#20c997', hair: '#212529', love: 25, stage: 0,
+      persona: 'Acil servisin tecrübeli sorumlu hemşiresi, anaç, pratik, ekibi koruyan lider ruhlu.',
+      stories: [
+        'Hoş geldin hocam, damar yolları hazır. Yeni intörnü gözünden ayırma derim.',
+        'Beyaz Kod çıktığında arkamızda durmanı ekip asla unutmaz.',
+        'Senin gibi pratik düşünen hekimle acil tıkır tıkır işliyor.',
+        'Nöbet çıkışı çorba içmeye gidersen bana da haber ver.',
+        'Bu acilin gerçek kahramanı sensin.'
+      ]},
+    { id: 'mert', name: 'Uzm. Dr. Mert', role: 'Radyoloji Uzmanı', coat: '#ffffff', hair: '#343a40', love: 15, stage: 0,
+      persona: 'Radyoloji uzmanı, teknoloji ve retro oyun meraklısı, kafa dengi doktor arkadaş.',
+      stories: [
+        'Röntgen, BT ve fundus istemlerini nokta atışı yapıyorsun, gereksiz çekim yok.',
+        'Uzmanlık polikliniklerinde bile senin ön tanılarını konuşuyoruz!',
+        'Tıp teknolojileri ve retro oyunlara meraklıymışsın, kafa dengiyiz.',
+        'Yakında birlikte vaka sunumu yazalım.',
+        'En güvenilir dostum oldun.'
+      ]},
+    { id: 'kerem', name: 'Op. Dr. Kerem', role: 'Genel Cerrahi', coat: '#3bc9db', hair: '#1a1b1e', love: 15, stage: 0,
+      persona: 'Özgüvenli genel cerrah, borsaya ve arabalara meraklı, esprili.',
+      stories: [
+        'Apandisitleri patlamadan yakalayıp gönderdiğin sürece dostuz.',
+        'Ameliyathanede bile senin ön tanılarını övüyoruz.',
+        'Sana bir gün mikrocerrahi dersi vereceğim.',
+        'Cerrahinin kapısı sana hep açık.',
+        'Kardeşim gibisin doktor.'
+      ]}
+  ]
+};
+
+const WORLD_BUILDINGS = [
+  { id: 'er',      name: '🏥 HASTANE ACİL',    x: 24,  y: 22, w: 96,  h: 48, color: '#1c7ed6', roof: '#1864ab' },
+  { id: 'diner',   name: '🍲 ESNAF LOKANTASI', x: 155, y: 22, w: 86,  h: 44, color: '#e67700', roof: '#d9480f' },
+  { id: 'dealer',  name: '🚗 OTO GALERİ',      x: 275, y: 22, w: 92,  h: 44, color: '#2b8a3e', roof: '#237032' },
+  { id: 'home',    name: '🏠 EVİM (PS5 & TV)', x: 388, y: 22, w: 74,  h: 48, color: '#7048e8', roof: '#5f3dc4' },
+  { id: 'pitch',   name: '⚽ HALI SAHA',       x: 155, y: 122, w: 130, h: 44, color: '#2f9e44', roof: '#37b24d' },
+  { id: 'canteen', name: '☕ HASTANE KANTİNİ', x: 24,  y: 122, w: 96,  h: 44, color: '#495057', roof: '#343a40' }
+];
+
+function saveCareer() {
+  try {
+    const payload = { ...state, currentPatient: null };
+    localStorage.setItem(SAVE_KEY, JSON.stringify(payload));
+  } catch (e) {}
+}
+
+function loadCareer() {
+  try {
+    const raw = localStorage.getItem(SAVE_KEY);
+    if (!raw) return false;
+    const parsed = JSON.parse(raw);
+    Object.assign(state, parsed);
+    if (!Array.isArray(state.usedCaseIds)) state.usedCaseIds = [];
+    if (!state.crypto) state.crypto = { btcPrice: 1200, goldPrice: 450, btcQty: 0, goldQty: 0 };
+    if (!state.worldPlayer) state.worldPlayer = { x: 86, y: 88, dir: 'down' };
+    return true;
+  } catch (e) { return false; }
+}
+
+if (localStorage.getItem(SAVE_KEY)) {
+  const btnCont = document.getElementById('btnContinueSave');
+  btnCont.style.display = 'block';
+  btnCont.addEventListener('click', () => {
+    if (loadCareer()) {
+      initAudio();
+      playSfx('coin');
+      document.getElementById('startScreen').style.display = 'none';
+      updateHud();
+      nextPatient();
+    }
+  });
+}
+
+const INTERNS = [
+  { name: 'İntörn Berk', trait: 'Hızlı ama epikriz okumadan antibiyotik yazar!', color: '#3bc9db', flaw: 'allergy' },
+  { name: 'İntörn Selin', trait: 'Uykusuz; çay verilmezse stetoskopu yanlış tutar.', color: '#b197fc', flaw: 'sleepy' },
+  { name: 'İntörn Emre', trait: 'Teorik dehası ama hastaya kaba davranıp kavga çıkarır.', color: '#fcc419', flaw: 'rude' },
+  { name: 'İntörn Zeynep', trait: 'İlk günü, çok heyecanlı ama doğru yönlendirilirse süper.', color: '#51cf66', flaw: 'nervous' }
+];
+
+/* ================= RICH CONTEXT-AWARE AI ENGINE ================= */
+async function generateAIReply(characterName, persona, userMessage) {
+  const key = state.apiKey.trim();
+  const spTitle = SPECIALTIES[state.specialty].title;
+  const sysContext = `Sen bir Türk hastane ve hayat simülasyonu oyununda karakterisin. Adın: ${characterName}. Kişiliğin: ${persona}. Konuştuğun kişi: ${state.docName} (Unvan: ${spTitle}, Bakiye: ${state.money}₺, TUS Puanı: ${state.tusScore}, Arabası: ${state.assets.car}, Gün: ${state.day}). Doğal, samimi, akıcı ve karakterine yakışan Türkçe ile 1-3 cümle cevap ver.`;
+
+  if (key) {
+    try {
+      if (key.startsWith('AIza') || key.startsWith('AQ.')) {
+        const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
+          body: JSON.stringify({ contents: [{ parts: [{ text: `${sysContext}\nOyuncunun mesajı: "${userMessage}"` }] }] })
+        });
+        const data = await res.json();
+        const txt = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (txt) return txt.trim();
+      } else if (key.startsWith('sk-')) {
+        const res = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` },
+          body: JSON.stringify({
+            model: 'gpt-4o-mini',
+            messages: [{ role: 'system', content: sysContext }, { role: 'user', content: userMessage }]
+          })
+        });
+        const data = await res.json();
+        const txt = data?.choices?.[0]?.message?.content;
+        if (txt) return txt.trim();
+      }
+    } catch (e) {}
+  }
+
+  const m = userMessage.toLowerCase();
+  const firstName = state.docName.replace(/^Dr\.\s*/i, '').split(' ')[0] || 'Hocam';
+
+  if (characterName.includes('Kaan')) {
+    if (m.includes('halı saha') || m.includes('maç') || m.includes('fifa') || m.includes('fc')) {
+      return `Kanka kanattan içeri kat edip plaseyi bıraktın mı kalecinin şansı yok ⚽ Eve geçince PS5'te EA FC 27 veya gerçek halı saha yapalım!`;
+    }
+    if (m.includes('gta') || m.includes('ps5') || m.includes('araba')) {
+      return `GTA 6 Aydın Vice modunda polislerden kaçarken sarı paketleri toplamayı unutma kanka, hem stres atıyorsun hem nakit akıyor!`;
+    }
+    return `Helal olsun ${firstName}, hem tıp hem nöbetler derken efsane gidiyorsun. Müsait olduğun an kahve veya maç yapalım!`;
+  }
+  if (characterName.includes('Elif')) {
+    return `Seninle aynı nöbette denk gelmek günün en güzel olayı ${firstName}. ${spTitle} yolunda harika ilerliyorsun, kahve molasında mutlaka konuşalım ☕`;
+  }
+  return `Çok haklısın ${firstName}, bu tempoda soğukkanlı kalabilmek gerçek hekimlik işi. Poliklinikte harika iş çıkarıyorsun!`;
+}
+
+/* ================= BORROW / LOAN SCENARIOS ================= */
+const BORROW_SCENARIOS = [
+  {
+    id: 'loan_berk', from: 'İntörn Berk', role: 'Acil İntörnü',
+    iban: 'TR18 0001 0023 4512 8890 01', amount: 600, returnAmt: 750, payChance: 0.92, loveGain: 15,
+    story: 'Hocam KYK bursum bitti, ev sahibi kapıya dayandı! 600₺ ateşler misin, haftaya burs yatar yatmaz 750₺ olarak geri atayım?'
+  },
+  {
+    id: 'loan_kerem', from: 'Op. Dr. Kerem', role: 'Genel Cerrahi',
+    iban: 'TR55 0004 6008 7712 3300 03', amount: 1800, returnAmt: 2900, payChance: 0.55, loveGain: 10,
+    story: 'Kardeşim içeriden kesin borsa/kripto haberi aldım! 1.800₺ atarsan akşam katlayıp 2.900₺ geri yolluyorum, risk yok!'
+  },
+  {
+    id: 'loan_elif', from: 'Asistan Dr. Elif', role: 'Dahiliye Asistanı',
+    iban: 'TR71 0001 5009 1122 6655 04', amount: 850, returnAmt: 1000, payChance: 1.0, loveGain: 25,
+    story: 'Nöbetteyim servisten çıkamıyorum, kedim hastalandı veterinere 850₺ lazım. IBAN atsam halleder misin? Akşam geri atarım 🙏'
+  }
+];
+
+function triggerRandomLoanRequest() {
+  if (state.loanRequests.length >= 2) return;
+  const available = BORROW_SCENARIOS.filter(s => !state.loanRequests.some(r => r.id === s.id));
+  if (!available.length) return;
+  const pick = available[Math.floor(Math.random() * available.length)];
+  state.loanRequests.push({ ...pick });
+  document.getElementById('phoneDot').style.display = 'block';
+  playSfx('msg');
+}
+
+function resolveLoan(reqId, accept) {
+  const idx = state.loanRequests.findIndex(r => r.id === reqId);
+  if (idx === -1) return;
+  const req = state.loanRequests[idx];
+  if (!accept) {
+    state.loanRequests.splice(idx, 1);
+    addTx(`Borç Talebi Reddedildi (${req.from})`, 0, 'neg');
+    saveCareer(); openPhoneApp('bank'); return;
+  }
+  if (state.money < req.amount) { alert('TıpBank Bakiyesi Yetersiz!'); return; }
+  state.money -= req.amount;
+  state.loanRequests.splice(idx, 1);
+  addTx(`FAST Havale -> ${req.from}`, -req.amount, 'neg');
+  state.activeLoansOut.push({ ...req, dueInPatients: 2 });
+  const st = state.staff.find(s => s.name.includes(req.from.split(' ').pop()));
+  if (st) st.love = Math.min(100, st.love + req.loveGain);
+  playSfx('coin'); updateHud(); saveCareer(); openPhoneApp('bank');
+}
+
+function checkLoanRepayments() {
+  for (let i = state.activeLoansOut.length - 1; i >= 0; i--) {
+    const loan = state.activeLoansOut[i];
+    loan.dueInPatients--;
+    if (loan.dueInPatients <= 0) {
+      state.activeLoansOut.splice(i, 1);
+      if (Math.random() < loan.payChance) {
+        state.money += loan.returnAmt;
+        addTx(`FAST Gelen Borç İadesi <- ${loan.from}`, loan.returnAmt, 'pos');
+        document.getElementById('phoneDot').style.display = 'block';
+        playSfx('coin');
+      } else {
+        addTx(`Geciken Alacak (${loan.from} Erteledi)`, 0, 'neg');
+      }
+      updateHud();
+    }
+  }
+}
+
+function addTx(desc, amt, type) {
+  state.transactions.unshift({ desc, amt, type });
+  if (state.transactions.length > 15) state.transactions.pop();
+}
+
+/* ================= 8 SPECIALTIES x 30 CASES = 240+ CASES ================= */
+const SPECIALTY_BLUEPRINTS = {
+  ophth: [
+    { diag: 'Akut Açı Kapanması Glokomu', triage: 'red', action: 'treat', mg: 'iv', treat: 'IV Mannitol + Asetazolamid + Pilokarpin', srv: 'Göz Hastalıkları', radType: 'eye', radTitle: 'TONOMETRİ & BİYOMİKROSKOP',
+      comp: 'Karanlık sinemadan çıktığımdan beri sağ gözüm taş gibi sertleşti, ışıkların etrafında gökkuşağı halkaları görüyorum!',
+      vit: 'TA: 165/95 | Nabız: 96 | Göz İçi Basıncı (GİB): 54 mmHg!', exam: 'Kornea ödemli, ön kamara sığ.', pupil: 'Sağ pupilla orta dilate ve ışığa yanıtsız!',
+      rad: 'GİB 54 mmHg — Akut Açı Kapanması Glokomu Krizi!', labs: 'Böbrek fonksiyonları IV Mannitol için uygun.', hint: 'GİB 54 mmHg! Hemen IV Mannitol ile göz içi basıncını düşür!' },
+    { diag: 'Santral Retinal Arter Tıkanıklığı (CRAO)', triage: 'red', action: 'admit', srv: 'Göz Hastalıkları', radType: 'eye', radTitle: 'FUNDUS GÖRÜNTÜLEME',
+      comp: 'Sabah uyandığımda sol gözümün önüne bir anda siyah perde indi, ağrım yok ama hiç göremiyorum!',
+      vit: 'TA: 170/95 | Nabız: 84 (AF) | Görme Keskinliği: El Hareketi', exam: 'Oküler emboli şüphesi.', pupil: 'Sol gözde belirgin RAPD (Marcus Gunn) pozitif!',
+      rad: 'Retinada yaygın solukluk ve makulada JAPON BAYRAĞI (Cherry-Red Spot)!', labs: 'EKG: Atriyal Fibrilasyon.', hint: 'Ağrısız ani görme kaybı + Japon Bayrağı makula! Göz Hastalıklarına acil yatır.' },
+    { diag: 'Alkali Kimyasal Kornea Yanığı', triage: 'red', action: 'treat', mg: 'decon', treat: 'Acil Sürekli SF Göz İrrigasyonu (pH 7.4)', srv: 'Göz Hastalıkları', radType: 'eye', radTitle: 'OKÜLER pH & FLORESEİN',
+      comp: 'İnşaatta sönmemiş kireç torbası patladı, gözüme kireç doldu yanıyor!',
+      vit: 'Nabız: 114 | Oküler Yüzey pH: 11.5 (Ağır Alkali!)', exam: 'Yoğun blefarospazm ve konjonktival kemosis.', pupil: 'Limbal iskemi başlangıcı!',
+      rad: 'pH 11.5 — Kornea erimesi riski! Hemen bol SF yıkama şart!', labs: 'Tahlil beklenmeden yıkama yapılmalı.', hint: 'Alkali yanıkta saniyeler kritiktir! Hemen sürekli serum fizyolojik irrigasyonu uygula.' },
+    { diag: 'Macula-On Retina Dekolmanı', triage: 'yellow', action: 'admit', srv: 'Göz Hastalıkları', radType: 'eye', radTitle: 'OKÜLER B-MOD USG',
+      comp: 'Yüksek miyopum; dün geceden beri gözümde şimşek çakmaları ve sinek uçuşmaları var, alttan gölge yükseliyor!',
+      vit: 'TA: 120/75 | Nabız: 82 | Miyopi: -8.50 D', exam: 'Vitreusta tütün tozu (Shafer) bulgusu.', pupil: 'Pupiller izokorik.',
+      rad: 'Üst temporal kadranda at nalı yırtık ve büllöz Retina Dekolmanı!', labs: 'Pre-op kanama profili normal.', hint: 'Şimşek çakması + perde inmesi = Retina Dekolmanı! Göz Hastalıklarına yatır.' },
+    { diag: 'Orbital Selülit (Postseptal)', triage: 'red', action: 'admit', srv: 'Göz Hastalıkları', radType: 'brain', radTitle: 'ORBİTA BT',
+      comp: 'Sinüzit sonrası sağ göz kapağım davul gibi şişti, gözümü sağa sola oynatırken şiddetli ağrıyor ve çift görüyorum!',
+      vit: 'Ateş: 39.2°C | Nabız: 112 | Proptozis mevcut!', exam: 'Oftalmopleji ve ağrılı göz hareketleri.', pupil: 'Hafif RAPD mevcut.',
+      rad: 'Etmoid sinüzite sekonder postseptal orbital apse ve proptozis!', labs: 'WBC: 19.600 | CRP: 165 mg/L', hint: 'Ağrılı oftalmopleji + ateş = Orbital Selülit! Kavernöz sinüs trombozu riskiyle yatır.' },
+    { diag: 'Endoftalmi (Post-Op Katarakt)', triage: 'red', action: 'admit', srv: 'Göz Hastalıkları', radType: 'eye', radTitle: 'ÖN KAMARA & B-USG',
+      comp: '3 gün önce katarakt ameliyatı oldum, bugün gözümde dayanılmaz ağrı, kızarıklık ve görme bulanıklığı başladı!',
+      vit: 'Ateş: 37.8°C | Nabız: 98 | Görme: Işık Hissi', exam: 'Ön kamarada 3 mm HİPOPİYON (pü seviyesi)!', pupil: 'Pupilla eksuda ile kapalı.',
+      rad: 'Vitreus kavitesinde yoğun ekojeniteler — Akut Bakteriyel Endoftalmi!', labs: 'İntravitreal vankomisin/seftazidim hazırlığı.', hint: 'Katarakt cerrahisi sonrası hipopiyon = Endoftalmi! Acil Göz Hastalıklarına yatır.' }
+  ],
+  cardio: [
+    { diag: 'Unstabil Ventriküler Taşikardi (VT)', triage: 'red', action: 'treat', mg: 'cardioversion', treat: '100J Senkronize Kardiyoversiyon', srv: 'Kardiyoloji', radType: 'ecg', radTitle: '12-DERİVASYON EKG',
+      comp: 'Göğsümde fil oturuyor gibi baskı var, soğuk ter döküyorum, gözüm kararıyor bayılacağım!',
+      vit: 'TA: 78/45 mmHg! | Nabız: 178/dk (Geniş QRS)! | SpO2: %90', exam: 'Boyun venöz dolgunluğu, soğuk ekstremite.', pupil: 'Hasta letarjik.',
+      rad: 'Geniş QRS düzenli monomorfik Ventriküler Taşikardi!', labs: 'Troponin-I: 8.4 ng/mL', hint: 'Hipotansif Unstabil VT! Hemen 100J Senkronize Kardiyoversiyon uygula.' },
+    { diag: 'Kardiyak Tamponad (Beck Triadı)', triage: 'red', action: 'admit', srv: 'Kardiyoloji', radType: 'ecg', radTitle: 'EKG & YATAK BAŞI EKO',
+      comp: 'Nefesim daraldı, yatınca boğuluyorum, başım dönüyor ve tansiyonum düştü!',
+      vit: 'TA: 82/50 (Pulsus Paradoksus!) | Nabız: 132 | SpO2: %91', exam: 'Beck Triadı: Hipotansiyon + JVD + Derinden gelen kalp sesleri!', pupil: 'Pupiller izokorik.',
+      rad: 'EKG’de Elektriksel Alternans; EKO’da sağ ventrikül diyastolik kollapsı!', labs: 'D-Dimer yüksek.', hint: 'Beck Triadı = Kardiyak Tamponad! Perikardiyosentez için Kardiyolojiye yatır.' },
+    { diag: 'Akut Anterior STEMI', triage: 'red', action: 'admit', srv: 'Kardiyoloji', radType: 'ecg', radTitle: '12-DERİVASYON EKG',
+      comp: 'Sol koluma ve çeneme vuran sıkıştırıcı göğüs ağrısı 30 dakikadır geçmiyor, ter içindeyim!',
+      vit: 'TA: 100/65 | Nabız: 104 | SpO2: %94', exam: 'S4 gallop ritmi, soğuk terleme.', pupil: 'Pupiller izokorik.',
+      rad: 'V1-V5 derivasyonlarında dev mezar taşı ST ELEVASYONU (Anterior MI)!', labs: 'Troponin-I: 12.6 ng/mL', hint: 'V1-V5 ST elevasyonu = Akut Anterior MI! Primer PKG için Kardiyolojiye yatır.' },
+    { diag: 'Tam AV Blok (3. Derece Blok)', triage: 'red', action: 'admit', srv: 'Kardiyoloji', radType: 'ecg', radTitle: '12-DERİVASYON EKG',
+      comp: 'Evde aniden bayıldım, nabzım çok yavaş atıyor ve kendimi çok halsiz hissediyorum.',
+      vit: 'TA: 85/50 | Nabız: 34/dk! | SpO2: %93', exam: 'Cannon A dalgaları mevcut.', pupil: 'Pupiller izokorik.',
+      rad: 'P dalgaları ile QRS kompleksleri tamamen ilişkisiz — 3. Derece Tam AV Blok!', labs: 'Potasyum: 4.3 mEq/L', hint: 'Nabız 34/dk + AV dissosiasyon = Tam AV Blok! Geçici pacemaker için Kardiyolojiye yatır.' },
+    { diag: 'Tip A Akut Aort Diseksiyonu', triage: 'red', action: 'admit', srv: 'Kardiyoloji', radType: 'chest', radTitle: 'TORAKS BT ANJİYO',
+      comp: 'Sırtımda iki kürek kemiğimin arasında bıçak saplanır ve yırtılır gibi ani ağrı başladı!',
+      vit: 'Sağ Kol TA: 195/110 | Sol Kol TA: 135/80 (Fark >20 mmHg)!', exam: 'Aort odağında yeni diyastolik üfürüm.', pupil: 'Pupiller izokorik.',
+      rad: 'Asendan aortada intimal flep ve çift lümen — Stanford Tip A Diseksiyon!', labs: 'D-Dimer: 6.400 ng/mL', hint: 'Yırtıcı sırt ağrısı + iki kol tansiyon farkı = Aort Diseksiyonu!' },
+    { diag: 'Akut Dekompanse Kalp Yetersizliği', triage: 'red', action: 'treat', mg: 'iv', treat: 'IV Furosemid + Nitrogliserin + CPAP', srv: 'Kardiyoloji', radType: 'chest', radTitle: 'AKCİĞER GRAFİSİ',
+      comp: 'Gece boğulma hissiyle uyandım, pembe köpüklü balgam çıkarıyorum oturmadan nefes alamıyorum!',
+      vit: 'TA: 185/105 | Nabız: 126 | SpO2: %85!', exam: 'Tüm akciğer alanlarında yaygın yaş raller (fokurdama).', pupil: 'Pupiller izokorik.',
+      rad: 'Kardiyomegali, Kerley B çizgileri ve yarasa kanadı pulmoner ödem!', labs: 'NT-proBNP: 14.500 pg/mL', hint: 'Pembe köpüklü balgam + yaygın raller = Akut Akciğer Ödemi! IV diüretik & vazodilatör uygula.' }
+  ],
+  emerg: [
+    { diag: 'Tansiyon Pnömotoraks', triage: 'red', action: 'treat', mg: 'decon', treat: 'Sağ 2. İKA İğne Dekompresyonu', srv: 'Acil Resüsitasyon', radType: 'chest', radTitle: 'KLİNİK RESÜSİTASYON',
+      comp: 'Motosiklet kazası geçirdim, sağ göğsüm şişti nefes alamıyorum boğuluyorum!',
+      vit: 'TA: 75/40! | Nabız: 138 | SpO2: %84!', exam: 'Sağda solunum sesi YOK, hiperrezonans + Trakea sola deviye!', pupil: 'Boyun venleri şiş.',
+      rad: 'Tansiyon Pnömotoraks! Röntgen beklenmeden iğne dekompresyonu şart!', labs: 'Acil müdahale.', hint: 'Trakea deviasyonu + hipotansiyon = Tansiyon Pnömotoraks! Hemen iğne dekompresyonu yap.' },
+    { diag: 'Anafilaktik Şok', triage: 'red', action: 'treat', mg: 'iv', treat: '0.5 mg İM Adrenalin + IV Sıvı Bolus', srv: 'Acil Resüsitasyon', radType: 'ecg', radTitle: 'RESÜSİTASYON MONİTÖRÜ',
+      comp: 'Fıstıklı tatlı yedikten sonra boğazım tıkandı, hırıltım başladı ve tansiyonum düştü!',
+      vit: 'TA: 80/45! | Nabız: 136 | SpO2: %88', exam: 'İnspiratuar stridor, bronkospazm ve yaygın ürtiker.', pupil: 'Pupiller izokorik.',
+      rad: 'Anafilaktik Şok! İlk basamak hayat kurtarıcı: 0.5 mg İM Adrenalin!', labs: 'E-Nabız: Yer fıstığı alerjisi.', hint: 'Anafilaktik şokta tek ilk seçenek 0.5 mg İM Adrenalindir!' },
+    { diag: 'Status Epileptikus', triage: 'red', action: 'treat', mg: 'iv', treat: 'IV Diazepam / Midazolam + Hava Yolu', srv: 'Acil Resüsitasyon', radType: 'brain', radTitle: 'NÖRO-ACİL PROTOKOLÜ',
+      comp: 'Hastamız 15 dakikadır bilinci açılmadan arka arkaya nöbet geçirip kasılıyor!',
+      vit: 'Ateş: 38.2°C | Nabız: 134 | SpO2: %89 | KŞ: 105', exam: 'Jeneralize tonik-klonik kasılma sürüyor.', pupil: 'Pupiller dilate.',
+      rad: 'Status Epileptikus (>5 dk kesintisiz nöbet)! Hemen IV benzodiazepin uygula!', labs: 'Kan şekeri normal (105 mg/dL).', hint: '5 dakikayı aşan nöbet = Status Epileptikus! Hemen IV Midazolam/Diazepam uygula.' },
+    { diag: 'Rüptüre Ektopik Gebelik', triage: 'red', action: 'admit', srv: 'Kadın Doğum', radType: 'leg', radTitle: 'YATAK BAŞI FAST USG',
+      comp: 'Adetim 2 hafta gecikti, aniden sağ kasığımda bıçak saplanır ağrı oldu ve bayıldım!',
+      vit: 'TA: 82/48! | Nabız: 128 | Beta-hCG: POZİTİF!', exam: 'Batında yaygın hassasiyet ve defans.', pupil: 'Soluk konjonktiva.',
+      rad: 'Douglas boşluğunda yoğun serbest sıvı (hemoperitoneum) + boş uterus!', labs: 'Hgb: 7.8 g/dL', hint: 'Beta-hCG pozitif + şok + batında serbest sıvı = Rüptüre Ektopik Gebelik! Kadın Doğuma yatır.' },
+    { diag: 'Organofosfat Zehirlenmesi', triage: 'red', action: 'treat', mg: 'iv', treat: 'IV Atropin + Pralidoksim + Dekontaminasyon', srv: 'Acil Resüsitasyon', radType: 'ecg', radTitle: 'TOKSİKOLOJİ MONİTÖRÜ',
+      comp: 'Bahçede tarım ilacı sıkarken üstüme döküldü, ağzımdan köpük geliyor, nefesim daralıyor!',
+      vit: 'TA: 90/55 | Nabız: 46/dk (Bradikardi) | SpO2: %89', exam: 'Aşırı tükürük, terleme, bronkore ve sarımsak kokusu!', pupil: 'İğne başı pupilla (Miyozis)!',
+      rad: 'Kolinerjik Kriz (DUMBBELS)! Yüksek doz IV Atropin şart!', labs: 'Psödokolinesteraz düzeyi çok düşük.', hint: 'Tarım ilacı + miyozis + bronkore = Organofosfat zehirlenmesi! IV Atropin uygula.' },
+    { diag: 'Akut Hipoglisemi Koması', triage: 'red', action: 'treat', mg: 'iv', treat: 'IV %20 Dekstroz 100 mL Bolus', srv: 'Acil Resüsitasyon', radType: 'ecg', radTitle: 'PARMAK UCU KAN ŞEKERİ',
+      comp: 'Sabah insülinini yaptıktan sonra kahvaltı etmemiş, ter içinde baygın bulduk!',
+      vit: 'TA: 115/70 | Nabız: 118 | Kan Şekeri: 28 mg/dL!', exam: 'Soğuk terleme, GKS: 8 (Stupor).', pupil: 'Pupiller izokorik.',
+      rad: 'Kritik Hipoglisemi (28 mg/dL)! Hemen IV Dekstroz puşesi uygula!', labs: 'KŞ: 28 mg/dL', hint: 'Kan şekeri 28 mg/dL! Hemen IV Dekstroz uygula.' }
+  ],
+  neuro: [
+    { diag: 'Akut İskemik İnme (tPA Penceresi)', triage: 'red', action: 'admit', srv: 'Nöroloji / Beyin Cerrahi', radType: 'brain', radTitle: 'KONTRATSIZ BEYİN BT',
+      comp: '45 dakika önce konuşmam peltekleşti, sol kolum ve bacağım tutmaz oldu!',
+      vit: 'TA: 168/92 | Nabız: 88 | NIHSS: 14', exam: 'Sol hemiparezi ve santral fasiyal paralizi.', pupil: 'Pupiller izokorik.',
+      rad: 'Beyin BT’de KANAMA YOK! Sağ MCA hiperdens arter işareti (İlk 4.5 saat)!', labs: 'INR: 1.0, KŞ: 112 (tPA uygun).', hint: 'İlk 4.5 saat ve kanama yok! Trombolitik için Nörolojiye yatır.' },
+    { diag: 'Subaraknoid Kanama (SAK)', triage: 'red', action: 'admit', srv: 'Nöroloji / Beyin Cerrahi', radType: 'brain', radTitle: 'BEYİN BT & LOMBER PONKSİYON',
+      comp: 'Hayatımda yaşadığım en şiddetli baş ağrısı saniyeler içinde kafamda bomba patlamış gibi başladı!',
+      vit: 'TA: 185/105 | Nabız: 64 | Ense Sertliği: POZİTİF!', exam: 'Kernig ve Brudzinski pozitif, fotofobi.', pupil: 'Pupiller izokorik.',
+      rad: 'Bazal sisternalarda yıldız şeklinde hiperdens SUBARAKNOİD KANAMA!', labs: 'Anevrizma rüptürü şüphesi.', hint: 'Hayatın en şiddetli ani baş ağrısı + ense sertliği = SAK! Beyin Cerrahiye yatır.' },
+    { diag: 'Akut Epidural Hematom', triage: 'red', action: 'admit', srv: 'Nöroloji / Beyin Cerrahi', radType: 'brain', radTitle: 'KRANİYAL BT',
+      comp: 'Başıma darbe aldıktan sonra 1 saat iyiydim ama şimdi bilincim kapanıyor ve kusuyorum!',
+      vit: 'TA: 175/100 | Nabız: 50 (Cushing Triadı)!', exam: 'Sağ hemiparezi.', pupil: 'ANİZOKORİ! Sağ pupilla dilate ve fikse!',
+      rad: 'Sol temporoparietal bikonveks (mercek şeklinde) Epidural Hematom!', labs: 'Acil kraniyotomi hazırlığı.', hint: 'Lucid interval + anizokori + bikonveks hematom = Epidural Hematom!' },
+    { diag: 'Akut Bakteriyel Menenjit', triage: 'red', action: 'admit', srv: 'Nöroloji / Beyin Cerrahi', radType: 'brain', radTitle: 'BOS ANALİZİ & BEYİN BT',
+      comp: 'Yüksek ateş, şiddetli baş ağrısı ve ışığa bakamama şikayetim var, bacaklarımda mor döküntüler çıktı!',
+      vit: 'Ateş: 39.8°C | Nabız: 122 | TA: 95/60', exam: 'Belirgin ense sertliği ve peteşiyal döküntüler.', pupil: 'Fotofobi mevcut.',
+      rad: 'BOS bulanık; lökosit 2.400 (PMNL hakim), BOS glukozu çok düşük!', labs: 'WBC: 22.100 | CRP: 210 mg/L', hint: 'Ateş + ense sertliği + peteşi = Meningokoksik Menenjit! Acil yatır.' },
+    { diag: 'Guillain-Barré Sendromu', triage: 'yellow', action: 'admit', srv: 'Nöroloji / Beyin Cerrahi', radType: 'brain', radTitle: 'BOS & EMG İNCELEMESİ',
+      comp: '2 hafta önce ishal geçirdim; dünden beri ayaklarımdan başlayan uyuşma ve güçsüzlük dizlerime kadar yükseldi!',
+      vit: 'TA: 130/80 | Nabız: 94 | Solunum Sayısı: 22', exam: 'Alt ekstremitelerde arefleksi ve simetrik asendan paralizi!', pupil: 'Pupiller izokorik.',
+      rad: 'BOS’ta albüminositolojik disosiasyon (Protein yüksek, hücre normal)!', labs: 'Solunum kas tutulumu açısından yakın takip şart.', hint: 'Asendan güçsüzlük + arefleksi = Guillain-Barré! Solunum yetmezliği riskiyle yatır.' },
+    { diag: 'Myastenia Gravis Krizi', triage: 'red', action: 'admit', srv: 'Nöroloji / Beyin Cerrahi', radType: 'chest', radTitle: 'TORAKS BT & SOLUNUM TESTİ',
+      comp: 'Akşama doğru göz kapaklarım düşüyor ve çift görüyorum; bugün yutkunamıyorum ve nefesim yetmiyor!',
+      vit: 'TA: 125/80 | Nabız: 108 | SpO2: %90 | Vital Kapasite Düşük!', exam: 'Bilateral pitoz ve bulber güçsüzlük.', pupil: 'Pupiller izokorik (korunmuş).',
+      rad: 'Timoma şüphesi + diyafram kas yorgunluğu (Myastenik Kriz)!', labs: 'Anti-AChR antikoru pozitif.', hint: 'Bulber tutulum + solunum yetersizliği = Myastenik Kriz! Plazmaferez/IVIG için yatır.' }
+  ],
+  ortho: [
+    { diag: 'Deplase Tibia Diyafiz Kırığı', triage: 'yellow', action: 'treat', mg: 'fracture', treat: 'Kapalı Redüksiyon + Uzun Bacak Atel', srv: 'Ortopedi', radType: 'leg', radTitle: 'KRURİS (BACAK) RÖNTGENİ',
+      comp: 'Halı sahada ikili mücadelede kaval kemiğimden çatırt diye ses geldi, üzerine basamıyorum!',
+      vit: 'TA: 130/80 | Nabız: 96 | Distal Nabızlar: Açık', exam: 'Sağ kruriste deformite ve hassasiyet.', pupil: 'Pupiller izokorik.',
+      rad: 'Tibia distal diyafizinde deplase oblik kırık hattı!', labs: 'Pre-op hemogram normal.', hint: 'Deplase tibia kırığı! Redüksiyon mini-oyunuyla kemiği hizala ve atele al.' },
+    { diag: 'Akut Kompartman Sendromu', triage: 'red', action: 'admit', srv: 'Ortopedi', radType: 'leg', radTitle: 'KOMPARTMAN BASINÇ ÖLÇÜMÜ',
+      comp: 'Dün alçıya alınan bacağımda morfinle bile geçmeyen dayanılmaz zonklayıcı ağrı ve uyuşma başladı!',
+      vit: 'TA: 145/90 | Nabız: 116 | İntrakompartmantal Basınç: 46 mmHg!', exam: 'Pasif ayak parmağı germeyle şiddetli ağrı + gergin kompartman!', pupil: 'Pupiller izokorik.',
+      rad: 'Delta P < 30 mmHg — Akut Kompartman Sendromu! Acil Fasyotomi şart!', labs: 'CK (Kreatin Kinaz): 14.200 U/L', hint: 'Pasif germeyle orantısız ağrı = Kompartman Sendromu! Acil fasyotomi için Ortopediye yatır.' },
+    { diag: 'Anterior Omuz Çıkığı', triage: 'yellow', action: 'treat', mg: 'fracture', treat: 'Sedasyon Altında Omuz Redüksiyonu', srv: 'Ortopedi', radType: 'chest', radTitle: 'OMUZ AP & Y GRAFİSİ',
+      comp: 'Merdivenden düşerken kolumun üstüne düştüm, sağ omzum çöktü ve kolumu hiç oynatamıyorum!',
+      vit: 'TA: 135/85 | Nabız: 94 | Aksiller Sinir Muayenesi: Sağlam', exam: 'Omuzda tipik apolet (kare omuz) belirtisi!', pupil: 'Pupiller izokorik.',
+      rad: 'Humerus başı glenoidin anterior ve inferioruna disloke!', labs: 'Tahlil gerekmedi.', hint: 'Kare omuz belirtisi = Anterior Omuz Çıkığı! Redüksiyon mini-oyunuyla yerine oturt.' },
+    { diag: 'Açık Femur Kırığı (Gustilo Tip 3)', triage: 'red', action: 'admit', srv: 'Ortopedi', radType: 'leg', radTitle: 'FEMUR RÖNTGENİ',
+      comp: 'Yüksekten düştüm, uyluk kemiğim deriyi yırtıp dışarı çıktı çok kan kaybediyorum!',
+      vit: 'TA: 90/55 | Nabız: 124 | SpO2: %95', exam: 'Uylukta 6 cm açık yara ve kemik fragmanı.', pupil: 'Pupiller izokorik.',
+      rad: 'Parçalı açık femur diyafiz kırığı! Acil debridman + İV sefazolin + tetanoz!', labs: 'Hgb: 8.9 g/dL (Kan hazırlığı).', hint: 'Açık kırık ortopedik acildir! Antibiyotik başlayıp Ortopedi ameliyathanesine yatır.' },
+    { diag: 'Septik Artrit (Diz Eklemi)', triage: 'red', action: 'admit', srv: 'Ortopedi', radType: 'leg', radTitle: 'EKLEM PONKSİYONU & USG',
+      comp: 'Sağ dizim dünden beri kıpkırmızı, ateş gibi yanıyor ve en ufak kıpırdamada çığlık atıyorum!',
+      vit: 'Ateş: 39.1°C | Nabız: 112 | TA: 125/80', exam: 'Dizde ısı artışı, efüzyon ve aktif/pasif hareket kısıtlılığı.', pupil: 'Pupiller izokorik.',
+      rad: 'Sinoviyal sıvı pürülan; lökosit 82.000/mm3 (%92 PMNL)!', labs: 'WBC: 18.900 | CRP: 195 mg/L', hint: 'Sinoviyal lökosit >50.000 + ateş = Septik Artrit! Eklem yıkaması için Ortopediye yatır.' },
+    { diag: 'Kauda Ekina Sendromu', triage: 'red', action: 'admit', srv: 'Ortopedi', radType: 'brain', radTitle: 'LOMBER MRG',
+      comp: 'Bel fıtığım vardı; bugün bacaklarım tutmaz oldu, kasık bölgem uyuştu ve idrarımı kaçırdım!',
+      vit: 'TA: 135/85 | Nabız: 92', exam: 'Eyer tarzı (saddle) anestezi + anal sfinkter tonus kaybı!', pupil: 'Pupiller izokorik.',
+      rad: 'L4-L5 masif santral disk herniasyonu ve kauda ekina basısı!', labs: 'Acil cerrahi dekompresyon endikasyonu.', hint: 'İdrar inkontinansı + eyer tarzı uyuşma = Kauda Ekina! Acil cerrahi için yatır.' }
+  ],
+  peds: [
+    { diag: 'Akut Epiglottit (Çocuk Acil)', triage: 'red', action: 'admit', srv: 'Pediatri', radType: 'chest', radTitle: 'YAN BOYUN GRAFİSİ',
+      comp: '4 yaşındaki oğlumun ateşi bir anda 40 oldu, ağzından salya akıyor ve öne eğilip boğulur gibi nefes alıyor!',
+      vit: 'Ateş: 39.9°C | Nabız: 148 | SpO2: %89', exam: 'Tripod pozisyonu, salya akması (drooling) ve stridor! (Dil basacağı KULLANMA!)', pupil: 'Pupiller izokorik.',
+      rad: 'Yan boyun grafisinde tipik BAŞPARMAK İŞARETİ (Thumbprint Sign)!', labs: 'Ameliyathane şartlarında entübasyon hazırlığı.', hint: 'Salya akması + tripod pozisyonu = Akut Epiglottit! Boğazına çubuk sokma, Pediatri yoğun bakıma yatır!' },
+    { diag: 'İnvajinasyon (Bağırsak Düğümlenmesi)', triage: 'red', action: 'admit', srv: 'Pediatri', radType: 'leg', radTitle: 'BATIN USG',
+      comp: '10 aylık bebeğimiz 15 dakikada bir bacaklarını karnına çekip ağlıyor, az önce bezinde çilek jölesi gibi kanlı kaka gördük!',
+      vit: 'Ateş: 37.4°C | Nabız: 142 | TA: 85/50', exam: 'Sağ üst kadranda sucuk şeklinde kitle palpe ediliyor.', pupil: 'Pupiller izokorik.',
+      rad: 'Batın USG’de tipik HEDEF TAHTASI (Target / Doughnut Sign) bulgusu!', labs: 'Pnömatik redüksiyon / çocuk cerrahisi konsültasyonu.', hint: 'Çilek jölesi dışkı + Target sign = İnvajinasyon! Pediatri / Çocuk Cerrahisine yatır.' },
+    { diag: 'Komplike Febril Konvülsiyon', triage: 'yellow', action: 'admit', srv: 'Pediatri', radType: 'brain', radTitle: 'PEDİATRİK NÖRO-DEĞERLENDİRME',
+      comp: '2 yaşındaki kızımız ateşlenince 20 dakika boyunca kasıldı ve gözleri kaydı, aynı gün ikinci kez tekrarladı!',
+      vit: 'Ateş: 39.5°C | Nabız: 144 | SpO2: %95', exam: 'Postiktal uyku hali, fokal nörolojik bulgu yok.', pupil: 'Pupiller izokorik.',
+      rad: '>15 dk süren ve 24 saatte tekrarlayan Komplike Febril Nöbet!', labs: 'CRP yüksek, elektrolitler normal.', hint: '15 dakikayı aşan veya tekrarlayan ateşli havale = Komplike Febril Konvülsiyon! Pediatriye yatır.' },
+    { diag: 'Krup (Akut Laringotrakeobronşit)', triage: 'yellow', action: 'treat', mg: 'iv', treat: 'Nebülize Adrenalin + Tek Doz Deksametazon', srv: 'Pediatri', radType: 'chest', radTitle: 'ÖN-ARKA BOYUN GRAFİSİ',
+      comp: '3 yaşındaki çocuğumuz gece yarısı havlar tarzda kuru öksürük ve nefes alırken ıslık sesiyle uyandı!',
+      vit: 'Ateş: 38.1°C | Nabız: 128 | SpO2: %93', exam: 'İnspiratuar stridor ve havlar tarzda öksürük.', pupil: 'Pupiller izokorik.',
+      rad: 'Boyun grafisinde subglottik daralma — KALEM UCU İŞARETİ (Steeple Sign)!', labs: 'Parainfluenza viral tablo.', hint: 'Havlar tarzda öksürük + Kalem Ucu işareti = Krup! Nebülize adrenalin + deksametazon uygula.' },
+    { diag: 'Pil Yutma (Özofagus Yabancı Cisim)', triage: 'red', action: 'admit', srv: 'Pediatri', radType: 'chest', radTitle: 'TORAKS & BATIN RÖNTGENİ',
+      comp: '2 yaşındaki oğlumuz kumandanın içindeki yuvarlak düğme pili yuttu, göğsünü tutup ağlıyor!',
+      vit: 'Ateş: 36.8°C | Nabız: 136 | SpO2: %98', exam: 'Yutma güçlüğü ve hipersalivasyon.', pupil: 'Pupiller izokorik.',
+      rad: 'Özofagus proksimalinde ÇİFT HALE (Double Halo) görünümlü lityum düğme pil!', labs: '2 saat içinde özofagus nekrozu/perforasyonu riski!', hint: 'Özofagusta düğme pil 2 saatte dokuyu yakar! Acil endoskopik çıkarma için Pediatriye yatır.' },
+    { diag: 'Akut Bronşiyolit (RSV)', triage: 'yellow', action: 'admit', srv: 'Pediatri', radType: 'chest', radTitle: 'AKCİĞER GRAFİSİ',
+      comp: '5 aylık bebeğimiz 2 gündür burun akıntısı sonrası hızlı nefes alıp vermeye başladı, ememiyor!',
+      vit: 'Ateş: 37.9°C | Solunum: 64/dk (Takipne)! | SpO2: %89!', exam: 'İnterkostal çekilmeler, yaygın vizing ve raller.', pupil: 'Pupiller izokorik.',
+      rad: 'Akciğerlerde yaygın havalanma artışı ve diyaframda düzleşme!', labs: 'RSV antijen testi pozitif.', hint: 'SpO2 %89 + beslenememe + çekilmeler = Ağır Bronşiyolit! Oksijen ve hidrasyon için Pediatriye yatır.' }
+  ],
+  ent: [
+    { diag: 'Peritonsiller Apse (Quinsy)', triage: 'red', action: 'admit', srv: 'KBB', radType: 'brain', radTitle: 'BOĞAZ MUAYENESİ & BOYUN BT',
+      comp: 'Boğaz ağrım 4 gündür arttı, ağzımı açamıyorum, sesim sıcak patates yutmuş gibi boğuk çıkıyor!',
+      vit: 'Ateş: 39.0°C | Nabız: 112 | Trismus: POZİTİF!', exam: 'Sağ tonsil mediale itilmiş, UVULA KARŞI TARAFA (SOLA) DEVİYE!', pupil: 'Pupiller izokorik.',
+      rad: 'Sağ peritonsiller bölgede 3.5 cm apse koleksiyonu!', labs: 'WBC: 19.400 | CRP: 155 mg/L', hint: 'Trismus + uvula deviasyonu + sıcak patates sesi = Peritonsiller Apse! Drenaj için KBB’ye yatır.' },
+    { diag: 'Posterior Epistaksis', triage: 'red', action: 'treat', mg: 'decon', treat: 'Posterior Foley/Balon Tamponad + Traneksamik Asit', srv: 'KBB', radType: 'ecg', radTitle: 'KOAGÜLASYON & VİTAL TAKİP',
+      comp: 'Tansiyon hastasıyım; 1 saattir burnumdan ve genzimden oluk oluk kan geliyor, buz koydum durmuyor!',
+      vit: 'TA: 190/105 | Nabız: 118 | SpO2: %95', exam: 'Anterior tampona rağmen orofarenksten aktif kan akışı!', pupil: 'Pupiller izokorik.',
+      rad: 'Posterior sfenopalatin arter kaynaklı şiddetli epistaksis!', labs: 'Hgb: 9.8 | INR: 1.2', hint: 'Genze akan şiddetli burun kanaması = Posterior Epistaksis! Balon tamponad uygula.' },
+    { diag: 'Ani İdiyopatik İşitme Kaybı', triage: 'yellow', action: 'admit', srv: 'KBB', radType: 'brain', radTitle: 'ODYOMETRİ & WEBER TESTİ',
+      comp: 'Sabah uyandığımda sağ kulağım tamamen sağır olmuş gibi duymuyor ve çok şiddetli çınlıyor!',
+      vit: 'TA: 120/75 | Nabız: 80', exam: 'Otoskopi normal; Weber testi SAĞLAM kulağa (sola) lateralize!', pupil: 'Pupiller izokorik.',
+      rad: 'Odyometride ardışık 3 frekansta >30 dB sensörinöral işitme kaybı!', labs: 'Erken sistemik steroid tedavisi kritik.', hint: 'Otoskopi normal + Weber sağlam tarafa lateralize = Ani İşitme Kaybı! KBB’ye yatır.' },
+    { diag: 'Dış Kulak Yolunda Canlı Böcek', triage: 'green', action: 'treat', mg: 'decon', treat: 'Lidokain Damla + Mikroaspirasyon', srv: 'KBB', radType: 'brain', radTitle: 'OTOSKOPİK GÖRÜNTÜ',
+      comp: 'Gece uyurken kulağıma böcek kaçtı, içinde kanat çırpıyor kafayı yiyeceğim!',
+      vit: 'TA: 125/80 | Nabız: 96', exam: 'Dış kulak yolunda canlı böcek, kulak zarı sağlam.', pupil: 'Pupiller izokorik.',
+      rad: 'Önce lidokain ile böcek immobilize edilip aspire edilmeli!', labs: 'Tahlil gerekmedi.', hint: 'Canlı böceği önce lidokain damla ile hareketsizleştirip çıkar!' },
+    { diag: 'Ludwig Anjini (Ağız Tabanı Flegmonu)', triage: 'red', action: 'admit', srv: 'KBB', radType: 'chest', radTitle: 'BOYUN BT & HAVA YOLU',
+      comp: 'Diş apsesinden sonra çene altım taş gibi şişti, dilim yukarı kalktı nefes alamıyorum!',
+      vit: 'Ateş: 39.4°C | Nabız: 126 | SpO2: %88!', exam: 'Submandibular odunsu sertlik ve dil elevasyonu (Hava yolu tehlikede)!', pupil: 'Pupiller izokorik.',
+      rad: 'Bilateral submandibular/sublingual flegmon ve trakeal daralma!', labs: 'WBC: 24.500 | Acil trakeostomi hazırlığı.', hint: 'Çene altı odunsu şişlik + dil elevasyonu = Ludwig Anjini! Hava yolu güvenliği için KBB’ye yatır.' },
+    { diag: 'Akut Mastoidit', triage: 'yellow', action: 'admit', srv: 'KBB', radType: 'brain', radTitle: 'TEMPORAL KEMİK BT',
+      comp: 'Orta kulak iltihabından sonra sağ kulak arkam kızardı, şişti ve kepçe kulağım öne doğru itildi!',
+      vit: 'Ateş: 38.8°C | Nabız: 106', exam: 'Postauriküler fluktuasyon ve hassasiyet.', pupil: 'Pupiller izokorik.',
+      rad: 'Mastoid hava hücrelerinde koalesan opasifikasyon ve subperiosteal apse!', labs: 'WBC: 17.800 | CRP: 130 mg/L', hint: 'Kulak arkasında kızarıklık + kepçe kulak öne itilmesi = Akut Mastoidit! KBB’ye yatır.' }
+  ],
+  surg: [
+    { diag: 'Akut Apandisit', triage: 'yellow', action: 'admit', srv: 'Genel Cerrahi', radType: 'leg', radTitle: 'BATIN USG & BT',
+      comp: 'Dün göbeğim ağrıyordu bugün sağ alt karnıma indi, iştahım kesildi ve kustum.',
+      vit: 'Ateş: 37.9°C | Nabız: 102 | TA: 120/75', exam: 'McBurney noktasında defans, rebound ve Rovsing POZİTİF!', pupil: 'Pupiller izokorik.',
+      rad: '11 mm çaplı komprese olmayan inflame apendiks ve çevre yağ dokuda kirlenme!', labs: 'WBC: 16.400 | CRP: 72 mg/L', hint: 'McBurney rebound + 11 mm apendiks = Akut Apandisit! Genel Cerrahiye yatır.' },
+    { diag: 'Peptik Ülser Perforasyonu', triage: 'red', action: 'admit', srv: 'Genel Cerrahi', radType: 'chest', radTitle: 'AYAKTA DİREKT KARIN GRAFİSİ',
+      comp: 'Mide ülserim vardı; 1 saat önce karnıma bıçak saplanır gibi ağrı girdi, nefes bile alamıyorum!',
+      vit: 'TA: 95/60 | Nabız: 124 | Ateş: 38.1°C', exam: 'TAHTA KARIN (Yaygın rijidite) ve bağırsak sesleri kayıp!', pupil: 'Pupiller izokorik.',
+      rad: 'Sağ diyafram altında serbest hava (Pnömoperitoneum)!', labs: 'WBC: 18.200 | Laktat: 3.8', hint: 'Tahta karın + diyafram altı serbest hava = Peptik Ülser Perforasyonu! Genel Cerrahiye yatır.' },
+    { diag: 'Boğulmuş (Strangüle) İnguinal Herni', triage: 'red', action: 'admit', srv: 'Genel Cerrahi', radType: 'leg', radTitle: 'KASIK YÜZEYEL USG',
+      comp: 'Kasığımdaki fıtık şişliği 4 saattir içeri girmiyor, morarmaya başladı ve yeşil kusuyorum!',
+      vit: 'Ateş: 38.3°C | Nabız: 118 | TA: 105/65', exam: 'Sağ kasıkta irreduktabl, kızarık ve aşırı hassas kitle!', pupil: 'Pupiller izokorik.',
+      rad: 'Fıtık kesesi içinde kan akımı bozulmuş (iskemik) ince bağırsak ansı!', labs: 'Laktat yüksek, lökositoz.', hint: 'İrreduktabl + kızarık fıtık = Strangüle Herni! Bağırsak nekrozu olmadan Cerrahiye yatır.' },
+    { diag: 'Akut Kolesistit (Murphy Pozitif)', triage: 'yellow', action: 'admit', srv: 'Genel Cerrahi', radType: 'leg', radTitle: 'HEPATOBİLİYER USG',
+      comp: 'Yağlı yemek sonrası sağ üst karnımda başlayıp sağ kürek kemiğime vuran ağrı ve ateşim var!',
+      vit: 'Ateş: 38.4°C | Nabız: 104 | TA: 130/80', exam: 'İnspiryumda sağ üst kadranda ağrıyla nefes kesilmesi (Murphy Pozitif)!', pupil: 'Pupiller izokorik.',
+      rad: 'Safra kesesi duvar kalınlığı 6 mm, perikolesistik sıvı ve impakte taş!', labs: 'WBC: 15.800 | CRP: 94 mg/L', hint: 'Murphy pozitif + duvar kalınlaşması = Akut Kolesistit! Genel Cerrahiye yatır.' },
+    { diag: 'Akut Mezenter İskemi', triage: 'red', action: 'admit', srv: 'Genel Cerrahi', radType: 'brain', radTitle: 'BATIN BT ANJİYO',
+      comp: 'Kalp ritim bozukluğum var; karnımda ölecekmişim gibi korkunç ağrı var ama doktor karnıma basınca o kadar acımıyor!',
+      vit: 'TA: 95/60 | Nabız: 130 (AF) | Laktat: 6.8 mmol/L!', exam: 'Fizik muayene ile orantısız şiddetli karın ağrısı!', pupil: 'Pupiller izokorik.',
+      rad: 'Superior Mezenterik Arter (SMA) proksimalinde embolik tam tıkanıklık!', labs: 'Ciddi metabolik asidoz ve laktat yüksekliği.', hint: 'Muayeneyle orantısız ağrı + AF + yüksek laktat = Akut Mezenter İskemi! Cerrahiye yatır.' },
+    { diag: 'Düğünde Yorgun Mermi Yaralanması', triage: 'red', action: 'admit', srv: 'Genel Cerrahi', radType: 'chest', radTitle: 'TORAKS & OMUZ GRAFİSİ',
+      comp: 'Düğünde halay çekerken omzuma gökten kurşun düştü hocam, kan durmuyor!',
+      vit: 'TA: 100/65 | Nabız: 118 | SpO2: %95', exam: 'Sol omuz giriş deliği aktif kanamalı (Adli Vaka).', pupil: 'Pupiller izokorik.',
+      rad: 'Skapula medialinde 9 mm metalik mermi çekirdeği!', labs: 'Hgb: 10.2 | Cross-match istendi.', hint: 'Ateşli silah yaralanması! Adli bildirim ile Genel Cerrahiye yatır.' }
+  ]
+};
+
+function buildAllCases() {
+  const list = [];
+  const firstNames = ['Ahmet','Fatma','Mehmet','Ayşe','Mustafa','Emine','Ali','Hatice','Hüseyin','Zeynep','Hasan','Elif','İbrahim','Meryem','İsmail','Şerife','Osman','Sultan','Yusuf','Hanife','Murat','Zehra','Ömer','Havva','Ramazan','Hayriye','Halil','Cemile','Süleyman','Fadime','Abdullah','Kader','Mahmut','Büşra','Recep','Esra','Salih','Merve','Kadir','Sema','Emre','Kübra','Burak','Derya','Furkan','Gül','Enes','Tuğba','Serkan','Ebru','Cem','Selin','Kaan','Melis','Bora','İrem','Tolga','Gizem','Ozan','Nihan'];
+  const contexts = [
+    '112 ambulansı ile acil polikliniğe getirildi.',
+    'Yakınlarının kolunda başvurdu.',
+    'Gece yarısı şikayetleri şiddetlenince hastaneye koşmuş.',
+    'Sabah saatlerinden beri evde beklemiş, durumu ağırlaşınca gelmiş.',
+    'İş yerinden mesai arkadaşları tarafından ulaştırılmış.'
+  ];
+
+  Object.keys(SPECIALTY_BLUEPRINTS).forEach((specKey, sIdx) => {
+    const bps = SPECIALTY_BLUEPRINTS[specKey];
+    for (let i = 0; i < 30; i++) {
+      const bp = bps[i % bps.length];
+      const fn = firstNames[(i * 7 + sIdx * 11) % firstNames.length];
+      const age = specKey === 'peds' ? (1 + (i % 14)) : (22 + ((i * 5 + sIdx * 3) % 58));
+      const ctxNote = contexts[i % contexts.length];
+
+      list.push({
+        id: `${specKey}_${i + 1}`,
+        spec: specKey,
+        name: `${fn} (${age})`,
+        triage: bp.triage,
+        pitch: specKey === 'peds' ? 430 : (age > 55 ? 205 : (i % 2 === 0 ? 335 : 275)),
+        appearance: {
+          skin: i % 3 === 0 ? '#d8a484' : '#f1c2a5',
+          hair: age > 55 ? '#ced4da' : (i % 2 === 0 ? '#2b1d14' : '#5c3c24'),
+          shirt: ['#1971c2','#2f9e44','#d6336c','#e67700','#5f3dc4','#495057'][i % 6],
+          flush: bp.triage === 'red',
+          sweat: bp.triage !== 'green',
+          cyanosis: bp.vit.includes('84') || bp.vit.includes('85') || bp.vit.includes('88'),
+          pupils: bp.pupil.includes('ANİZOKORİ') ? 'anisocoria' : (bp.pupil.includes('dilate') ? 'midriasis_fixed' : (bp.pupil.includes('Miyozis') ? 'miosis' : 'normal'))
+        },
+        complaint: `${bp.comp} (${ctxNote})`,
+        vitals: bp.vit,
+        lung: bp.exam,
+        pupil: bp.pupil,
+        radType: bp.radType,
+        radTitle: bp.radTitle,
+        radFinding: bp.rad,
+        labs: bp.labs,
+        enabiz: i % 4 === 0 ? `Öykü: ${bp.diag} açısından yüksek risk profili.` : 'Kronik ilaç alerjisi kaydı yok.',
+        correctAction: bp.action,
+        targetService: bp.srv,
+        targetReason: bp.diag,
+        miniGame: bp.mg || null,
+        treatLabel: bp.treat || 'Acil Müdahale Uygula',
+        hint: bp.hint
+      });
+    }
+  });
+
+  const genTemplates = [
+    { diag: 'Lober Pnömoni + Hipoksi', triage: 'yellow', action: 'admit', srv: 'Göğüs Hastalıkları', radType: 'chest', radTitle: 'AKCİĞER GRAFİSİ',
+      comp: 'Üç gündür ateşim ve öksürüğüm var, nefesim daralıyor.', vit: 'Ateş: 38.9°C | Nabız: 108 | SpO2: %91', exam: 'Sağ alt lobda krepitan raller.', pupil: 'Pupiller izokorik.',
+      rad: 'Sağ alt zonda lober pnömoni infiltrasyonu.', labs: 'WBC: 18.400 | CRP: 142', hint: 'SpO2 %91 + pnömoni -> Göğüs Hastalıklarına yatır.' },
+    { diag: 'Narkotik İlaç Suistimali & Rüşvet', triage: 'yellow', action: 'police', srv: 'Adli Bildirim', radType: 'leg', radTitle: 'ÜRİNER GRAFİ',
+      comp: 'Böbrek taşım düştü ölüyorum, bana kırmızı reçeteli morfin yaz çorbana bakarız...', vit: 'Nabız: 62 | Solunum: 10/dk', exam: 'Solunum yüzeysel.', pupil: 'İğne başı pupilla (Miyozis)!',
+      rad: 'Taş yok, idrar temiz! E-Nabız: 7 acilden narkotik talebi!', labs: 'İdrar temiz.', hint: 'Miyozis + sahte ağrı -> Hastane Polisine bildir.', bribe: true },
+    { diag: 'Panik Atak (Kardiyak Dışlandı)', triage: 'green', action: 'discharge', srv: 'Taburcu', radType: 'ecg', radTitle: '12-DERİVASYON EKG',
+      comp: 'Maçta son dakika golü yiyince göğsüm sıkıştı ölüyorum sandım!', vit: 'TA: 140/85 | Nabız: 112 | SpO2: %99', exam: 'Hiperventilasyon, akciğerler temiz.', pupil: 'Pupiller izokorik.',
+      rad: 'Normal sinüs taşikardisi, iskemi YOK!', labs: 'Troponin-I: 0.01 (Normal).', hint: 'EKG ve Troponin normal -> Panik atak, taburcu et.' }
+  ];
+  for (let g = 0; g < 30; g++) {
+    const gt = genTemplates[g % genTemplates.length];
+    const fn = firstNames[(g * 3) % firstNames.length];
+    list.push({
+      id: `gen_${g + 1}`, spec: 'general', name: `${fn} (${25 + (g % 45)})`, triage: gt.triage, pitch: 290,
+      appearance: { skin: '#f1c2a5', hair: '#2b1d14', shirt: '#364fc7', flush: false, sweat: true, pupils: gt.pupil.includes('Miyozis') ? 'miosis' : 'normal' },
+      complaint: gt.comp, vitals: gt.vit, lung: gt.exam, pupil: gt.pupil,
+      radType: gt.radType, radTitle: gt.radTitle, radFinding: gt.rad, labs: gt.labs,
+      enabiz: 'Genel acil servis başvurusu.',
+      correctAction: gt.action, targetService: gt.srv, targetReason: gt.diag,
+      bribe: gt.bribe ? { amount: 2000, text: 'Masanın altına 2.000₺ zarf uzattı: "Yaz şu ilacı hocam kimse bilmesin."' } : null,
+      hint: gt.hint
+    });
+  }
+  return list;
+}
+const ALL_CASES = buildAllCases();
+
+/* ================= START & CORE FLOW ================= */
+document.querySelectorAll('.av-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.av-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    state.avatar = Number(btn.dataset.av);
+  });
+});
+
+document.getElementById('btnStartGame').addEventListener('click', () => {
+  const dn = document.getElementById('inpDocName').value.trim();
+  const hn = document.getElementById('inpHospName').value.trim();
+  const ak = document.getElementById('inpApiKey').value.trim();
+  if (dn) state.docName = dn;
+  if (hn) state.hospName = hn;
+  if (ak) state.apiKey = ak;
+  state.diff = document.getElementById('inpDiff').value;
+  initAudio();
+  playSfx('coin');
+  document.getElementById('startScreen').style.display = 'none';
+  updateHud();
+  saveCareer();
+  nextPatient();
+});
+
+function updateHud() {
+  document.getElementById('hudDay').textContent = `G${state.day} ${state.seenToday}/5`;
+  document.getElementById('hudMoney').textContent = `${state.money.toLocaleString('tr-TR')}₺`;
+  document.getElementById('repFill').style.width = `${Math.max(10, state.rep)}%`;
+  document.getElementById('hudTus').textContent = `TUS:${state.tusScore}`;
+  document.getElementById('hudWarn').textContent = `⚠️${state.warnings}/3`;
+  const hStr = String(state.hour % 24).padStart(2, '0');
+  document.getElementById('clockTag').textContent = `${hStr}:00`;
+  const sp = SPECIALTIES[state.specialty] || SPECIALTIES.none;
+  document.getElementById('rankTag').textContent = `${sp.icon} ${sp.title.toUpperCase()}`;
+}
+
+let typeTimer = null;
+function say(speaker, text, badgeText = '', badgeClass = 't-green', pitch = 300) {
+  document.getElementById('speakerName').textContent = speaker;
+  const b = document.getElementById('triageBadge');
+  b.textContent = badgeText || 'AKTİF';
+  b.className = 'triage-badge ' + badgeClass;
+  const el = document.getElementById('dialogueText');
+  el.textContent = '';
+  if (typeTimer) clearInterval(typeTimer);
+  let i = 0;
+  typeTimer = setInterval(() => {
+    if (i < text.length) {
+      el.textContent += text[i];
+      if (i % 3 === 0 && text[i] !== ' ') playBlip(pitch);
+      i++;
+    } else clearInterval(typeTimer);
+  }, 11);
+}
+
+/* ================= OPEN WORLD MOVEMENT (WASD / ARROWS / D-PAD) ================= */
+const worldKeys = {};
+window.addEventListener('keydown', e => {
+  worldKeys[e.code] = true;
+  if (e.code === 'KeyF' && document.getElementById('consoleOverlay').classList.contains('open')) {
+    toggleBrowserFullscreen();
+  }
+});
+window.addEventListener('keyup', e => { worldKeys[e.code] = false; });
+
+function enterOpenWorld() {
+  state.location = 'world';
+  closeDrawer();
+  document.getElementById('mobileDpad').style.display = 'grid';
+  document.getElementById('zoomHint').style.display = 'none';
+  document.getElementById('sceneTag').textContent = 'AYDIN AÇIK DÜNYA — WASD / OK TUŞLARIYLA GEZ';
+  say('AÇIK DÜNYA ŞEHİR MODU', 'Yön tuşları veya WASD ile Aydın sokaklarında yürü ya da arabanla gez! Hastane, Ev (PS5 Pro), Galeri, Lokanta veya Halı Sahaya kapısından girebilirsin.', 'KEŞİF', 't-green', 340);
+  const p = document.getElementById('subPanel');
+  p.innerHTML = '';
+  addChoice(p, '🏠 Doğrudan Eve Gir & PS5 Aç (GTA 6 / EA FC 27)', () => goLocation('home'), 'purple');
+  addChoice(p, '⚽ Aydın Halı Sahaya Gir (Kanat Forvet Maçı)', () => goLocation('pitch'));
+  addChoice(p, '🏥 Hastane Polikliniğine Dön', () => nextPatient(), 'success');
+}
+
+function updateOpenWorld() {
+  const wp = state.worldPlayer;
+  const spd = state.assets.car !== 'Yok (Belediye Otobüsü)' ? 2.4 : 1.5;
+  if (worldKeys['ArrowUp'] || worldKeys['KeyW']) { wp.y = Math.max(12, wp.y - spd); wp.dir = 'up'; }
+  if (worldKeys['ArrowDown'] || worldKeys['KeyS']) { wp.y = Math.min(164, wp.y + spd); wp.dir = 'down'; }
+  if (worldKeys['ArrowLeft'] || worldKeys['KeyA']) { wp.x = Math.max(12, wp.x - spd); wp.dir = 'left'; }
+  if (worldKeys['ArrowRight'] || worldKeys['KeyD']) { wp.x = Math.min(464, wp.x + spd); wp.dir = 'right'; }
+
+  for (const b of WORLD_BUILDINGS) {
+    if (wp.x > b.x && wp.x < b.x + b.w && wp.y > b.y && wp.y < b.y + b.h) {
+      wp.y += (wp.y < 90 ? 18 : -18);
+      document.getElementById('mobileDpad').style.display = 'none';
+      if (b.id === 'er') nextPatient();
+      else goLocation(b.id);
+      break;
+    }
+  }
+}
+
+/* ================= NEXT PATIENT & CLINICAL FLOW ================= */
+function nextPatient() {
+  document.getElementById('mobileDpad').style.display = 'none';
+  if (state.warnings >= 3) {
+    localStorage.removeItem(SAVE_KEY);
+    gameOver('3 İdari Uyarı aldın! Başhekimlik sözleşmeni feshetti — Kırsal Sağlık Ocağına Sürgün Edildin.');
+    return;
+  }
+  if (state.seenToday >= 5) {
+    endOfShiftSummary();
+    return;
+  }
+  state.location = 'er';
+  state.activeStaffIdx = null;
+  const sp = SPECIALTIES[state.specialty];
+  document.getElementById('sceneTag').textContent = state.specialty === 'none'
+    ? `${state.hospName.toUpperCase()} — ODA 1`
+    : `${sp.icon} ${sp.title.toUpperCase()} POLİKLİNİĞİ`;
+  document.getElementById('zoomHint').style.display = 'none';
+
+  state.crypto.btcPrice = Math.max(450, Math.round(state.crypto.btcPrice * (0.90 + Math.random() * 0.22)));
+  state.crypto.goldPrice = Math.max(300, Math.round(state.crypto.goldPrice * (0.96 + Math.random() * 0.09)));
+
+  if (Math.random() < (state.diff === 'hard' ? 0.55 : 0.40)) triggerRandomLoanRequest();
+  checkLoanRepayments();
+
+  const usedSet = new Set(state.usedCaseIds);
+  let pool = ALL_CASES.filter(c => !usedSet.has(c.id));
+
+  if (state.specialty !== 'none' && Math.random() < 0.80) {
+    const specPool = pool.filter(c => c.spec === state.specialty);
+    if (specPool.length > 0) pool = specPool;
+    else {
+      const anySpec = ALL_CASES.filter(c => c.spec === state.specialty);
+      if (anySpec.length > 0) pool = anySpec;
+    }
+  } else if (state.specialty === 'none') {
+    const genPool = pool.filter(c => c.spec === 'general' || Math.random() < 0.35);
+    if (genPool.length > 0) pool = genPool;
+  }
+
+  const chosen = pool.length ? pool[Math.floor(Math.random() * pool.length)] : ALL_CASES[Math.floor(Math.random() * ALL_CASES.length)];
+  state.usedCaseIds.push(chosen.id);
+  if (state.usedCaseIds.length > 200) state.usedCaseIds.shift();
+
+  state.currentPatient = chosen;
+  state.examDone = { vitals: false, lung: false, pupil: false, rad: false, labs: false, enabiz: false };
+  state.ppeOn = false;
+  state.doorThreat = !!chosen.doorThreat || (state.diff === 'hard' && Math.random() < 0.20);
+  state.bribePending = !!chosen.bribe;
+
+  const badgeMap = { red: ['KIRMIZI ALAN', 't-red'], yellow: ['SARI ALAN', 't-yellow'], green: ['YEŞİL ALAN', 't-green'] };
+  const [bt, bc] = badgeMap[chosen.triage];
+  const specLabel = chosen.spec && chosen.spec !== 'general' ? ` [${SPECIALTIES[chosen.spec]?.serviceName}]` : '';
+  say(chosen.name + specLabel, `"${chosen.complaint}"`, bt, bc, chosen.pitch);
+  setTab('talk');
+  saveCareer();
+}
+
+function setTab(tab) {
+  state.tab = tab;
+  ['tabTalk','tabExam','tabFile','tabDecide'].forEach(id => document.getElementById(id).classList.remove('active'));
+  const map = { talk: 'tabTalk', exam: 'tabExam', file: 'tabFile', decide: 'tabDecide' };
+  if (map[tab]) document.getElementById(map[tab]).classList.add('active');
+
+  const panel = document.getElementById('subPanel');
+  panel.innerHTML = '';
+  const p = state.currentPatient;
+  if (!p || state.location !== 'er') return;
+
+  if (tab === 'talk') {
+    addChoice(panel, 'Şikayeti Detaylandır & Klinik İpucu', () => {
+      say(p.name, `"${p.complaint}"\n(Klinik İpucu: ${p.hint})`, 'ANAMNEZ', 't-yellow', p.pitch);
+    });
+    const intern = INTERNS[state.internIdx];
+    addChoice(panel, `${intern.name}'e Danış / Gözlemle`, () => runInternSupervision());
+    if (state.doorThreat) {
+      addChoice(panel, '1111 BEYAZ KOD BAS! (Kapıda Saldırı Tehdidi)', () => {
+        playSfx('alarm');
+        state.doorThreat = false; state.rep = Math.min(100, state.rep + 4); updateHud();
+        say('GÜVENLİK EKİBİ', '1111 Beyaz Kod! Güvenlik saldırganı etkisiz hale getirdi.', 'GÜVENLİ', 't-green', 220);
+        if (p.correctAction === 'whitecode') completeCase(true, 'Beyaz Kod zamanında verildi, personel korundu! +450₺');
+        else setTab('talk');
+      }, 'danger');
+    }
+    if (state.bribePending && p.bribe) {
+      addChoice(panel, `Rüşvet Teklifini Gör (${p.bribe.amount}₺)`, () => {
+        say('ETİK İKİLEM', p.bribe.text, 'RÜŞVET', 't-red', 190);
+        panel.innerHTML = '';
+        addChoice(panel, `Zarfı Al (+${p.bribe.amount}₺, Disiplin Riski)`, () => {
+          state.money += p.bribe.amount; state.bribePending = false;
+          addTx('Kayıt Dışı Zarf Geliri', p.bribe.amount, 'pos');
+          if (Math.random() < 0.55) {
+            state.warnings++; updateHud();
+            say('BAŞHEKİMLİK MÜFETTİŞİ', 'Suçüstü! Usulsüz işlem tespit edildi. +1 Uyarı aldın!', 'UYARI', 't-red', 150);
+          } else {
+            updateHud();
+            say('SİSTEM', `Zarfı cebine koydun (+${p.bribe.amount}₺). Stres arttı.`, 'RİSKLİ', 't-yellow', 260);
+          }
+          setTab('decide');
+        }, 'danger');
+        addChoice(panel, '"Burası Devletin Hastanesi!" (Reddet & İtibar Kazan)', () => {
+          state.bribePending = false; state.rep = Math.min(100, state.rep + 6); updateHud();
+          say(state.docName, '"Paranı da al çık dışarı, burada sadece tıbbi gerçekler geçer!"', 'ONURLU', 't-green', 340);
+          setTab('decide');
+        }, 'success');
+      }, 'danger');
+    }
+  }
+  else if (tab === 'exam') {
+    addChoice(panel, `KKE N95 Maske Tak (${state.ppeOn ? 'TAKILI ✓' : 'KAPALI'})`, () => {
+      state.ppeOn = true;
+      say('SİSTEM', 'N95 maske ve koruyucu eldiven giyildi.', 'KORUMALI', 't-green', 420);
+      setTab('exam');
+    }, state.ppeOn ? 'success' : '');
+    addChoice(panel, `Vital Bulgular (Nabız / TA / GİB) ${state.examDone.vitals ? '✓' : ''}`, () => {
+      state.examDone.vitals = true; playSfx('heart');
+      say('VİTAL MONİTÖR', p.vitals, 'VİTALLER', 't-yellow', 380);
+      setTab('exam');
+    });
+    addChoice(panel, `Fizik Muayene & Oskültasyon ${state.examDone.lung ? '✓' : ''}`, () => {
+      state.examDone.lung = true;
+      say('FİZİK MUAYENE', p.lung, 'MUAYENE', 't-yellow', 250);
+      setTab('exam');
+    });
+    addChoice(panel, `Göz Feneri (Pupilla / RAPD Refleksi) ${state.examDone.pupil ? '✓' : ''}`, () => {
+      state.examDone.pupil = true;
+      say('PUPILLA & NÖRO-OFTALMOLOJİ', p.pupil, 'PUPILLA', 't-yellow', 440);
+      setTab('exam');
+    });
+  }
+  else if (tab === 'file') {
+    addChoice(panel, `${p.radTitle} İste & Yakınlaştır ${state.examDone.rad ? '✓' : ''}`, () => {
+      state.examDone.rad = true;
+      document.getElementById('zoomHint').style.display = 'block';
+      say(p.radTitle, p.radFinding, 'GÖRÜNTÜLEME', 't-yellow', 360);
+      openDrawer('radiology');
+    });
+    addChoice(panel, `Kan & Biyokimya Tahlilleri ${state.examDone.labs ? '✓' : ''}`, () => {
+      state.examDone.labs = true;
+      say('LABORATUVAR SONUCU', p.labs, 'TAHLİL', 't-yellow', 390);
+      setTab('file');
+    });
+    addChoice(panel, `E-Nabız & Alerji Geçmişi ${state.examDone.enabiz ? '✓' : ''}`, () => {
+      state.examDone.enabiz = true;
+      say('E-NABIZ SİSTEMİ', p.enabiz, 'KAYIT', 't-red', 310);
+      setTab('file');
+    });
+  }
+  else if (tab === 'decide') {
+    addChoice(panel, 'Servise Yatış Yap (Klinik & Endikasyon Seç)', () => openAdmissionFlow(), 'success');
+    addChoice(panel, `Poliklinikte / Acilde Müdahale Et (${p.treatLabel || 'Tedavi Uygula'})`, () => {
+      if (p.correctAction === 'treat') {
+        if (p.miniGame) startMedicalMiniGame(p.miniGame, p.treatLabel || 'Acil Müdahale');
+        else completeCase(true, 'Müdahale tam isabet! Hasta stabilize edildi. +450₺');
+      } else {
+        completeCase(false, 'Bu hastanın servise yatışı, adli bildirimi veya taburculuğu gerekiyordu!');
+      }
+    });
+    addChoice(panel, 'Hastane Polisi / Adli Bildirim', () => {
+      const ok = p.correctAction === 'police' || p.correctAction === 'whitecode';
+      completeCase(ok, ok ? 'Sahte reçete / adli vaka polise teslim edildi! +450₺' : 'Masum hastaya polis çağırdın!');
+    });
+    addChoice(panel, 'Reçete Yaz & Taburcu Et', () => {
+      const ok = p.correctAction === 'discharge';
+      completeCase(ok, ok ? 'Gereksiz yatış yapılmadı, hasta güvenle taburcu edildi. +350₺' : 'KRİTİK HATA! Yatması veya müdahale edilmesi gereken hastayı eve gönderdin!');
+    });
+  }
+}
+
+/* ================= SPLIT-SCREEN DRAWER CONTROLLER ================= */
+let activeLoopId = null;
+function openSidePanel(titleText) {
+  if (activeLoopId) { cancelAnimationFrame(activeLoopId); activeLoopId = null; }
+  document.getElementById('app').classList.add('split-open');
+  document.getElementById('drawerTitle').textContent = titleText;
+  const body = document.getElementById('drawerBody');
+  body.innerHTML = '';
+  return body;
+}
+
+function closeDrawer() {
+  if (activeLoopId) { cancelAnimationFrame(activeLoopId); activeLoopId = null; }
+  document.getElementById('app').classList.remove('split-open');
+}
+
+/* ================= 4 INTERACTIVE MEDICAL MINI-GAMES ================= */
+function startMedicalMiniGame(type, label) {
+  const titles = {
+    cardioversion: 'SENKRONİZE KARDİYOVERSİYON',
+    iv: 'IV DAMAR YOLU & İLAÇ BOLUSU',
+    fracture: 'KIRIK / ÇIKIK REDÜKSİYON HİZALAMA',
+    decon: 'İĞNE DEKOMPRESYON / OKÜLER YIKAMA'
+  };
+  const body = openSidePanel(titles[type] || 'KLİNİK MÜDAHALE');
+  body.innerHTML = `
+    <div class="card-box" style="padding:12px;display:flex;flex-direction:column;gap:10px;align-items:center;text-align:center;">
+      <div style="font-size:12.5px;color:var(--accent-gold);font-weight:800;">${label}</div>
+      <canvas id="mgCanvas" width="360" height="160"></canvas>
+      <div style="font-size:12px;color:var(--accent-green);">Hareketli gösterge YEŞİL hedef bölgeye geldiğinde müdahaleyi uygula!</div>
+      <button id="mgActionBtn" class="start-btn" style="padding:11px;">🩺 MÜDAHALEYİ UYGULA</button>
+    </div>
+  `;
+
+  const c = document.getElementById('mgCanvas');
+  const x = c.getContext('2d');
+  let cursor = 20, dir = 1, speed = 4.1, targetStart = 148, targetW = 68, finished = false;
+
+  function renderMg() {
+    if (finished) return;
+    cursor += dir * speed;
+    if (cursor >= 335) { cursor = 335; dir = -1; }
+    if (cursor <= 25) { cursor = 25; dir = 1; }
+
+    x.fillStyle = '#06090f'; x.fillRect(0, 0, 360, 160);
+    if (type === 'cardioversion') {
+      x.strokeStyle = '#ff6b6b'; x.lineWidth = 2; x.beginPath();
+      for (let i = 10; i < 350; i += 4) {
+        const py = 54 + Math.sin(i * 0.22 + cursor * 0.05) * 24;
+        if (i === 10) x.moveTo(i, py); else x.lineTo(i, py);
+      }
+      x.stroke();
+    } else if (type === 'fracture') {
+      x.fillStyle = '#f1f3f5';
+      x.fillRect(85, 44, 90, 18);
+      x.fillRect(182, 44 + (cursor - 180) * 0.14, 90, 18);
+    } else if (type === 'iv') {
+      x.fillStyle = '#3bc9db'; x.fillRect(24, 46, 312, 18);
+      x.fillStyle = '#ffffff'; x.fillRect(24, 52, 312, 5);
+    } else {
+      x.strokeStyle = '#51cf66'; x.lineWidth = 2;
+      x.strokeRect(100, 26, 160, 56);
+      x.fillStyle = '#fcc419'; x.font = 'bold 11px monospace'; x.fillText('ANATOMİK HEDEF', 132, 58);
+    }
+
+    x.fillStyle = '#1a2336'; x.fillRect(20, 108, 320, 24);
+    x.fillStyle = '#51cf66'; x.fillRect(targetStart, 108, targetW, 24);
+    x.strokeStyle = '#ffffff'; x.lineWidth = 2; x.strokeRect(targetStart, 108, targetW, 24);
+
+    x.fillStyle = '#fcc419'; x.fillRect(cursor - 4, 102, 8, 36);
+    activeLoopId = requestAnimationFrame(renderMg);
+  }
+  renderMg();
+
+  document.getElementById('mgActionBtn').onclick = () => {
+    if (finished) return;
+    finished = true;
+    const hit = cursor >= targetStart && cursor <= (targetStart + targetW);
+    closeDrawer();
+    if (hit) {
+      state.tusScore += 1;
+      completeCase(true, `MÜKEMMEL ZAMANLAMA! ${label} başarıyla uygulandı! (+1 TUS Puanı & +500₺)`);
+    } else {
+      completeCase(true, `Müdahale tamamlandı; hasta stabilize edildi. (+300₺)`);
+    }
+  };
+}
+
+/* ================= FULLSCREEN PS5 CONSOLE (GTA 6 & EA FC 27) ================= */
+let activeArcadeMode = null;
+let arcadeAnimId = null;
+
+function openConsole(defaultGame = 'gta6') {
+  closeDrawer();
+  document.getElementById('consoleOverlay').classList.add('open');
+  launchConsoleGame(defaultGame);
+}
+
+function closeConsole() {
+  if (arcadeAnimId) { cancelAnimationFrame(arcadeAnimId); arcadeAnimId = null; }
+  activeArcadeMode = null;
+  document.getElementById('consoleOverlay').classList.remove('open');
+  if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+}
+
+function toggleBrowserFullscreen() {
+  const el = document.getElementById('consoleOverlay');
+  if (!document.fullscreenElement) el.requestFullscreen().catch(() => {});
+  else document.exitFullscreen().catch(() => {});
+}
+
+function launchConsoleGame(mode) {
+  if (arcadeAnimId) { cancelAnimationFrame(arcadeAnimId); arcadeAnimId = null; }
+  activeArcadeMode = mode;
+  const c = document.getElementById('arcadeCanvas');
+  const x = c.getContext('2d');
+  x.imageSmoothingEnabled = false;
+
+  if (mode === 'gta6') {
+    document.getElementById('consoleTitle').textContent = '🚗 PS5 PRO — GTA 6: AYDIN VICE (16-BIT)';
+    document.getElementById('arcadeHelp').textContent = 'WASD / Ok Tuşları: Sür | SPACE: El Freni | Sarı Paketleri Topla, Polisten Kaç!';
+    startGta6Mini(c, x);
+  } else {
+    document.getElementById('consoleTitle').textContent = '⚽ PS5 PRO — EA FC 27: KANAT FORVET MODU (16-BIT)';
+    document.getElementById('arcadeHelp').textContent = 'WASD / Ok Tuşları: Kanattan Kat Et | SPACE: Plase Şut Çek | Gol Attıkça Prim Kazan!';
+    startFifaMini(c, x);
+  }
+}
+
+function startGta6Mini(c, x) {
+  const car = { x: 320, y: 180, angle: 0, speed: 0 };
+  const cops = [
+    { x: 90, y: 80, speed: 1.55 },
+    { x: 540, y: 290, speed: 1.75 }
+  ];
+  let packageItem = { x: 480, y: 110 };
+  let cash = 0, stars = 1, bustedTimer = 0;
+
+  function loop() {
+    if (activeArcadeMode !== 'gta6') return;
+
+    if (bustedTimer > 0) {
+      bustedTimer--;
+      x.fillStyle = 'rgba(15, 23, 42, 0.85)'; x.fillRect(0, 0, 640, 360);
+      x.fillStyle = '#ff6b6b'; x.font = 'bold 28px monospace';
+      x.fillText('YAKALANDIN! (BUSTED)', 170, 175);
+      x.fillStyle = '#fff'; x.font = 'bold 14px monospace';
+      x.fillText('Hastane kapısında yeniden doğuluyor...', 185, 205);
+      if (bustedTimer === 0) { car.x = 320; car.y = 180; car.speed = 0; stars = 1; }
+      arcadeAnimId = requestAnimationFrame(loop);
+      return;
+    }
+
+    if (worldKeys['ArrowUp'] || worldKeys['KeyW']) car.speed = Math.min(4.4, car.speed + 0.16);
+    else if (worldKeys['ArrowDown'] || worldKeys['KeyS']) car.speed = Math.max(-2.2, car.speed - 0.16);
+    else car.speed *= 0.94;
+
+    if (worldKeys['Space']) car.speed *= 0.88;
+    if (Math.abs(car.speed) > 0.2) {
+      if (worldKeys['ArrowLeft'] || worldKeys['KeyA']) car.angle -= 0.065;
+      if (worldKeys['ArrowRight'] || worldKeys['KeyD']) car.angle += 0.065;
+    }
+
+    car.x = Math.max(20, Math.min(620, car.x + Math.cos(car.angle) * car.speed));
+    car.y = Math.max(20, Math.min(340, car.y + Math.sin(car.angle) * car.speed));
+
+    if (Math.hypot(car.x - packageItem.x, car.y - packageItem.y) < 24) {
+      cash += 250;
+      stars = Math.min(5, stars + 1);
+      state.money += 100;
+      state.stress = Math.max(0, state.stress - 4);
+      addTx('PS5 GTA 6 Görev Ödülü', 100, 'pos');
+      updateHud(); saveCareer(); playSfx('coin');
+      packageItem = { x: 60 + Math.random() * 520, y: 50 + Math.random() * 260 };
+      document.getElementById('arcadeScore').textContent = `VICE CASH: $${cash} (+100₺ Hesap!) | ARANMA: ${'★'.repeat(stars)}`;
+    }
+
+    x.fillStyle = '#1e293b'; x.fillRect(0, 0, 640, 360);
+    x.fillStyle = '#0f172a';
+    x.fillRect(0, 155, 640, 50);
+    x.fillRect(295, 0, 50, 360);
+    x.fillStyle = '#fcc419';
+    for (let i = 0; i < 640; i += 28) x.fillRect(i, 179, 14, 2);
+    for (let j = 0; j < 360; j += 28) x.fillRect(319, j, 2, 14);
+
+    x.fillStyle = '#334155'; x.fillRect(40, 30, 180, 95);
+    x.fillStyle = '#4c1d95'; x.fillRect(410, 30, 180, 95);
+    x.fillStyle = '#065f46'; x.fillRect(40, 235, 180, 95);
+    x.fillStyle = '#7c2d12'; x.fillRect(410, 235, 180, 95);
+
+    x.fillStyle = '#fcc419';
+    x.fillRect(packageItem.x - 8, packageItem.y - 8, 16, 16);
+    x.fillStyle = '#000'; x.font = 'bold 11px monospace';
+    x.fillText('$', packageItem.x - 3, packageItem.y + 4);
+
+    cops.forEach((cp, idx) => {
+      const ang = Math.atan2(car.y - cp.y, car.x - cp.x);
+      cp.x += Math.cos(ang) * (cp.speed + stars * 0.14);
+      cp.y += Math.sin(ang) * (cp.speed + stars * 0.14);
+      x.fillStyle = '#ffffff'; x.fillRect(cp.x - 10, cp.y - 7, 20, 14);
+      x.fillStyle = (Math.floor(Date.now() / 120) + idx) % 2 === 0 ? '#ef4444' : '#3b82f6';
+      x.fillRect(cp.x - 4, cp.y - 3, 8, 6);
+      if (Math.hypot(car.x - cp.x, car.y - cp.y) < 18) bustedTimer = 85;
+    });
+
+    x.save();
+    x.translate(car.x, car.y);
+    x.rotate(car.angle);
+    x.fillStyle = '#ff6b6b'; x.fillRect(-13, -8, 26, 16);
+    x.fillStyle = '#38bdf8'; x.fillRect(2, -6, 6, 12);
+    x.restore();
+
+    x.fillStyle = '#fcc419'; x.font = 'bold 15px monospace';
+    x.fillText(`ARANMA: ${'★'.repeat(stars)}`, 480, 24);
+
+    arcadeAnimId = requestAnimationFrame(loop);
+  }
+  loop();
+}
+
+function startFifaMini(c, x) {
+  const player = { x: 110, y: 270 };
+  const keeper = { x: 585, y: 180, dir: 1 };
+  const defender = { x: 430, y: 160, dir: 1 };
+  const ball = { x: 124, y: 270, vx: 0, vy: 0, shot: false };
+  let goals = 0, shots = 0;
+
+  function loop() {
+    if (activeArcadeMode !== 'fifa') return;
+
+    if (!ball.shot) {
+      if (worldKeys['ArrowUp'] || worldKeys['KeyW']) player.y = Math.max(40, player.y - 3.2);
+      if (worldKeys['ArrowDown'] || worldKeys['KeyS']) player.y = Math.min(320, player.y + 3.2);
+      if (worldKeys['ArrowLeft'] || worldKeys['KeyA']) player.x = Math.max(40, player.x - 3.2);
+      if (worldKeys['ArrowRight'] || worldKeys['KeyD']) player.x = Math.min(540, player.x + 3.2);
+      ball.x = player.x + 12;
+      ball.y = player.y;
+
+      if (worldKeys['Space']) {
+        ball.shot = true;
+        shots++;
+        const targetY = player.y > 180 ? 152 : 208;
+        const ang = Math.atan2(targetY - ball.y, 600 - ball.x);
+        ball.vx = Math.cos(ang) * 7.8;
+        ball.vy = Math.sin(ang) * 7.8;
+      }
+    } else {
+      ball.x += ball.vx;
+      ball.y += ball.vy;
+      if (Math.abs(ball.x - keeper.x) < 12 && Math.abs(ball.y - keeper.y) < 22) {
+        ball.shot = false; player.x = 110; player.y = 270;
+      }
+      if (Math.abs(ball.x - defender.x) < 12 && Math.abs(ball.y - defender.y) < 18) {
+        ball.shot = false; player.x = 110; player.y = 270;
+      }
+      if (ball.x >= 596) {
+        if (ball.y >= 132 && ball.y <= 228) {
+          goals++;
+          state.money += 150;
+          state.stress = Math.max(0, state.stress - 5);
+          addTx('EA FC 27 & Halı Saha Gol Primi', 150, 'pos');
+          updateHud(); saveCareer(); playSfx('coin');
+          document.getElementById('arcadeScore').textContent = `GOL: ${goals} / ŞUT: ${shots} (+150₺ Maç Primi!)`;
+        }
+        ball.shot = false; player.x = 110; player.y = 270;
+      }
+    }
+
+    keeper.y += keeper.dir * 2.1;
+    if (keeper.y > 215 || keeper.y < 145) keeper.dir *= -1;
+    defender.y += defender.dir * 2.5;
+    if (defender.y > 290 || defender.y < 70) defender.dir *= -1;
+
+    x.fillStyle = '#1b5e20'; x.fillRect(0, 0, 640, 360);
+    x.fillStyle = '#2e7d32';
+    for (let sx = 0; sx < 640; sx += 64) x.fillRect(sx, 0, 32, 360);
+
+    x.strokeStyle = '#ffffff'; x.lineWidth = 2;
+    x.strokeRect(24, 20, 576, 320);
+    x.strokeRect(480, 90, 120, 180);
+    x.fillStyle = 'rgba(255,255,255,0.22)'; x.fillRect(600, 132, 22, 96);
+    x.strokeRect(600, 132, 22, 96);
+
+    x.fillStyle = '#e03131'; x.fillRect(player.x - 8, player.y - 10, 16, 20);
+    x.fillStyle = '#fcc419'; x.fillRect(player.x - 6, player.y - 16, 12, 6);
+
+    x.fillStyle = '#1971c2'; x.fillRect(defender.x - 8, defender.y - 10, 16, 20);
+    x.fillStyle = '#fcc419'; x.fillRect(keeper.x - 8, keeper.y - 12, 16, 24);
+
+    x.fillStyle = '#ffffff';
+    x.beginPath(); x.arc(ball.x, ball.y, 5, 0, Math.PI * 2); x.fill();
+
+    x.fillStyle = '#0f172a'; x.fillRect(24, 4, 210, 22);
+    x.fillStyle = '#fcc419'; x.font = 'bold 12px monospace';
+    x.fillText(`AYDIN FC ${goals} - 0 RAKİP`, 34, 19);
+
+    arcadeAnimId = requestAnimationFrame(loop);
+  }
+  loop();
+}
+
+/* ================= 2-STEP ADMISSION & INTERN ================= */
+function openAdmissionFlow() {
+  const panel = document.getElementById('subPanel');
+  panel.innerHTML = '';
+  say('YATIŞ PROTOKOLÜ — ADIM 1/2', 'Hastayı hangi kliniğe / servise yatırıyorsun?', 'SERVİS SEÇ', 't-yellow', 330);
+  ['Göz Hastalıkları','Kardiyoloji','Göğüs Hastalıkları','Genel Cerrahi','Ortopedi','Pediatri','KBB','Kadın Doğum','Nöroloji / Beyin Cerrahi'].forEach(srv => {
+    addChoice(panel, srv, () => openAdmissionReason(srv));
+  });
+}
+
+function openAdmissionReason(selectedService) {
+  const p = state.currentPatient;
+  const panel = document.getElementById('subPanel');
+  panel.innerHTML = '';
+  say(`YATIŞ: ${selectedService.toUpperCase()} — ADIM 2/2`, 'Konsültan uzmana iletilecek tıbbi yatış tanısını seç:', 'ENDİKASYON', 't-yellow', 350);
+
+  const distractorReasons = [
+    'Santral Retinal Arter Tıkanıklığı (CRAO)',
+    'Macula-On Retina Dekolmanı',
+    'Akut Anterior STEMI',
+    'Kardiyak Tamponad (Beck Triadı)',
+    'Akut İskemik İnme (tPA Penceresi)',
+    'Akut Kompartman Sendromu',
+    'Akut Epiglottit (Çocuk Acil)',
+    'Peritonsiller Apse (Quinsy)',
+    'Akut Apandisit',
+    'Lober Pnömoni + Hipoksi'
+  ];
+  const options = new Set([p.targetReason || 'Klinik Takip ve Tedavi']);
+  while (options.size < 4) options.add(distractorReasons[Math.floor(Math.random() * distractorReasons.length)]);
+
+  Array.from(options).sort(() => Math.random() - 0.5).forEach(reason => {
+    addChoice(panel, `Tanı: ${reason}`, () => {
+      if (p.correctAction !== 'admit') {
+        completeCase(false, `${selectedService} uzmanı reddetti: "Bu hastanın yatış endikasyonu yok!"`);
+        return;
+      }
+      const serviceMatch = selectedService === p.targetService;
+      const reasonMatch = reason === p.targetReason;
+      if (serviceMatch && reasonMatch) {
+        state.tusScore += 1;
+        completeCase(true, `${selectedService} kabul etti! Tanı eksiksiz. (+1 TUS Puanı & +550₺)`);
+      } else if (serviceMatch) {
+        completeCase(true, `${selectedService} hastayı aldı ama uzman yatış notunu düzeltti. +300₺`);
+      } else {
+        completeCase(false, `YANLIŞ SERVİS! ${selectedService} yerine ${p.targetService} olmalıydı!`);
+      }
+    });
+  });
+}
+
+function runInternSupervision() {
+  const p = state.currentPatient;
+  const intern = INTERNS[state.internIdx];
+  const panel = document.getElementById('subPanel');
+  panel.innerHTML = '';
+
+  let internProposal = '', isMistake = true;
+  if (intern.flaw === 'allergy') internProposal = `"Hocam vakit kaybetmeyelim, ben hemen 1000 mg Penisilin iğnesi yapıp gönderiyorum!"`;
+  else if (intern.flaw === 'sleepy') internProposal = `*Esner* "Hocam muayene ettim ama cihazın fişini takmayı unutmuşum..."`;
+  else if (intern.flaw === 'rude') internProposal = `"Abartmayın, internetten okuyup polikliniği meşgul etmeyin!" (Hasta yakını sinirlendi!)`;
+  else {
+    internProposal = `"Hocam ellerim titriyor ama ${p.radTitle} istemini ve vitalleri hazırladım, doğru mu?"`;
+    isMistake = false;
+  }
+
+  say(`${intern.name.toUpperCase()}`, internProposal, 'SÜPERVİZYON', isMistake ? 't-red' : 't-green', 270);
+  if (isMistake) {
+    addChoice(panel, '"DUR! Hata Yapıyorsun, Doğrusunu Göstereyim"', () => {
+      state.internTrust += 10; state.rep = Math.min(100, state.rep + 3); updateHud();
+      say(intern.name, '"Çok haklısınız hocam, az kalsın büyük hata yapıyordum!"', 'EĞİTİLDİ', 't-green', 320);
+      setTab('exam');
+    }, 'success');
+    addChoice(panel, 'İntörne Sıcak Çay Ismarla (-30₺, Odak Artar)', () => {
+      if (state.money >= 30) {
+        state.money -= 30; state.internTrust += 15; addTx('Kantin Çay İkramı', -30, 'neg'); updateHud();
+        say(intern.name, '"İlaç gibi geldi hocam, zihnim açıldı!"', 'MORAL +15', 't-green', 360);
+      }
+      setTab('exam');
+    });
+  } else {
+    addChoice(panel, '"Aferin, Aynen Böyle Devam Et!"', () => {
+      state.internTrust += 12; state.rep = Math.min(100, state.rep + 2); updateHud();
+      say(intern.name, '"Teşekkürler hocam, sayenizde kendime güvenim geldi!"', 'MOTİVE', 't-green', 370);
+      setTab('exam');
+    }, 'success');
+  }
+}
+
+function completeCase(success, msg) {
+  playSfx('stamp');
+  state.seenToday++;
+  state.hour += 2;
+  const spBonus = SPECIALTIES[state.specialty]?.bonusPay || 0;
+
+  if (success) {
+    state.dailyCorrect++;
+    state.totalSaved++;
+    const earned = 450 + spBonus;
+    state.money += earned;
+    state.rep = Math.min(100, state.rep + 4);
+    state.stress = Math.max(0, state.stress - 3);
+    addTx(`Vaka Performans (${state.currentPatient.name})`, earned, 'pos');
+  } else {
+    state.dailyWrong++;
+    state.rep = Math.max(0, state.rep - 8);
+    state.stress = Math.min(100, state.stress + 12);
+    state.warnings++;
+  }
+  updateHud();
+  saveCareer();
+  say(success ? 'VAKA BAŞARILI ✓' : 'KLİNİK HATA ✕', msg, success ? '+KAZANÇ' : 'UYARI', success ? 't-green' : 't-red', success ? 420 : 160);
+  const panel = document.getElementById('subPanel');
+  panel.innerHTML = '';
+  addChoice(panel, 'Sıradaki Hastayı Çağır', () => nextPatient(), 'success');
+}
+
+/* ================= END OF SHIFT ================= */
+function endOfShiftSummary() {
+  const correctToday = state.dailyCorrect;
+  const wrongToday = state.dailyWrong;
+
+  state.day++;
+  state.hour = 20;
+  state.seenToday = 0;
+  state.dailyCorrect = 0;
+  state.dailyWrong = 0;
+  state.coffeeGivenToday = false;
+  state.internIdx = (state.internIdx + 1) % INTERNS.length;
+
+  const spBonus = SPECIALTIES[state.specialty]?.bonusPay || 0;
+  let payroll = 1100 + (state.rep * 5) + spBonus;
+  if (state.bankDebt > 0) {
+    const cut = Math.min(state.bankDebt, 600);
+    state.bankDebt -= cut; payroll -= cut;
+    addTx('TıpBank Otomatik Kredi Taksiti', -cut, 'neg');
+  }
+  state.money += payroll;
+  addTx(`Gün ${state.day - 1} Döner Sermaye & Nöbet Bordrosu`, payroll, 'pos');
+  state.news.unshift(`GÜN ${state.day - 1} BÜLTENİ: ${state.docName}, nöbette ${correctToday} vakayı başarıyla yönetti.`);
+  updateHud();
+  saveCareer();
+
+  const nextInt = INTERNS[state.internIdx];
+  const hasCar = state.assets.car !== 'Yok (Belediye Otobüsü)';
+  say(
+    `GÜN ${state.day - 1} NÖBET EPİKRİZ KARNESİ`,
+    `• Doğru Müdahale: ${correctToday} | Hata: ${wrongToday} | Toplam Kurtarılan: ${state.totalSaved}\n• Hesaba Yatan: +${payroll}₺ | Yarın Ekip: ${nextInt.name}`,
+    'NÖBET BİTTİ', 't-green', 390
+  );
+
+  const panel = document.getElementById('subPanel');
+  panel.innerHTML = '';
+
+  addChoice(panel, '🏠 Eve Git & PS5 Oyna (Tam Ekran GTA 6 & EA FC 27)', () => goLocation('home'), 'purple');
+  addChoice(panel, '🌆 Açık Dünyada Şehir Turu At', () => enterOpenWorld(), 'success');
+  addChoice(panel, '🎓 TUS Çalış & 8 Uzmanlık Dalından Birini Seç', () => openDrawer('tus'));
+  if (hasCar) {
+    addChoice(panel, `${state.assets.car} İle Eve Sür (Yakıt: %${state.assets.fuel})`, () => driveHomeWithCar());
+  } else {
+    addChoice(panel, 'Belediye Otobüsüyle Eve Dön (%30 Acil Durum)', () => {
+      if (Math.random() < 0.30) startBusEmergency();
+      else goLocation('home');
+    });
+  }
+}
+
+function driveHomeWithCar() {
+  if (state.assets.fuel < 15) {
+    say('YAKIT BİTTİ!', 'Depoda benzin kalmadı! Galeri & Akaryakıt istasyonundan yakıt almalısın.', 'DEPO BOŞ', 't-red', 200);
+    goLocation('dealer');
+    return;
+  }
+  state.assets.fuel = Math.max(0, state.assets.fuel - 22);
+  const isSahin = state.assets.car.includes('Şahin');
+  const breakChance = isSahin ? 0.38 : 0.14;
+
+  if (Math.random() < breakChance) {
+    playSfx('alarm');
+    state.assets.carHealth = Math.max(20, state.assets.carHealth - 30);
+    const issue = isSahin
+      ? 'Modifiyeli Şahin yolda hararet yaptı ve egzoz patlattı! Mahmut Usta 450₺ masraf çıkardı.'
+      : 'Alman Sedan uyarı verdi: Periyodik bakım ve sensör arızası! Servis 850₺ masraf çıkardı.';
+    const cost = isSahin ? 450 : 850;
+    state.money = Math.max(0, state.money - cost);
+    addTx(`Oto Sanayi / Servis Arıza Masrafı (${state.assets.car})`, -cost, 'neg');
+    updateHud(); saveCareer();
+    goLocation('dealer');
+    say('SANAYİ YOLU GÖRÜNDÜ!', `${issue} (Kalan Kondisyon: %${state.assets.carHealth})`, 'ARIZA', 't-red', 180);
+  } else {
+    saveCareer();
+    goLocation('home');
+    say('KEYİFLİ SÜRÜŞ', `${state.assets.car} ile müzik eşliğinde evine ulaştın! (Kalan Yakıt: %${state.assets.fuel})`, 'EV', 't-green', 360);
+  }
+}
+
+function startBusEmergency() {
+  playSfx('alarm');
+  let compressions = 0;
+  say('OTOBÜSTE PANİK!', '"DOKTOR VAR MI?! YOLCU YERE YIĞILDI, NABIZ YOK!" — Kalp masajı için ritmik bas (110 BPM)!', 'ACİL CPR', 't-red', 480);
+  const panel = document.getElementById('subPanel');
+  panel.innerHTML = '';
+  const btn = document.createElement('button');
+  btn.className = 'choice-btn danger';
+  btn.textContent = 'GÖĞÜS BASISI UYGULA (0 / 10) — 110 BPM';
+  btn.onclick = () => {
+    compressions++; playSfx('heart');
+    btn.textContent = `GÖĞÜS BASISI UYGULA (${compressions} / 10) — DEVAM!`;
+    if (compressions >= 10) {
+      state.money += 600; state.rep = Math.min(100, state.rep + 8);
+      addTx('Belediye / Bakanlık Kahramanlık Ödülü', 600, 'pos');
+      state.news.unshift(`MANŞET: ${state.docName}, belediye otobüsünde kalbi duran yolcuyu hayata döndürdü!`);
+      updateHud(); saveCareer();
+      say('YEREL HABERLER MANŞETİ!', `"${state.docName}, otobüste kalbi duran vatandaşı hayata döndürdü!" (+600₺ & +8 İtibar)`, 'KAHRAMAN', 't-green', 440);
+      panel.innerHTML = '';
+      addChoice(panel, 'Yeni Nöbete Geç', () => nextPatient(), 'success');
+    }
+  };
+  panel.appendChild(btn);
+}
+
+/* ================= SMARTPHONE APPS ================= */
+function openPhone() {
+  document.getElementById('phoneDot').style.display = 'none';
+  openPhoneApp('home');
+}
+
+function openPhoneApp(app) {
+  const body = openSidePanel(`${state.assets.phone.toUpperCase()}`);
+  const hStr = String(state.hour % 24).padStart(2, '0');
+  body.innerHTML = `
+    <div class="phone-shell">
+      <div class="phone-status"><span>TıpCell 5G</span><span>${hStr}:00</span><span>${state.apiKey ? 'AI API AKTİF' : 'DAHİLİ AI v5'}</span></div>
+      <div id="phoneScreen" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding-right:2px;"></div>
+      <button class="choice-btn center" style="margin-top:8px;" onclick="openPhoneApp('home')">⌂ ANA EKRANA DÖN</button>
+    </div>
+  `;
+  const scr = document.getElementById('phoneScreen');
+
+  if (app === 'home') {
+    const reqBadge = state.loanRequests.length ? `<span class="badge-dot" style="display:block;"></span>` : '';
+    scr.innerHTML = `
+      <div style="text-align:center;font-size:12px;color:var(--accent-gold);padding:4px;font-weight:700;">
+        ${state.docName}<br><span style="color:var(--accent-purple);font-size:11px;">${SPECIALTIES[state.specialty].title}</span>
+      </div>
+      <div class="app-grid">
+        <div class="app-icon" onclick="openConsole('gta6')"><span class="ico">🚗</span><span>PS5: GTA 6</span></div>
+        <div class="app-icon" onclick="openConsole('fifa')"><span class="ico">⚽</span><span>PS5: FC 27</span></div>
+        <div class="app-icon" onclick="openPhoneApp('bank')">${reqBadge}<span class="ico">💳</span><span>TıpBank</span></div>
+        <div class="app-icon" onclick="openPhoneApp('whatsdoc')"><span class="ico">💬</span><span>WhatsDoc</span></div>
+        <div class="app-icon" onclick="openPhoneApp('casino')"><span class="ico">🎰</span><span>BetTıp Club</span></div>
+        <div class="app-icon" onclick="openPhoneApp('borsa')"><span class="ico">📈</span><span>TıpBorsa</span></div>
+        <div class="app-icon" onclick="openPhoneApp('yemek')"><span class="ico">🍔</span><span>NöbetYe</span></div>
+        <div class="app-icon" onclick="openPhoneApp('fotogram')"><span class="ico">📸</span><span>FotoGram</span></div>
+        <div class="app-icon" onclick="openPhoneApp('haber')"><span class="ico">📰</span><span>TıpHaber</span></div>
+      </div>`;
+  }
+  else if (app === 'bank') {
+    scr.innerHTML = `
+      <div class="bank-card">
+        <div style="font-size:10px;color:var(--accent-green);font-weight:800;">TIPBANK VADESİZ HESAP</div>
+        <div style="font-size:21px;font-weight:900;margin:4px 0;">${state.money.toLocaleString('tr-TR')} ₺</div>
+        <div style="font-size:9.5px;color:#adb5bd;">IBAN: ${state.iban}</div>
+        ${state.bankDebt > 0 ? `<div style="font-size:11px;color:var(--accent-red);margin-top:4px;font-weight:700;">Aktif Kredi Borcu: ${state.bankDebt}₺</div>` : ''}
+      </div>
+      <div style="font-size:11.5px;color:var(--accent-gold);font-weight:800;margin-top:4px;">GELEN BORÇ TALEPLERİ (${state.loanRequests.length})</div>
+    `;
+    state.loanRequests.forEach(req => {
+      const box = document.createElement('div');
+      box.style.cssText = 'background:var(--bg-card);border:1.5px solid var(--accent-gold);border-radius:7px;padding:9px;display:flex;flex-direction:column;gap:6px;';
+      box.innerHTML = `
+        <div style="display:flex;justify-content:space-between;font-weight:800;color:var(--accent-gold);font-size:12px;">
+          <span>${req.from}</span><span>İstenen: ${req.amount}₺</span>
+        </div>
+        <div style="font-size:11.5px;line-height:1.45;">"${req.story}"</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+          <button class="choice-btn success center" onclick="resolveLoan('${req.id}', true)">FAST Gönder</button>
+          <button class="choice-btn danger center" onclick="resolveLoan('${req.id}', false)">Reddet</button>
+        </div>`;
+      scr.appendChild(box);
+    });
+
+    const loanBtn = document.createElement('button');
+    loanBtn.className = 'choice-btn';
+    loanBtn.textContent = 'TıpBank Anında İhtiyaç Kredisi Çek (+2.000₺)';
+    loanBtn.onclick = () => {
+      if (state.bankDebt >= 4000) { alert('Kredi limitin doldu!'); return; }
+      state.money += 2000; state.bankDebt += 2400;
+      addTx('TıpBank Anında Kredi Kullanımı', 2000, 'pos');
+      playSfx('coin'); updateHud(); saveCareer(); openPhoneApp('bank');
+    };
+    scr.appendChild(loanBtn);
+
+    state.transactions.forEach(t => {
+      const r = document.createElement('div');
+      r.className = 'tx-row ' + t.type;
+      r.innerHTML = `<span>${t.desc}</span><span>${t.amt >= 0 ? '+' : ''}${t.amt}₺</span>`;
+      scr.appendChild(r);
+    });
+  }
+  else if (app === 'whatsdoc') {
+    scr.innerHTML = `<div style="font-size:12.5px;color:var(--accent-green);font-weight:800;">WHATSDOC AI — KİŞİLER & GRUPLAR</div>`;
+    state.chats.forEach((ch, idx) => {
+      const last = ch.msgs[ch.msgs.length - 1];
+      const b = document.createElement('div');
+      b.style.cssText = 'background:var(--bg-card);border:1.5px solid var(--border-subtle);border-radius:8px;padding:9px;cursor:pointer;';
+      b.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-weight:800;color:var(--accent-gold);font-size:12.5px;">${ch.name}</span>
+          <span style="font-size:10px;color:var(--accent-cyan);">${ch.role || ''}</span>
+        </div>
+        <div style="font-size:11.5px;color:#ced4da;margin-top:4px;line-height:1.35;">${last.from}: ${last.text}</div>`;
+      b.onclick = () => openChatThread(idx);
+      scr.appendChild(b);
+    });
+  }
+  else if (app === 'casino') {
+    openCasinoGame(scr, 'blackjack');
+  }
+  else if (app === 'borsa') {
+    const cr = state.crypto;
+    scr.innerHTML = `
+      <div style="background:var(--bg-card);border:1.5px solid var(--accent-cyan);border-radius:8px;padding:10px;">
+        <div style="color:var(--accent-cyan);font-weight:800;font-size:12.5px;">TIPBORSA — CANLI PİYASA</div>
+        <div style="font-size:11.5px;margin-top:5px;">• TıpCoin (TPC): <strong>${cr.btcPrice}₺</strong> (Cüzdan: ${cr.btcQty} Adet)</div>
+        <div style="font-size:11.5px;margin-top:3px;">• Gram Altın: <strong>${cr.goldPrice}₺</strong> (Cüzdan: ${cr.goldQty} Gr)</div>
+      </div>
+      <button class="choice-btn success" onclick="tradeAsset('btc', 1)">1 Adet TıpCoin Al (-${cr.btcPrice}₺)</button>
+      <button class="choice-btn danger" onclick="tradeAsset('btc', -1)">1 Adet TıpCoin Sat (+${cr.btcPrice}₺)</button>
+      <button class="choice-btn success" onclick="tradeAsset('gold', 1)">1 Gram Altın Al (-${cr.goldPrice}₺)</button>
+      <button class="choice-btn danger" onclick="tradeAsset('gold', -1)">1 Gram Altın Sat (+${cr.goldPrice}₺)</button>
+    `;
+  }
+  else if (app === 'yemek') {
+    scr.innerHTML = `
+      <div style="background:var(--bg-card);border:1.5px solid var(--accent-gold);border-radius:8px;padding:10px;">
+        <div style="color:var(--accent-gold);font-weight:800;font-size:12.5px;">NÖBETYE — HASTANEYE HIZLI SİPARİŞ</div>
+        <div style="font-size:11.5px;color:#ced4da;margin-top:3px;">Güncel Stres Seviyesi: <strong>%${state.stress}</strong></div>
+      </div>
+      <button class="choice-btn" onclick="orderFood('Adana Dürüm & Ayran', 140, 12)">🌯 Adana Dürüm & Ayran (-140₺, -12 Stres)</button>
+      <button class="choice-btn" onclick="orderFood('Double Espresso & Brownie', 95, 8)">☕ Double Espresso & Brownie (-95₺, -8 Stres)</button>
+      <button class="choice-btn" onclick="orderFood('Acil Servis Ekibine Lahmacun Ziyafeti', 420, 20)">🍕 Ekibe Lahmacun Söyle (-420₺, -20 Stres & +5 İtibar)</button>
+    `;
+  }
+  else if (app === 'fotogram') {
+    scr.innerHTML = `
+      <div style="font-size:12px;color:var(--accent-gold);font-weight:800;">FOTOGRAM — PİKSEL PAYLAŞIM</div>
+      <canvas id="photoCanvas" width="320" height="120"></canvas>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+        <button class="choice-btn" onclick="takePhoto('tea','Nöbet masasında çay ve EKG ☕🩺')">Nöbet Çayı Çek</button>
+        <button class="choice-btn" onclick="takePhoto('car','Nöbet çıkışı PS5 & direksiyon 🚗💨')">Araç Pozu Çek</button>
+      </div>
+    `;
+    drawRetroPhoto('tea');
+    state.posts.forEach(pt => {
+      const d = document.createElement('div');
+      d.style.cssText = 'background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:7px;padding:8px;font-size:11.5px;';
+      d.innerHTML = `<strong style="color:var(--accent-cyan)">@${pt.author.replace(/\s+/g,'').toLowerCase()}</strong><br>${pt.caption}<br><span style="color:var(--accent-red)">♥ ${pt.likes} Beğeni</span>`;
+      scr.appendChild(d);
+    });
+  }
+  else if (app === 'haber') {
+    scr.innerHTML = `<div style="font-size:12.5px;color:var(--accent-gold);font-weight:800;">TIPHABER — GÜNCEL MANŞETLER</div>`;
+    state.news.forEach(n => {
+      const d = document.createElement('div');
+      d.style.cssText = 'background:var(--bg-card);border-left:3px solid var(--accent-cyan);padding:9px;border-radius:5px;font-size:12px;line-height:1.45;';
+      d.textContent = n;
+      scr.appendChild(d);
+    });
+  }
+}
+
+function tradeAsset(kind, dir) {
+  const cr = state.crypto;
+  if (kind === 'btc') {
+    if (dir === 1 && state.money >= cr.btcPrice) { state.money -= cr.btcPrice; cr.btcQty++; addTx('TıpCoin Alımı', -cr.btcPrice, 'neg'); }
+    else if (dir === -1 && cr.btcQty > 0) { state.money += cr.btcPrice; cr.btcQty--; addTx('TıpCoin Satışı', cr.btcPrice, 'pos'); }
+    else { alert('İşlem için bakiye veya varlık yetersiz!'); return; }
+  } else {
+    if (dir === 1 && state.money >= cr.goldPrice) { state.money -= cr.goldPrice; cr.goldQty++; addTx('Gram Altın Alımı', -cr.goldPrice, 'neg'); }
+    else if (dir === -1 && cr.goldQty > 0) { state.money += cr.goldPrice; cr.goldQty--; addTx('Gram Altın Satışı', cr.goldPrice, 'pos'); }
+    else { alert('İşlem için bakiye veya altın yetersiz!'); return; }
+  }
+  playSfx('coin'); updateHud(); saveCareer(); openPhoneApp('borsa');
+}
+
+function orderFood(name, cost, stressDrop) {
+  if (state.money < cost) { alert('Yetersiz bakiye!'); return; }
+  state.money -= cost;
+  state.stress = Math.max(0, state.stress - stressDrop);
+  if (cost >= 400) state.rep = Math.min(100, state.rep + 5);
+  addTx(`NöbetYe: ${name}`, -cost, 'neg');
+  playSfx('coin'); updateHud(); saveCareer();
+  alert(`${name} hastaneye ulaştı! Stresin %${stressDrop} azaldı.`);
+  openPhoneApp('yemek');
+}
+
+/* ================= REAL CASINO ENGINE ================= */
+const bjState = { deck: [], player: [], dealer: [], bet: 200, active: false, msg: 'Bahis miktarını seçip Blackjack elini başlat!' };
+const pkState = { deck: [], hand: [], held: [false,false,false,false,false], bet: 200, phase: 'deal', msg: 'Kart dağıt ve tutmak istediğin kartlara tıkla!' };
+const hrState = { selectedHorse: 0, bet: 250, running: false, msg: 'Favori atını seç ve yarışı başlat!' };
+
+const HORSES = [
+  { name: '1. Karayel', odd: 2.0, color: '#3bc9db' },
+  { name: '2. Rüzgarın Gölgesi', odd: 3.2, color: '#fcc419' },
+  { name: '3. Şahbatur', odd: 4.5, color: '#51cf66' },
+  { name: '4. Gece Nöbeti', odd: 6.5, color: '#ff6b6b' }
+];
+
+function createDeck() {
+  const suits = ['♠','♥','♦','♣'];
+  const vals = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
+  const d = [];
+  for (const s of suits) for (const v of vals) d.push({ s, v });
+  for (let i = d.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [d[i], d[j]] = [d[j], d[i]];
+  }
+  return d;
+}
+
+function renderCardHTML(card, idx = -1, held = false, clickable = false) {
+  const isRed = card.s === '♥' || card.s === '♦';
+  const onclick = clickable ? `onclick="togglePokerHold(${idx})"` : '';
+  return `<div class="p-card ${isRed ? 'red' : ''} ${held ? 'held' : ''}" ${onclick}>
+    <div>${card.v}</div>
+    <div style="text-align:center;font-size:16px;">${card.s}</div>
+    <div style="text-align:right;">${card.v}</div>
+    ${held ? '<span class="hold-tag">TUT</span>' : ''}
+  </div>`;
+}
+
+function bjScore(hand) {
+  let sum = 0, aces = 0;
+  for (const c of hand) {
+    if (['J','Q','K'].includes(c.v)) sum += 10;
+    else if (c.v === 'A') { sum += 11; aces++; }
+    else sum += Number(c.v);
+  }
+  while (sum > 21 && aces > 0) { sum -= 10; aces--; }
+  return sum;
+}
+
+function openCasinoGame(scr, mode) {
+  scr.innerHTML = `
+    <div class="casino-tabs">
+      <div class="c-tab ${mode === 'blackjack' ? 'active' : ''}" onclick="openCasinoGame(document.getElementById('phoneScreen'), 'blackjack')">🃏 Blackjack 21</div>
+      <div class="c-tab ${mode === 'poker' ? 'active' : ''}" onclick="openCasinoGame(document.getElementById('phoneScreen'), 'poker')">♠️ Video Poker</div>
+      <div class="c-tab ${mode === 'horse' ? 'active' : ''}" onclick="openCasinoGame(document.getElementById('phoneScreen'), 'horse')">🏇 At Yarışı</div>
+    </div>
+    <div id="casinoBody" style="display:flex;flex-direction:column;gap:8px;margin-top:4px;"></div>
+  `;
+  const cb = document.getElementById('casinoBody');
+
+  if (mode === 'blackjack') {
+    const pScore = bjScore(bjState.player);
+    const dScore = bjState.active ? '?' : bjScore(bjState.dealer);
+    cb.innerHTML = `
+      <div style="background:var(--bg-card);border:1.5px solid var(--border-subtle);border-radius:8px;padding:9px;">
+        <div style="font-size:11px;color:var(--accent-gold);font-weight:800;">KRUPİYE ELİ (${dScore})</div>
+        <div class="card-row">
+          ${bjState.dealer.map((c, idx) => (bjState.active && idx === 1) ? '<div class="p-card" style="background:#1c7ed6;color:#fff;justify-content:center;align-items:center;">?</div>' : renderCardHTML(c)).join('')}
+        </div>
+        <div style="font-size:11px;color:var(--accent-cyan);font-weight:800;margin-top:8px;">SENİN ELİN (${pScore})</div>
+        <div class="card-row">${bjState.player.map(c => renderCardHTML(c)).join('')}</div>
+        <div style="font-size:11.5px;color:#f1f3f5;text-align:center;margin-top:6px;">${bjState.msg}</div>
+      </div>
+    `;
+    if (!bjState.active) {
+      addChoice(cb, '200₺ Bahisle Kart Dağıt', () => startBlackjack(200), 'success');
+      addChoice(cb, '500₺ Yüksek Bahisle Kart Dağıt', () => startBlackjack(500), 'danger');
+    } else {
+      addChoice(cb, 'Kart Çek (Hit)', () => bjHit(), 'success');
+      addChoice(cb, 'Kal (Stand — Krupiye Oynar)', () => bjStand());
+      if (bjState.player.length === 2 && state.money >= bjState.bet) {
+        addChoice(cb, `Bahsi 2x Katla (+${bjState.bet}₺ & Tek Kart)`, () => bjDouble(), 'purple');
+      }
+    }
+  }
+  else if (mode === 'poker') {
+    cb.innerHTML = `
+      <div style="background:var(--bg-card);border:1.5px solid var(--border-subtle);border-radius:8px;padding:9px;">
+        <div style="font-size:10.5px;color:var(--accent-gold);text-align:center;">Jacks or Better (1x) • İki Çift (2x) • Üçlü (3x) • Kent/Floş (5x) • Full House (8x)</div>
+        <div class="card-row" style="margin:12px 0 18px 0;">
+          ${pkState.hand.map((c, i) => renderCardHTML(c, i, pkState.held[i], pkState.phase === 'draw')).join('')}
+        </div>
+        <div style="font-size:11.5px;color:#f1f3f5;text-align:center;">${pkState.msg}</div>
+      </div>
+    `;
+    if (pkState.phase === 'deal') {
+      addChoice(cb, '250₺ Bahisle 5 Kart Dağıt', () => pokerDeal(250), 'success');
+      addChoice(cb, '600₺ Bahisle 5 Kart Dağıt', () => pokerDeal(600), 'danger');
+    } else {
+      addChoice(cb, 'Seçilmeyen Kartları Değiştir & Sonucu Gör', () => pokerDraw(), 'success');
+    }
+  }
+  else if (mode === 'horse') {
+    cb.innerHTML = `
+      <canvas id="raceCanvas" width="360" height="135"></canvas>
+      <div style="font-size:11.5px;color:var(--accent-gold);text-align:center;font-weight:700;">${hrState.msg}</div>
+    `;
+    drawHorseTrack([16, 16, 16, 16]);
+    if (!hrState.running) {
+      HORSES.forEach((h, idx) => {
+        const sel = hrState.selectedHorse === idx ? ' [SEÇİLİ ✓]' : '';
+        addChoice(cb, `${h.name} (Oran: ${h.odd}x)${sel}`, () => {
+          hrState.selectedHorse = idx;
+          openCasinoGame(document.getElementById('phoneScreen'), 'horse');
+        }, hrState.selectedHorse === idx ? 'purple' : '');
+      });
+      addChoice(cb, '300₺ Bahis Yatır & Yarışı Başlat!', () => startHorseRace(300), 'success');
+    }
+  }
+}
+
+function startBlackjack(bet) {
+  if (state.money < bet) { alert('Yetersiz bakiye!'); return; }
+  state.money -= bet;
+  updateHud();
+  bjState.bet = bet;
+  bjState.deck = createDeck();
+  bjState.player = [bjState.deck.pop(), bjState.deck.pop()];
+  bjState.dealer = [bjState.deck.pop(), bjState.deck.pop()];
+  bjState.active = true;
+  bjState.msg = 'Karar senin: Kart Çek veya Kal!';
+  playSfx('card');
+  if (bjScore(bjState.player) === 21) { bjStand(); return; }
+  openCasinoGame(document.getElementById('phoneScreen'), 'blackjack');
+}
+
+function bjHit() {
+  bjState.player.push(bjState.deck.pop());
+  playSfx('card');
+  if (bjScore(bjState.player) > 21) {
+    bjState.active = false;
+    bjState.msg = `21'i Aştın (${bjScore(bjState.player)})! Krupiye kazandı.`;
+    state.stress = Math.min(100, state.stress + 6);
+    addTx('BetTıp Blackjack Kaybı', -bjState.bet, 'neg');
+    saveCareer();
+  }
+  openCasinoGame(document.getElementById('phoneScreen'), 'blackjack');
+}
+
+function bjDouble() {
+  state.money -= bjState.bet;
+  bjState.bet *= 2;
+  updateHud();
+  bjState.player.push(bjState.deck.pop());
+  playSfx('card');
+  if (bjScore(bjState.player) > 21) {
+    bjState.active = false;
+    bjState.msg = `2x Katladın ama 21'i aştın! (-${bjState.bet}₺)`;
+    addTx('BetTıp Blackjack Kaybı', -bjState.bet, 'neg');
+    saveCareer();
+    openCasinoGame(document.getElementById('phoneScreen'), 'blackjack');
+  } else {
+    bjStand();
+  }
+}
+
+function bjStand() {
+  bjState.active = false;
+  while (bjScore(bjState.dealer) < 17) bjState.dealer.push(bjState.deck.pop());
+  const ps = bjScore(bjState.player), ds = bjScore(bjState.dealer);
+  if (ds > 21 || ps > ds) {
+    const win = Math.round(bjState.bet * (ps === 21 && bjState.player.length === 2 ? 2.5 : 2));
+    state.money += win;
+    bjState.msg = `KAZANDIN! (${ps} vs ${ds}) +${win}₺ hesabına geçti!`;
+    addTx('BetTıp Blackjack Kazancı', win - bjState.bet, 'pos');
+    playSfx('coin');
+  } else if (ps === ds) {
+    state.money += bjState.bet;
+    bjState.msg = `BERABERE (${ps} - ${ds})! Bahsin iade edildi.`;
+  } else {
+    bjState.msg = `KRUPİYE KAZANDI (${ds} vs ${ps}).`;
+    addTx('BetTıp Blackjack Kaybı', -bjState.bet, 'neg');
+  }
+  updateHud(); saveCareer();
+  openCasinoGame(document.getElementById('phoneScreen'), 'blackjack');
+}
+
+function pokerDeal(bet) {
+  if (state.money < bet) { alert('Yetersiz bakiye!'); return; }
+  state.money -= bet;
+  updateHud();
+  pkState.bet = bet;
+  pkState.deck = createDeck();
+  pkState.hand = [pkState.deck.pop(), pkState.deck.pop(), pkState.deck.pop(), pkState.deck.pop(), pkState.deck.pop()];
+  pkState.held = [false,false,false,false,false];
+  pkState.phase = 'draw';
+  pkState.msg = 'Tutmak istediğin kartlara dokun, sonra diğerlerini değiştir!';
+  playSfx('card');
+  openCasinoGame(document.getElementById('phoneScreen'), 'poker');
+}
+
+function togglePokerHold(idx) {
+  if (pkState.phase !== 'draw') return;
+  pkState.held[idx] = !pkState.held[idx];
+  playSfx('card');
+  openCasinoGame(document.getElementById('phoneScreen'), 'poker');
+}
+
+function pokerDraw() {
+  for (let i = 0; i < 5; i++) {
+    if (!pkState.held[i]) pkState.hand[i] = pkState.deck.pop();
+  }
+  pkState.phase = 'deal';
+  const mult = evaluatePokerHand(pkState.hand);
+  if (mult > 0) {
+    const prize = pkState.bet * mult;
+    state.money += prize;
+    pkState.msg = `TEBRİKLER! (${mult}x Ödeme) +${prize}₺ kazandın!`;
+    addTx('BetTıp Video Poker Kazancı', prize - pkState.bet, 'pos');
+    playSfx('coin');
+  } else {
+    pkState.msg = 'El eşleşmedi! Tekrar deneyebilirsin.';
+    addTx('BetTıp Video Poker Kaybı', -pkState.bet, 'neg');
+  }
+  updateHud(); saveCareer();
+  openCasinoGame(document.getElementById('phoneScreen'), 'poker');
+}
+
+function evaluatePokerHand(hand) {
+  const rankMap = { '2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,'10':10,'J':11,'Q':12,'K':13,'A':14 };
+  const ranks = hand.map(c => rankMap[c.v]).sort((a,b) => a - b);
+  const suits = hand.map(c => c.s);
+  const isFlush = suits.every(s => s === suits[0]);
+  const isStraight = ranks.every((r, i) => i === 0 || r === ranks[i - 1] + 1);
+  const counts = {};
+  ranks.forEach(r => counts[r] = (counts[r] || 0) + 1);
+  const vals = Object.values(counts).sort((a,b) => b - a);
+
+  if (isFlush && isStraight) return 15;
+  if (vals[0] === 4) return 10;
+  if (vals[0] === 3 && vals[1] === 2) return 8;
+  if (isFlush) return 6;
+  if (isStraight) return 5;
+  if (vals[0] === 3) return 3;
+  if (vals[0] === 2 && vals[1] === 2) return 2;
+  if (vals[0] === 2) {
+    const pairRank = Number(Object.keys(counts).find(k => counts[k] === 2));
+    if (pairRank >= 11) return 1;
+  }
+  return 0;
+}
+
+function drawHorseTrack(posArr) {
+  const c = document.getElementById('raceCanvas');
+  if (!c) return;
+  const x = c.getContext('2d');
+  x.fillStyle = '#153821'; x.fillRect(0, 0, 360, 135);
+  x.fillStyle = '#1c4a2b';
+  for (let gx = 0; gx < 360; gx += 12) x.fillRect(gx, 0, 6, 135);
+  x.fillStyle = '#ffffff'; x.fillRect(326, 0, 4, 135);
+  HORSES.forEach((h, i) => {
+    const y = 14 + i * 30;
+    x.strokeStyle = 'rgba(255,255,255,0.28)';
+    x.beginPath(); x.moveTo(0, y + 22); x.lineTo(360, y + 22); x.stroke();
+    const px = Math.floor(posArr[i]);
+    const legOff = Math.floor(px / 4) % 2 === 0 ? 2 : -2;
+    x.fillStyle = h.color;
+    x.fillRect(px, y + 5, 22, 10);
+    x.fillRect(px + 17, y - 1, 7, 8);
+    x.fillRect(px + 2, y + 15, 3, 5 + legOff);
+    x.fillRect(px + 16, y + 15, 3, 5 - legOff);
+    x.fillStyle = '#111'; x.font = 'bold 9px monospace';
+    x.fillText(String(i + 1), px + 8, y + 13);
+  });
+}
+
+function startHorseRace(bet) {
+  if (state.money < bet) { alert('Yetersiz bakiye!'); return; }
+  state.money -= bet;
+  updateHud();
+  hrState.running = true;
+  hrState.msg = 'YARIŞ BAŞLADI! Atlar son düzlüğe giriyor...';
+  openCasinoGame(document.getElementById('phoneScreen'), 'horse');
+
+  const pos = [16, 16, 16, 16];
+  const timer = setInterval(() => {
+    let winner = -1;
+    for (let i = 0; i < 4; i++) {
+      const baseSpd = i === 0 ? 3.4 : (i === 1 ? 3.1 : (i === 2 ? 2.9 : 2.7));
+      pos[i] += baseSpd + Math.random() * 4.2;
+      if (pos[i] >= 312 && winner === -1) winner = i;
+    }
+    drawHorseTrack(pos);
+    if (winner !== -1) {
+      clearInterval(timer);
+      hrState.running = false;
+      if (winner === hrState.selectedHorse) {
+        const prize = Math.round(bet * HORSES[winner].odd);
+        state.money += prize;
+        hrState.msg = `KAZANAN: ${HORSES[winner].name}! +${prize}₺ kazandın!`;
+        addTx(`BetTıp At Yarışı (${HORSES[winner].name})`, prize - bet, 'pos');
+        playSfx('coin');
+      } else {
+        hrState.msg = `Yarışı ${HORSES[winner].name} kazandı! Senin atın geride kaldı.`;
+        addTx('BetTıp At Yarışı Kaybı', -bet, 'neg');
+      }
+      updateHud(); saveCareer();
+      if (document.getElementById('phoneScreen')) openCasinoGame(document.getElementById('phoneScreen'), 'horse');
+    }
+  }, 55);
+}
+
+/* ================= WHATSDOC AI CHAT THREAD ================= */
+async function openChatThread(idx) {
+  const ch = state.chats[idx];
+  const scr = document.getElementById('phoneScreen');
+  scr.innerHTML = `<div style="font-weight:800;color:var(--accent-gold);border-bottom:1px solid var(--border-subtle);padding-bottom:6px;font-size:13px;">${ch.name} <span style="font-size:10.5px;color:var(--accent-cyan);font-weight:600;">(${ch.role || ''})</span></div>`;
+  const list = document.createElement('div');
+  list.style.cssText = 'flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:6px;padding:4px 0;';
+  ch.msgs.forEach(m => {
+    const isMe = m.from === state.docName;
+    const d = document.createElement('div');
+    d.style.cssText = `background:${isMe ? '#19324d' : 'var(--bg-card)'};border:1px solid var(--border-subtle);border-radius:8px;padding:8px 10px;font-size:12px;line-height:1.45;white-space:pre-line;`;
+    d.innerHTML = `<strong style="color:${isMe ? 'var(--accent-green)' : 'var(--accent-cyan)'}">${m.from}:</strong> ${m.text}`;
+    list.appendChild(d);
+  });
+  scr.appendChild(list);
+  list.scrollTop = list.scrollHeight;
+
+  const bar = document.createElement('div');
+  bar.className = 'chat-input-bar';
+  bar.innerHTML = `<input id="phoneMsgInp" type="text" placeholder="Mesajını yaz..."><button class="chat-send-btn" id="phoneMsgSend">Gönder</button>`;
+  scr.appendChild(bar);
+
+  const sendFn = async () => {
+    const inp = document.getElementById('phoneMsgInp');
+    const txt = inp.value.trim();
+    if (!txt) return;
+    inp.value = '';
+    ch.msgs.push({ from: state.docName, text: txt });
+    playSfx('msg');
+    openChatThread(idx);
+    const reply = await generateAIReply(ch.name, ch.persona || ch.name, txt);
+    ch.msgs.push({ from: ch.name.replace(/^[^\wğüşöçıİĞÜŞÖÇ]+\s*/, ''), text: reply });
+    playSfx('msg');
+    saveCareer();
+    if (document.getElementById('phoneMsgInp')) openChatThread(idx);
+  };
+  document.getElementById('phoneMsgSend').onclick = sendFn;
+  document.getElementById('phoneMsgInp').addEventListener('keydown', e => { if (e.key === 'Enter') sendFn(); });
+}
+
+function drawRetroPhoto(mode) {
+  const c = document.getElementById('photoCanvas');
+  if (!c) return;
+  const x = c.getContext('2d');
+  x.fillStyle = '#0d1320'; x.fillRect(0, 0, 320, 120);
+  x.strokeStyle = '#3bc9db'; x.strokeRect(4, 4, 312, 112);
+  x.fillStyle = '#fcc419'; x.font = 'bold 12px monospace';
+  x.fillText(mode === 'tea' ? 'ACİL NÖBET HATIRASI' : `${state.assets.car.toUpperCase()}`, 16, 26);
+  x.fillStyle = '#51cf66'; x.fillRect(126, 46, 68, 48);
+  x.fillStyle = '#000'; x.fillText('16-BIT', 136, 74);
+}
+
+function takePhoto(mode, caption) {
+  drawRetroPhoto(mode);
+  state.posts.unshift({
+    author: state.docName, caption,
+    likes: 18 + Math.floor(Math.random() * 45)
+  });
+  playSfx('coin'); saveCareer(); openPhoneApp('fotogram');
+}
+
+/* ================= OUTSIDE LOCATIONS (HOME WITH PS5, PITCH, CANTEEN, DINER, DEALER) ================= */
+function goLocation(loc) {
+  state.location = loc;
+  state.activeStaffIdx = null;
+  document.getElementById('mobileDpad').style.display = 'none';
+  closeDrawer();
+  const panel = document.getElementById('subPanel');
+  panel.innerHTML = '';
+
+  if (loc === 'home') {
+    document.getElementById('sceneTag').textContent = 'KENDİ EVİN — SALON & PS5 PRO OYUN KÖŞESİ';
+    say('EVİM GÜZEL EVİM', `Unvan: ${SPECIALTIES[state.specialty].title} | 4K TV ve PS5 Pro açık! Tam ekranda GTA 6 veya EA FC 27 oynayabilir, ya da TUS çalışabilirsin.`, 'EV & KONSOL', 't-purple', 320);
+    addChoice(panel, '🚗 TAM EKRAN PS5: GTA 6 — Aydın Vice Oyna', () => openConsole('gta6'), 'purple');
+    addChoice(panel, '⚽ TAM EKRAN PS5: EA FC 27 — Kanat Forvet Oyna', () => openConsole('fifa'), 'success');
+    addChoice(panel, '📚 Evde TUS Çalışma Masası (-350₺, +3 TUS Puanı)', () => {
+      if (state.money >= 350) {
+        state.money -= 350; state.tusScore += 3;
+        addTx('TUS Konu & Deneme Seti', -350, 'neg'); updateHud(); saveCareer();
+        say('TUS ÇALIŞMASI', `Harika verimli bir etüt oldu! Güncel TUS Puanın: ${state.tusScore}`, 'TUS +3', 't-green', 420);
+      }
+    });
+    addChoice(panel, '🌆 Açık Dünyaya Çık (Aydın Sokakları)', () => enterOpenWorld());
+    addChoice(panel, '🏥 Yeni Nöbete Başla', () => nextPatient(), 'success');
+  }
+  else if (loc === 'pitch') {
+    document.getElementById('sceneTag').textContent = 'AYDIN HALI SAHA TESİSLERİ';
+    say('HALI SAHA MAÇI', 'Kanat forvet mevkisinde maça çıkıp stres at ve galibiyet primi kazan!', 'MAÇ', 't-green', 340);
+    addChoice(panel, '⚽ Maça Çık (Tam Ekran EA FC 27 Motoru)', () => openConsole('fifa'), 'success');
+    addChoice(panel, '🌆 Açık Dünyaya Dön', () => enterOpenWorld());
+  }
+  else if (loc === 'canteen') {
+    document.getElementById('sceneTag').textContent = 'HASTANE KANTİNİ — PERSONEL MOLA';
+    say('HASTANE KANTİNİ', `Sohbet etmek veya günde 1 kez kahve ısmarlamak için personel seç:`, 'SOSYAL', 't-yellow', 340);
+    state.staff.forEach((st, i) => addChoice(panel, `${st.name} (${st.role}) — Dostluk: ${st.love}`, () => interactStaff(i)));
+    addChoice(panel, 'Polikliniğe / Acile Dön', () => nextPatient(), 'success');
+  }
+  else if (loc === 'diner') {
+    document.getElementById('sceneTag').textContent = 'MAHALLE ESNAF LOKANTASI';
+    say('USTA AŞÇI', '"Hoş geldin doktor bey! Mercimek çorbası ve kavurma taze çıktı, stresini ve yorgunluğunu alır."', 'LOKANTA', 't-yellow', 240);
+    addChoice(panel, 'Mercimek Çorbası + Kavurma Ye (-90₺, -15 Stres)', () => {
+      if (state.money >= 90) {
+        state.money -= 90; state.stress = Math.max(0, state.stress - 15);
+        addTx('Esnaf Lokantası Akşam Yemeği', -90, 'neg'); updateHud(); saveCareer();
+        say('LEZİZ!', 'Sıcacık çorba ve kavurma stresini azalttı!', 'ENERJİ FULL', 't-green', 380);
+      }
+    });
+    addChoice(panel, '🌆 Açık Dünyaya Dön', () => enterOpenWorld());
+    addChoice(panel, 'Polikliniğe / Acile Dön', () => nextPatient(), 'success');
+  }
+  else if (loc === 'dealer') {
+    document.getElementById('sceneTag').textContent = 'OTO GALERİ, AKARYAKIT & SANAYİ';
+    const hasCar = state.assets.car !== 'Yok (Belediye Otobüsü)';
+    say('GALERİ & MAHMUT USTA', hasCar
+      ? `Aracın: ${state.assets.car} | Yakıt: %${state.assets.fuel} | Mekanik Kondisyon: %${state.assets.carHealth}`
+      : 'Henüz aracın yok, belediye otobüsüyle gidip geliyorsun. Bütçene göre araç seç!', 'GALERİ', 't-yellow', 260);
+    addChoice(panel, '1998 Modifiyeli Şahin Al (2.800₺ — Sık Sanayi Riski)', () => buyAsset('car', 'Modifiyeli Şahin', 2800));
+    addChoice(panel, '2024 Alman Sedan Al (7.500₺ — Sağlam & Konforlu)', () => buyAsset('car', 'Alman Sedan', 7500));
+    if (hasCar) {
+      addChoice(panel, 'Depoyu Full Yap (-220₺, Yakıt %100)', () => {
+        if (state.money >= 220) {
+          state.money -= 220; state.assets.fuel = 100;
+          addTx('Akaryakıt İstasyonu (Full Depo)', -220, 'neg'); updateHud(); saveCareer(); goLocation('dealer');
+        }
+      }, 'success');
+      addChoice(panel, 'Sanayi Genel Bakım & Tamir (-400₺, Kondisyon %100)', () => {
+        if (state.money >= 400) {
+          state.money -= 400; state.assets.carHealth = 100;
+          addTx('Oto Sanayi Bakım & Tamir', -400, 'neg'); updateHud(); saveCareer(); goLocation('dealer');
+        }
+      });
+    }
+    addChoice(panel, '🌆 Açık Dünyaya Dön', () => enterOpenWorld());
+    addChoice(panel, 'Polikliniğe / Acile Dön', () => nextPatient(), 'success');
+  }
+}
+
+function interactStaff(idx) {
+  state.activeStaffIdx = idx;
+  const st = state.staff[idx];
+  const panel = document.getElementById('subPanel');
+  panel.innerHTML = '';
+  const line = st.stories[Math.min(st.stage, st.stories.length - 1)];
+  st.stage = Math.min(st.stories.length - 1, st.stage + 1);
+  say(`${st.name} (${st.role})`, `"${line}"`, `DOSTLUK ${st.love}/100`, 't-green', 340);
+
+  const bar = document.createElement('div');
+  bar.className = 'chat-input-bar';
+  bar.innerHTML = `<input id="canteenChatInp" type="text" placeholder="${st.name} ile konuşmak için yaz..."><button class="chat-send-btn" id="canteenChatBtn">Konuş</button>`;
+  panel.appendChild(bar);
+
+  const askStaff = async () => {
+    const inp = document.getElementById('canteenChatInp');
+    const msg = inp.value.trim();
+    if (!msg) return;
+    inp.value = '';
+    say(st.name, '...', 'YAZIYOR', 't-yellow', 300);
+    const reply = await generateAIReply(st.name, st.persona, msg);
+    st.love = Math.min(100, st.love + 3);
+    saveCareer();
+    say(`${st.name} (${st.role})`, `"${reply}"`, `DOSTLUK ${st.love}/100`, 't-green', 340);
+  };
+  document.getElementById('canteenChatBtn').onclick = askStaff;
+  document.getElementById('canteenChatInp').addEventListener('keydown', e => { if (e.key === 'Enter') askStaff(); });
+
+  if (!state.coffeeGivenToday) {
+    addChoice(panel, 'Kahve Ismarla (-45₺, Günde 1 Kez, Dostluk +15)', () => {
+      if (state.money >= 45) {
+        state.money -= 45; state.coffeeGivenToday = true;
+        st.love = Math.min(100, st.love + 15);
+        addTx(`Kantin Kahve İkramı (${st.name})`, -45, 'neg'); updateHud(); saveCareer();
+        interactStaff(idx);
+      }
+    }, 'success');
+  }
+  addChoice(panel, 'Kantin Listesine Dön', () => goLocation('canteen'));
+}
+
+function buyAsset(key, val, cost) {
+  if (state.money < cost) {
+    say('YETERSİZ BAKİYE', `Bu ürün için ${cost}₺ gerekiyor! TıpBank'tan kredi çekebilir veya nöbet tutabilirsin.`, 'BAKİYE', 't-red', 200);
+    return;
+  }
+  state.money -= cost;
+  state.assets[key] = val;
+  if (key === 'car') {
+    state.assets.fuel = 100;
+    state.assets.carHealth = 100;
+    state.assets.carColor = val.includes('Alman') ? '#51cf66' : '#ff6b6b';
+  }
+  addTx(`Satın Alma: ${val}`, -cost, 'neg');
+  playSfx('coin'); updateHud(); saveCareer();
+  say('SATIN ALINDI!', `Hayırlı olsun ${state.docName}! Yeni eşyan doğrudan yaşam sahnene eklendi.`, 'YENİ EŞYA', 't-green', 420);
+}
+
+/* ================= DRAWER MODALS ================= */
+function openDrawer(type) {
+  if (type === 'radiology') {
+    const p = state.currentPatient;
+    const body = openSidePanel(p ? `${p.radTitle}` : 'GÖRÜNTÜLEME EKRANI');
+    if (!p) { body.textContent = 'Aktif hasta yok.'; return; }
+    const c = document.createElement('canvas');
+    c.id = 'zoomCanvas'; c.width = 360; c.height = 190;
+    body.appendChild(c);
+    drawRadiologyZoom(c, p.radType);
+    const info = document.createElement('div');
+    info.style.cssText = 'padding:10px;background:var(--bg-card);border:1.5px solid var(--accent-green);border-radius:7px;color:#fff;line-height:1.5;font-size:12.5px;';
+    info.innerHTML = `<strong style="color:var(--accent-gold)">KLİNİK GÖRÜNTÜLEME RAPORU:</strong><br>${p.radFinding}`;
+    body.appendChild(info);
+  }
+  else if (type === 'tus') {
+    const body = openSidePanel('TUS & 8 KLİNİK UZMANLIK MERKEZİ');
+    const curSp = SPECIALTIES[state.specialty];
+    body.innerHTML = `
+      <div style="background:var(--bg-card);border:1.5px solid var(--accent-purple);border-radius:8px;padding:10px;line-height:1.55;font-size:12.5px;">
+        <div><strong style="color:var(--accent-gold)">Mevcut Unvan:</strong> ${curSp.icon} ${curSp.title}</div>
+        <div><strong style="color:var(--accent-green)">TUS Puanın:</strong> ${state.tusScore} Puan | <strong style="color:var(--accent-cyan)">İtibar:</strong> ${state.rep}/100</div>
+        <div style="font-size:11px;color:#ced4da;margin-top:4px;">Her uzmanlık dalının kendine özel poliklinik atmosferi ve 30 benzersiz branş vakası vardır.</div>
+      </div>
+    `;
+    addChoice(body, 'Hızlı TUS Denemesi Çöz (-300₺ -> +3 TUS Puanı)', () => {
+      if (state.money >= 300) {
+        state.money -= 300; state.tusScore += 3;
+        addTx('TUS Deneme Sınavı & Soru Bankası', -300, 'neg');
+        playSfx('coin'); updateHud(); saveCareer(); openDrawer('tus');
+      } else alert('Yetersiz bakiye!');
+    }, 'purple');
+
+    Object.values(SPECIALTIES).filter(s => s.id !== 'none').forEach(sp => {
+      const active = state.specialty === sp.id;
+      const unlocked = state.tusScore >= sp.reqTus && state.rep >= sp.reqRep;
+      const label = active
+        ? `${sp.icon} ${sp.title} [AKTİF • 30 VAKA ✓]`
+        : `${sp.icon} ${sp.title} (Şart: ${sp.reqTus} TUS & ${sp.reqRep} İtibar | +${sp.bonusPay}₺)`;
+      addChoice(body, label, () => {
+        if (active) return;
+        if (!unlocked) {
+          alert(`Bu branş için en az ${sp.reqTus} TUS Puanı ve ${sp.reqRep} İtibar gerekiyor!`);
+          return;
+        }
+        state.specialty = sp.id;
+        playSfx('coin'); updateHud(); saveCareer();
+        closeDrawer();
+        nextPatient();
+      }, active ? 'success' : (unlocked ? 'purple' : ''));
+    });
+  }
+  else if (type === 'map') {
+    const body = openSidePanel('HASTANE & ŞEHİR HARİTASI');
+    [
+      ['🌆 Açık Dünya Modunda Yürü / Araba Sür', 'world_open'],
+      ['🏥 Acil Servis & Uzmanlık Polikliniği', 'er'],
+      ['🏠 Kendi Evim (PS5 Pro: GTA 6 & EA FC 27)', 'home'],
+      ['⚽ Aydın Halı Saha Tesisleri', 'pitch'],
+      ['🎓 TUS & 8 Uzmanlık Kariyer Merkezi', 'tus_modal'],
+      ['☕ Hastane Kantini (Personel & AI Sohbet)', 'canteen'],
+      ['🍲 Mahalle Esnaf Lokantası', 'diner'],
+      ['🚗 Oto Galeri, Akaryakıt & Sanayi', 'dealer']
+    ].forEach(([label, id]) => addChoice(body, label, () => {
+      if (id === 'tus_modal') openDrawer('tus');
+      else if (id === 'world_open') enterOpenWorld();
+      else goLocation(id);
+    }, id === 'home' ? 'purple' : (id === 'world_open' ? 'success' : '')));
+  }
+  else if (type === 'shop') {
+    const body = openSidePanel('MASA ÖZELLEŞTİRME DÜKKÂNI');
+    [
+      ['thermos', 'Çelik Nöbet Termosu (400₺)', 400],
+      ['cactus', 'Masaüstü Saksı Kaktüsü (250₺)', 250],
+      ['littmann', 'Littmann Profesyonel Stetoskop (700₺)', 700],
+      ['dualMonitor', 'Çift Ekranlı Negatoskop (950₺)', 950]
+    ].forEach(([key, label, cost]) => {
+      const owned = state.upgrades[key];
+      addChoice(body, owned ? `${label} [ALINDI ✓]` : label, () => {
+        if (!owned && state.money >= cost) {
+          state.money -= cost; state.upgrades[key] = true;
+          addTx(`Masa Ekipmanı: ${label}`, -cost, 'neg');
+          playSfx('coin'); updateHud(); saveCareer(); openDrawer('shop');
+        }
+      }, owned ? 'success' : '');
+    });
+  }
+}
+
+function addChoice(parent, label, onClick, extraClass = '') {
+  const b = document.createElement('button');
+  b.className = 'choice-btn ' + extraClass;
+  b.textContent = label;
+  b.onclick = onClick;
+  parent.appendChild(b);
+}
+function gameOver(reason) {
+  say('OYUN BİTTİ — İDARİ KARAR', reason, 'MESLEKTEN MEN', 't-red', 140);
+  const panel = document.getElementById('subPanel');
+  panel.innerHTML = '';
+  addChoice(panel, 'Yeni Kariyer Başlat', () => location.reload(), 'danger');
+}
+
+/* =====================================================================
+   PROFESYONEL 16-BİT SNES/GBA PİKSEL-ART RENDER MOTORU (480x180)
+   ===================================================================== */
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+ctx.imageSmoothingEnabled = false;
+let tick = 0;
+
+function pxRect(x, y, w, h, color) {
+  ctx.fillStyle = color;
+  ctx.fillRect(Math.floor(x), Math.floor(y), Math.floor(w), Math.floor(h));
+}
+
+function drawPixelCharacter(x, y, opts) {
+  const {
+    skin = '#f1c2a5',
+    hair = '#3b2416',
+    shirt = '#1971c2',
+    isDoctor = false,
+    coatColor = '#f8f9fa',
+    flush = false,
+    cyanosis = false,
+    sweat = false,
+    pupils = 'normal',
+    blink = false,
+    bob = 0
+  } = opts;
+
+  const sy = Math.floor(y + bob);
+  const sx = Math.floor(x);
+  const skinShade = '#c68b6b';
+  const shirtShade = 'rgba(0,0,0,0.28)';
+
+  pxRect(sx + 7, sy + 0, 14, 3, hair);
+  pxRect(sx + 5, sy + 2, 18, 4, hair);
+  pxRect(sx + 4, sy + 5, 3, 7, hair);
+  pxRect(sx + 21, sy + 5, 3, 7, hair);
+
+  pxRect(sx + 4, sy + 10, 2, 4, skinShade);
+  pxRect(sx + 22, sy + 10, 2, 4, skinShade);
+
+  pxRect(sx + 6, sy + 6, 16, 12, skin);
+  pxRect(sx + 7, sy + 18, 14, 2, skin);
+  pxRect(sx + 7, sy + 19, 14, 1, skinShade);
+
+  pxRect(sx + 8, sy + 8, 4, 1, hair);
+  pxRect(sx + 16, sy + 8, 4, 1, hair);
+  pxRect(sx + 13, sy + 11, 2, 3, skinShade);
+
+  if (flush) {
+    pxRect(sx + 7, sy + 13, 3, 2, '#ff6b6b');
+    pxRect(sx + 18, sy + 13, 3, 2, '#ff6b6b');
+  }
+  if (cyanosis) {
+    pxRect(sx + 11, sy + 16, 6, 1, '#5c7cfa');
+  } else {
+    pxRect(sx + 11, sy + 16, 6, 1, '#b5655b');
+  }
+
+  if (!blink) {
+    pxRect(sx + 8, sy + 10, 4, 3, '#ffffff');
+    pxRect(sx + 16, sy + 10, 4, 3, '#ffffff');
+    const p1 = pupils === 'miosis' ? 1 : 2;
+    const p2 = (pupils === 'anisocoria' || pupils === 'midriasis_fixed') ? 3 : p1;
+    pxRect(sx + 9, sy + 10, p1, p1, '#111111');
+    pxRect(sx + 17, sy + 10, p2, p2, '#111111');
+  } else {
+    pxRect(sx + 8, sy + 11, 4, 1, '#2b1d14');
+    pxRect(sx + 16, sy + 11, 4, 1, '#2b1d14');
+  }
+
+  if (sweat) {
+    const dropY = sy + 7 + (Math.floor(tick / 6) % 4);
+    pxRect(sx + 24, dropY, 2, 3, '#3bc9db');
+    pxRect(sx + 24, dropY, 1, 1, '#ffffff');
+  }
+
+  pxRect(sx + 11, sy + 20, 6, 3, skinShade);
+
+  if (isDoctor) {
+    pxRect(sx + 3, sy + 23, 22, 22, coatColor);
+    pxRect(sx + 22, sy + 23, 3, 22, '#ced4da');
+    pxRect(sx + 10, sy + 23, 8, 22, shirt);
+    pxRect(sx + 8, sy + 23, 2, 7, '#dee2e6');
+    pxRect(sx + 18, sy + 23, 2, 7, '#dee2e6');
+    pxRect(sx + 9, sy + 22, 1, 8, '#343a40');
+    pxRect(sx + 18, sy + 22, 1, 8, '#343a40');
+    pxRect(sx + 17, sy + 30, 3, 3, '#adb5bd');
+    pxRect(sx + 4, sy + 28, 4, 3, '#3bc9db');
+  } else {
+    pxRect(sx + 2, sy + 23, 24, 22, shirt);
+    pxRect(sx + 21, sy + 23, 5, 22, shirtShade);
+    pxRect(sx + 2, sy + 23, 3, 22, shirtShade);
+    pxRect(sx + 10, sy + 23, 8, 2, '#111827');
+    pxRect(sx + 6, sy + 27, 1, 18, '#0b101b');
+    pxRect(sx + 21, sy + 27, 1, 18, '#0b101b');
+  }
+}
+
+function drawPixelCar(cx, cy) {
+  const x = Math.floor(cx - 48), y = Math.floor(cy - 20);
+  const cMain = state.assets.carColor || '#ff6b6b';
+  pxRect(x + 4, y + 26, 88, 4, 'rgba(0,0,0,0.5)');
+  pxRect(x + 20, y + 2, 52, 10, cMain);
+  pxRect(x + 18, y + 4, 56, 8, cMain);
+  pxRect(x + 4, y + 12, 88, 12, cMain);
+  pxRect(x + 4, y + 22, 88, 3, '#1e293b');
+  pxRect(x + 23, y + 4, 20, 7, '#1d3557');
+  pxRect(x + 47, y + 4, 20, 7, '#1d3557');
+  pxRect(x + 25, y + 5, 4, 5, '#4cc9f0');
+  pxRect(x + 49, y + 5, 4, 5, '#4cc9f0');
+  pxRect(x + 88, y + 14, 4, 4, '#fcc419');
+  pxRect(x + 4, y + 14, 3, 4, '#e03131');
+  pxRect(x + 16, y + 19, 14, 10, '#111111');
+  pxRect(x + 64, y + 19, 14, 10, '#111111');
+  pxRect(x + 20, y + 22, 6, 4, '#adb5bd');
+  pxRect(x + 68, y + 22, 6, 4, '#adb5bd');
+}
+
+function drawRadiologyZoom(c, type) {
+  const x = c.getContext('2d');
+  x.fillStyle = '#070b14'; x.fillRect(0, 0, 360, 190);
+  x.strokeStyle = '#1b3a4b';
+  for (let i = 0; i < 360; i += 18) { x.beginPath(); x.moveTo(i, 0); x.lineTo(i, 190); x.stroke(); }
+  for (let j = 0; j < 190; j += 18) { x.beginPath(); x.moveTo(0, j); x.lineTo(360, j); x.stroke(); }
+
+  if (type === 'ecg') {
+    x.strokeStyle = '#51cf66'; x.lineWidth = 2.5;
+    x.beginPath();
+    for (let px = 12; px < 348; px += 2) {
+      const m = px % 52;
+      let py = 104;
+      if (m > 8 && m < 14) py = 95;
+      else if (m >= 16 && m < 19) py = 40;
+      else if (m >= 19 && m < 23) py = 124;
+      else if (m >= 23 && m < 36) py = 72;
+      if (px === 12) x.moveTo(px, py); else x.lineTo(px, py);
+    }
+    x.stroke();
+  } else if (type === 'eye') {
+    x.fillStyle = '#d9480f'; x.beginPath(); x.arc(180, 95, 68, 0, Math.PI * 2); x.fill();
+    x.fillStyle = '#ffa8a8'; x.beginPath(); x.arc(180, 95, 58, 0, Math.PI * 2); x.fill();
+    x.fillStyle = '#ff5252'; x.beginPath(); x.arc(180, 95, 11, 0, Math.PI * 2); x.fill();
+    x.fillStyle = '#fcc419'; x.beginPath(); x.arc(134, 95, 15, 0, Math.PI * 2); x.fill();
+  } else if (type === 'leg') {
+    x.fillStyle = '#e9ecef';
+    x.fillRect(162, 16, 20, 74); x.fillRect(166, 98, 20, 76);
+    x.fillStyle = '#3bc9db'; x.fillRect(190, 22, 8, 144);
+    x.strokeStyle = '#ff6b6b'; x.lineWidth = 2; x.strokeRect(154, 82, 46, 24);
+  } else if (type === 'brain') {
+    x.fillStyle = '#6c7a89'; x.beginPath(); x.ellipse(180, 95, 62, 74, 0, 0, Math.PI * 2); x.fill();
+    x.fillStyle = '#ff6b6b'; x.beginPath(); x.ellipse(126, 92, 15, 34, 0.15, 0, Math.PI * 2); x.fill();
+  } else {
+    x.fillStyle = '#3bc9db'; x.fillRect(174, 22, 12, 142);
+    for (let r = 0; r < 5; r++) {
+      x.fillRect(118, 40 + r * 22, 52, 8); x.fillRect(190, 40 + r * 22, 52, 8);
+    }
+    x.fillStyle = 'rgba(252, 196, 25, 0.7)'; x.fillRect(120, 108, 48, 34);
+  }
+}
+
+function renderOpenWorldScene() {
+  updateOpenWorld();
+  pxRect(0, 0, 480, 180, '#163020');
+  pxRect(0, 82, 480, 28, '#1e293b');
+  pxRect(130, 0, 22, 180, '#1e293b');
+  pxRect(365, 0, 22, 180, '#1e293b');
+  for (let i = 0; i < 480; i += 20) pxRect(i, 95, 10, 2, '#fcc419');
+
+  for (const b of WORLD_BUILDINGS) {
+    pxRect(b.x, b.y, b.w, b.h, b.color);
+    pxRect(b.x, b.y, b.w, 8, b.roof);
+    pxRect(b.x + b.w / 2 - 8, b.y + b.h - 12, 16, 12, '#090d16');
+    ctx.fillStyle = '#ffffff'; ctx.font = 'bold 7px monospace';
+    ctx.fillText(b.name, b.x + 4, b.y + 20);
+  }
+
+  const wp = state.worldPlayer;
+  if (state.assets.car !== 'Yok (Belediye Otobüsü)') {
+    pxRect(wp.x - 10, wp.y - 6, 20, 12, state.assets.carColor);
+    pxRect(wp.x - 5, wp.y - 4, 10, 8, '#38bdf8');
+  } else {
+    pxRect(wp.x - 4, wp.y - 8, 8, 8, '#f1c2a5');
+    pxRect(wp.x - 5, wp.y, 10, 10, '#f8f9fa');
+  }
+}
+
+function renderLocationScene() {
+  const loc = state.location;
+  if (loc === 'world') { renderOpenWorldScene(); return; }
+
+  pxRect(0, 0, 480, 124, '#111827');
+  pxRect(0, 124, 480, 56, '#1e293b');
+  pxRect(0, 123, 480, 2, '#334155');
+
+  if (loc === 'canteen') {
+    pxRect(24, 26, 150, 34, '#1e293b');
+    pxRect(26, 28, 146, 30, '#0f172a');
+    ctx.fillStyle = '#fcc419'; ctx.font = 'bold 8px monospace';
+    ctx.fillText('KANTİN: ÇAY 15₺ • KAHVE 45₺', 34, 46);
+    pxRect(42, 68, 32, 26, '#475569');
+    pxRect(48, 74, 20, 12, '#0f172a');
+    pxRect(56, 80, 4, 6, '#3bc9db');
+    pxRect(20, 94, 165, 30, '#7c4d2b');
+    pxRect(20, 94, 165, 4, '#a1663b');
+
+    const st = state.activeStaffIdx !== null ? state.staff[state.activeStaffIdx] : state.staff[0];
+    drawPixelCharacter(310, 74, {
+      hair: st.hair || '#2b1d14',
+      shirt: st.coat === '#ffffff' ? '#3bc9db' : st.coat,
+      isDoctor: true,
+      coatColor: '#f8f9fa',
+      bob: Math.sin(tick * 0.08) * 1.2
+    });
+    ctx.fillStyle = '#fcc419'; ctx.font = 'bold 8px monospace';
+    ctx.fillText(st.name.toUpperCase(), 286, 68);
+  }
+  else if (loc === 'diner') {
+    pxRect(0, 0, 480, 124, '#241710');
+    pxRect(110, 78, 260, 46, '#6b4226');
+    pxRect(110, 78, 260, 4, '#9c6239');
+    pxRect(145, 66, 44, 12, '#cbd5e1');
+    pxRect(149, 64, 36, 3, '#f59f00');
+    pxRect(265, 66, 44, 12, '#cbd5e1');
+    pxRect(269, 64, 36, 3, '#e03131');
+    const stY = Math.floor(tick / 5) % 10;
+    pxRect(164, 52 - stY, 2, 4, 'rgba(255,255,255,0.7)');
+    pxRect(284, 50 - stY, 2, 4, 'rgba(255,255,255,0.7)');
+  }
+  else if (loc === 'dealer') {
+    pxRect(0, 0, 480, 124, '#0f1c26');
+    pxRect(24, 20, 220, 24, '#182b3a');
+    ctx.fillStyle = '#51cf66'; ctx.font = 'bold 9px monospace';
+    ctx.fillText('AYDIN OTO GALERİ & MAHMUT USTA', 32, 35);
+    if (state.assets.car !== 'Yok (Belediye Otobüsü)') drawPixelCar(240, 106);
+    else { ctx.fillStyle = '#e2e8f0'; ctx.fillText('Henüz aracın yok — galeriden aracını seç!', 126, 86); }
+  }
+  else if (loc === 'pitch') {
+    pxRect(0, 0, 480, 180, '#1b5e20');
+    ctx.strokeStyle = '#fff'; ctx.strokeRect(20, 14, 440, 152);
+    ctx.beginPath(); ctx.arc(240, 90, 28, 0, Math.PI * 2); ctx.stroke();
+  }
+  else if (loc === 'home') {
+    pxRect(0, 0, 480, 124, '#151c2e');
+    pxRect(36, 24, 114, 68, '#090d16');
+    ctx.strokeStyle = '#475569'; ctx.lineWidth = 2; ctx.strokeRect(36, 24, 114, 68);
+    pxRect(124, 32, 10, 10, '#fcc419');
+    if (state.assets.car !== 'Yok (Belediye Otobüsü)') drawPixelCar(92, 76);
+    // 4K Dev TV & PS5 Pro Konsol
+    pxRect(236, 30, 146, 62, '#090d16');
+    ctx.strokeStyle = '#3bc9db'; ctx.strokeRect(236, 30, 146, 62);
+    ctx.fillStyle = '#51cf66'; ctx.font = 'bold 8px monospace';
+    ctx.fillText('PS5 PRO: GTA 6 & EA FC 27', 248, 62);
+    pxRect(226, 96, 166, 28, '#475569');
+    pxRect(374, 82, 10, 14, '#f8f9fa');
+    pxRect(376, 82, 2, 14, '#3bc9db');
+  }
+}
+
+function drawDetailedHospitalRoom(spec) {
+  const palettes = {
+    ophth:  { wall: '#121d33', trim: '#1d3254' },
+    cardio: { wall: '#21121b', trim: '#381d2d' },
+    emerg:  { wall: '#241316', trim: '#3d1e24' },
+    neuro:  { wall: '#19142e', trim: '#2a224d' },
+    ortho:  { wall: '#152033', trim: '#223352' },
+    peds:   { wall: '#132433', trim: '#1f3b54' },
+    ent:    { wall: '#12222b', trim: '#1d3745' },
+    surg:   { wall: '#102421', trim: '#1a3b36' },
+    none:   { wall: '#141e30', trim: '#20304d' }
+  };
+  const pal = palettes[spec] || palettes.none;
+
+  pxRect(0, 0, 480, 118, pal.wall);
+  pxRect(85, 0, 74, 3, '#e0fbfc');
+  pxRect(320, 0, 74, 3, '#e0fbfc');
+  pxRect(92, 3, 60, 115, 'rgba(224, 251, 252, 0.025)');
+  pxRect(327, 3, 60, 115, 'rgba(224, 251, 252, 0.025)');
+
+  pxRect(0, 78, 480, 40, pal.trim);
+  pxRect(0, 77, 480, 2, 'rgba(255,255,255,0.12)');
+  for (let tx = 0; tx < 480; tx += 24) pxRect(tx, 79, 1, 39, 'rgba(0,0,0,0.22)');
+
+  const shakeX = state.doorThreat ? Math.round(Math.sin(tick * 0.9) * 2) : 0;
+  const dx = 18 + shakeX;
+  pxRect(dx + 14, 15, 28, 8, state.doorThreat ? '#ff6b6b' : '#2b1419');
+  pxRect(dx + 16, 17, 24, 4, state.doorThreat ? '#ffffff' : '#e03131');
+  pxRect(dx, 26, 56, 92, '#334155');
+  pxRect(dx + 3, 29, 24, 89, '#1e293b');
+  pxRect(dx + 29, 29, 24, 89, '#1e293b');
+  pxRect(dx + 7, 36, 16, 30, '#0f2942');
+  pxRect(dx + 33, 36, 16, 30, '#0f2942');
+  pxRect(dx + 9, 38, 3, 24, '#3bc9db');
+  pxRect(dx + 35, 38, 3, 24, '#3bc9db');
+  pxRect(dx + 23, 72, 2, 8, '#fcc419');
+  pxRect(dx + 31, 72, 2, 8, '#fcc419');
+
+  if (spec === 'ophth') {
+    pxRect(88, 28, 46, 62, '#090d16');
+    pxRect(90, 30, 42, 58, '#f8f9fa');
+    ctx.fillStyle = '#000'; ctx.font = 'bold 10px monospace'; ctx.fillText('E', 108, 43);
+    ctx.font = 'bold 7px monospace'; ctx.fillText('F P', 105, 55);
+    ctx.fillText('T O Z', 101, 66); ctx.fillText('L P E D', 97, 78);
+  } else if (spec === 'cardio') {
+    pxRect(88, 30, 56, 44, '#090d16');
+    ctx.strokeStyle = '#ff6b6b'; ctx.lineWidth = 1; ctx.strokeRect(88, 30, 56, 44);
+    ctx.strokeStyle = '#51cf66'; ctx.beginPath();
+    for (let x = 91; x < 141; x += 2) {
+      const y = 55 + (((x + tick) % 16 === 0) ? -12 : 0);
+      if (x === 91) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+  } else if (spec === 'neuro') {
+    pxRect(88, 30, 50, 52, '#090d16');
+    ctx.strokeStyle = '#b197fc'; ctx.strokeRect(88, 30, 50, 52);
+    ctx.beginPath(); ctx.ellipse(113, 56, 13, 18, 0, 0, Math.PI * 2); ctx.stroke();
+  } else {
+    pxRect(88, 26, 58, 48, '#070b14');
+    pxRect(87, 25, 60, 2, '#475569');
+    pxRect(87, 73, 60, 2, '#475569');
+    pxRect(116, 26, 2, 48, '#475569');
+    pxRect(98, 34, 2, 2, '#fcc419');
+    pxRect(132, 40, 2, 2, '#ffffff');
+    pxRect(104, 48, 2, 2, '#3bc9db');
+  }
+
+  pxRect(334, 26, 48, 66, '#334155');
+  pxRect(337, 29, 42, 60, '#0f172a');
+  pxRect(337, 48, 42, 2, '#475569');
+  pxRect(337, 68, 42, 2, '#475569');
+  pxRect(342, 39, 5, 9, '#3bc9db');
+  pxRect(350, 41, 5, 7, '#ff6b6b');
+  pxRect(360, 38, 6, 10, '#51cf66');
+  pxRect(344, 59, 6, 9, '#fcc419');
+  pxRect(355, 60, 5, 8, '#b197fc');
+
+  const negW = state.upgrades.dualMonitor ? 74 : 52;
+  pxRect(392, 28, negW, 42, '#1e293b');
+  pxRect(394, 30, negW - 4, 38, state.examDone.rad ? '#103c42' : '#090d16');
+  if (state.examDone.rad) {
+    pxRect(402, 36, 16, 24, '#3bc9db');
+    pxRect(422, 38, 14, 20, '#51cf66');
+  }
+}
+
+function renderScene() {
+  tick++;
+  ctx.clearRect(0, 0, 480, 180);
+
+  if (state.location !== 'er') {
+    renderLocationScene();
+    requestAnimationFrame(renderScene);
+    return;
+  }
+
+  drawDetailedHospitalRoom(state.specialty);
+
+  const p = state.currentPatient;
+  if (p) {
+    const bob = Math.sin(tick * 0.08) * 1.1;
+    const blink = (tick % 135) < 4;
+    drawPixelCharacter(218, 74, {
+      skin: p.appearance.skin,
+      hair: p.appearance.hair,
+      shirt: p.appearance.shirt,
+      isDoctor: false,
+      flush: p.appearance.flush,
+      cyanosis: p.appearance.cyanosis,
+      sweat: p.appearance.sweat,
+      pupils: p.appearance.pupils,
+      blink,
+      bob
+    });
+  }
+
+  const intern = INTERNS[state.internIdx];
+  drawPixelCharacter(378, 76, {
+    skin: '#f1c2a5',
+    hair: '#212529',
+    shirt: intern.color,
+    isDoctor: true,
+    coatColor: '#f8f9fa',
+    blink: (tick % 170) < 4,
+    bob: Math.cos(tick * 0.07) * 0.8
+  });
+
+  pxRect(0, 118, 480, 62, '#131b2e');
+  pxRect(0, 118, 480, 4, '#3b4d6b');
+  pxRect(0, 122, 480, 2, '#1e293b');
+
+  pxRect(22, 96, 62, 36, '#1e293b');
+  pxRect(25, 99, 56, 26, '#06090f');
+  pxRect(46, 132, 14, 5, '#334155');
+  const pulseX = Math.floor((tick * 1.8) % 50);
+  pxRect(27 + pulseX, 112 - (pulseX > 20 && pulseX < 25 ? 8 : 0), 3, 2, '#51cf66');
+  pxRect(27 + ((pulseX + 46) % 50), 112, 2, 1, 'rgba(81,207,102,0.5)');
+
+  pxRect(188, 128, 72, 40, '#1e293b');
+  pxRect(191, 131, 66, 34, '#f8f9fa');
+  pxRect(196, 136, 36, 2, '#334155');
+  pxRect(196, 142, 52, 2, '#64748b');
+  pxRect(196, 148, 44, 2, '#64748b');
+  pxRect(196, 154, 28, 2, '#e03131');
+  pxRect(266, 136, 3, 24, '#3bc9db');
+  pxRect(266, 134, 3, 2, '#fcc419');
+
+  const stColor = state.upgrades.littmann ? '#ff6b6b' : '#3bc9db';
+  pxRect(294, 136, 14, 2, stColor);
+  pxRect(292, 138, 2, 12, stColor);
+  pxRect(308, 138, 2, 12, stColor);
+  pxRect(294, 150, 14, 2, stColor);
+  pxRect(300, 152, 2, 6, stColor);
+  pxRect(299, 158, 4, 4, '#e2e8f0');
+
+  const thColor = state.upgrades.thermos ? '#51cf66' : '#f76707';
+  pxRect(344, 118, 12, 20, thColor);
+  pxRect(343, 115, 14, 3, '#cbd5e1');
+  const steamY = Math.floor(tick / 6) % 8;
+  pxRect(349, 107 - steamY, 2, 3, 'rgba(255,255,255,0.75)');
+
+  if (state.upgrades.cactus) {
+    pxRect(118, 112, 8, 14, '#51cf66');
+    pxRect(115, 116, 3, 5, '#51cf66');
+    pxRect(126, 115, 3, 5, '#51cf66');
+    pxRect(114, 126, 16, 12, '#d9480f');
+  }
+
+  pxRect(408, 128, 38, 26, '#991b1b');
+  pxRect(410, 130, 34, 22, '#dc2626');
+  pxRect(421, 124, 12, 4, '#1e293b');
+  pxRect(425, 134, 4, 14, '#ffffff');
+  pxRect(420, 139, 14, 4, '#ffffff');
+
+  requestAnimationFrame(renderScene);
+}
+
+requestAnimationFrame(renderScene);
+</script>
 </body>
 </html>
