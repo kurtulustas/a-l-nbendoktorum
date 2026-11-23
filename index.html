@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>AÇILIN BEN DOKTORUM! v5.5 — 16-Bit Piksel Art Klinik, Açık Dünya & PS5 Konsol</title>
-<meta name="description" content="16-Bit Piksel Art Tıp Simülasyonu, 8 Uzmanlık Dalı, Açık Dünya Aydın, Evde PS5 GTA 6 & EA FC 27, Blackjack, Poker, At Yarışı, WhatsDoc AI. developer=kurtulustas">
+<title>AÇILIN BEN DOKTORUM! v6.5 Ultimate — 16-Bit Klinik, Açık Dünya, İnternet Kafe & PS5</title>
+<meta name="description" content="16-Bit Piksel Art Tıp Simülasyonu, 8 Uzmanlık Dalı, Açık Dünya Aydın, İnternet Kafe, PS5 & Monitör Satın Alma, TPS Silahlı GTA 6, EA FC 27, Blackjack, Poker, At Yarışı, WhatsDoc AI. developer=kurtulustas">
 <style>
   :root {
     --bg-main: #0b101b;
@@ -22,12 +22,13 @@
     --font-ui: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
     --font-pixel: ui-monospace, 'Cascadia Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; user-select: none; }
   html, body {
     width: 100%; height: 100dvh; overflow: hidden;
     background: #06090f; color: var(--text-main);
     font-family: var(--font-ui);
   }
+  input { user-select: text; }
 
   #app {
     width: 100%; height: 100dvh;
@@ -145,21 +146,21 @@
 
   /* HUD */
   #hud {
-    height: 46px; min-height: 46px; padding: 0 12px;
+    height: 46px; min-height: 46px; padding: 0 10px;
     background: #0d1320; border-bottom: 1.5px solid var(--border-subtle);
-    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    display: flex; align-items: center; justify-content: space-between; gap: 6px;
   }
-  .hud-stats { display: flex; align-items: center; gap: 10px; overflow-x: auto; font-family: var(--font-pixel); font-size: 11.5px; font-weight: 800; }
+  .hud-stats { display: flex; align-items: center; gap: 8px; overflow-x: auto; font-family: var(--font-pixel); font-size: 11px; font-weight: 800; }
   .stat-pill { white-space: nowrap; display: inline-flex; align-items: center; gap: 4px; }
   .rep-bar {
-    width: 44px; height: 9px; background: #1e2738; border-radius: 4px; overflow: hidden; display: inline-block; border: 1px solid #495057;
+    width: 40px; height: 9px; background: #1e2738; border-radius: 4px; overflow: hidden; display: inline-block; border: 1px solid #495057;
   }
   .rep-fill { height: 100%; background: linear-gradient(90deg, #22b8cf, #51cf66); width: 50%; }
-  .hud-btns { display: flex; gap: 5px; flex-shrink: 0; }
+  .hud-btns { display: flex; gap: 4px; flex-shrink: 0; }
   .icon-btn {
     background: var(--bg-card); border: 1.5px solid var(--border-subtle); border-radius: 6px;
-    color: #fff; padding: 5px 8px; font-size: 12px; font-weight: 700; cursor: pointer;
-    position: relative; display: inline-flex; align-items: center; gap: 4px;
+    color: #fff; padding: 5px 7px; font-size: 11.5px; font-weight: 700; cursor: pointer;
+    position: relative; display: inline-flex; align-items: center; gap: 3px;
   }
   .icon-btn:hover { border-color: var(--accent-cyan); background: #1f2b42; }
   .badge-dot {
@@ -181,33 +182,35 @@
   }
   .scene-tag {
     position: absolute; top: 8px; left: 10px;
-    background: rgba(9, 13, 22, 0.9); border: 1.5px solid #3b4d6b; border-radius: 4px;
-    padding: 3px 8px; font-family: var(--font-pixel); font-size: 10.5px; color: var(--accent-gold); font-weight: 800;
+    background: rgba(9, 13, 22, 0.92); border: 1.5px solid #3b4d6b; border-radius: 4px;
+    padding: 3px 8px; font-family: var(--font-pixel); font-size: 10px; color: var(--accent-gold); font-weight: 800;
   }
   .clock-tag {
     position: absolute; top: 8px; right: 10px;
-    background: rgba(9, 13, 22, 0.9); border: 1.5px solid #3b4d6b; border-radius: 4px;
-    padding: 3px 8px; font-family: var(--font-pixel); font-size: 10.5px; color: var(--accent-cyan); font-weight: 800;
+    background: rgba(9, 13, 22, 0.92); border: 1.5px solid #3b4d6b; border-radius: 4px;
+    padding: 3px 8px; font-family: var(--font-pixel); font-size: 10px; color: var(--accent-cyan); font-weight: 800;
   }
   .rank-tag {
     position: absolute; bottom: 8px; left: 10px;
-    background: rgba(9, 13, 22, 0.9); border: 1.5px solid var(--accent-purple); border-radius: 4px;
-    padding: 3px 8px; font-family: var(--font-pixel); font-size: 10.5px; color: var(--accent-purple); font-weight: 800;
+    background: rgba(9, 13, 22, 0.92); border: 1.5px solid var(--accent-purple); border-radius: 4px;
+    padding: 3px 8px; font-family: var(--font-pixel); font-size: 10px; color: var(--accent-purple); font-weight: 800;
   }
   .zoom-hint {
     position: absolute; bottom: 8px; right: 10px;
     background: rgba(9, 13, 22, 0.94); border: 1.5px solid var(--accent-green); border-radius: 4px;
-    padding: 4px 9px; font-family: var(--font-pixel); font-size: 10.5px; color: var(--accent-green); cursor: pointer; display: none; font-weight: 800;
+    padding: 4px 9px; font-family: var(--font-pixel); font-size: 10px; color: var(--accent-green); cursor: pointer; display: none; font-weight: 800;
   }
 
-  /* MOBILE D-PAD FOR OPEN WORLD */
-  #mobileDpad {
-    display: none; position: absolute; bottom: 34px; right: 12px;
-    grid-template-columns: repeat(3, 34px); gap: 3px; z-index: 15;
+  /* OPEN WORLD TOUCH JOYSTICK */
+  #worldJoyWrap {
+    display: none; position: absolute; bottom: 14px; right: 14px;
+    width: 96px; height: 96px; border-radius: 50%;
+    background: rgba(15, 23, 42, 0.75); border: 2px solid var(--accent-cyan);
+    z-index: 20; touch-action: none;
   }
-  .dpad-btn {
-    width: 34px; height: 34px; background: rgba(18, 25, 39, 0.88);
-    border: 1.5px solid var(--accent-cyan); color: #fff; border-radius: 6px; font-weight: 900; cursor: pointer;
+  #worldJoyKnob {
+    position: absolute; left: 32px; top: 32px; width: 32px; height: 32px;
+    border-radius: 50%; background: var(--accent-cyan); pointer-events: none;
   }
 
   /* BOTTOM CLINICAL ZONE */
@@ -299,12 +302,12 @@
   }
   .app-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 4px 0; }
   .app-icon {
-    background: var(--bg-card); border: 1.5px solid var(--border-subtle); border-radius: 10px; padding: 11px 4px;
-    text-align: center; cursor: pointer; display: flex; flex-direction: column; gap: 5px; align-items: center;
-    font-size: 11.5px; color: #f1f3f5; font-weight: 700; position: relative; transition: 0.12s;
+    background: var(--bg-card); border: 1.5px solid var(--border-subtle); border-radius: 10px; padding: 10px 4px;
+    text-align: center; cursor: pointer; display: flex; flex-direction: column; gap: 4px; align-items: center;
+    font-size: 11px; color: #f1f3f5; font-weight: 700; position: relative; transition: 0.12s;
   }
   .app-icon:hover { border-color: var(--accent-cyan); transform: translateY(-2px); background: #202d46; }
-  .app-icon span.ico { font-size: 22px; }
+  .app-icon span.ico { font-size: 20px; }
 
   .casino-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
   .c-tab {
@@ -339,23 +342,45 @@
   .tx-row.neg { border-left-color: var(--accent-red); color: #ffa8a8; }
   .tx-row.pos { border-left-color: var(--accent-green); color: #b2f2bb; }
 
-  /* FULLSCREEN TV CONSOLE OVERLAY (GTA 6 & EA FC 27) */
+  /* FULLSCREEN TV CONSOLE OVERLAY + MOBILE ANALOG JOYSTICK */
   #consoleOverlay {
     display: none; position: fixed; inset: 0; z-index: 100;
     background: #05080f; flex-direction: column;
   }
   #consoleOverlay.open { display: flex; }
   .console-bar {
-    height: 48px; background: #0f172a; border-bottom: 2px solid var(--accent-cyan);
-    display: flex; align-items: center; justify-content: space-between; padding: 0 14px; gap: 8px;
+    min-height: 46px; background: #0f172a; border-bottom: 2px solid var(--accent-cyan);
+    display: flex; align-items: center; justify-content: space-between; padding: 4px 12px; gap: 6px; flex-wrap: wrap;
   }
-  .console-title { font-family: var(--font-pixel); font-size: 12.5px; color: var(--accent-gold); font-weight: 900; }
-  .console-controls { display: flex; gap: 6px; flex-wrap: wrap; }
-  #arcadeCanvas { flex: 1; width: 100%; height: 100%; display: block; image-rendering: pixelated; background: #090d16; }
+  .console-title { font-family: var(--font-pixel); font-size: 12px; color: var(--accent-gold); font-weight: 900; }
+  .console-controls { display: flex; gap: 5px; flex-wrap: wrap; }
+  #arcadeStage { position: relative; flex: 1; width: 100%; overflow: hidden; display: flex; }
+  #arcadeCanvas { width: 100%; height: 100%; display: block; image-rendering: pixelated; background: #090d16; }
+
+  #arcadeJoyBase {
+    position: absolute; left: 22px; bottom: 22px; width: 116px; height: 116px;
+    border-radius: 50%; background: rgba(15, 23, 42, 0.65);
+    border: 2.5px solid rgba(59, 201, 219, 0.85); touch-action: none; z-index: 110;
+  }
+  #arcadeJoyKnob {
+    position: absolute; left: 38px; top: 38px; width: 40px; height: 40px;
+    border-radius: 50%; background: rgba(59, 201, 219, 0.9); pointer-events: none;
+  }
+  #arcadeActionBtns {
+    position: absolute; right: 22px; bottom: 22px; display: flex; gap: 12px; z-index: 110;
+  }
+  .pad-action-btn {
+    width: 68px; height: 68px; border-radius: 50%; font-family: var(--font-pixel);
+    font-size: 11px; font-weight: 900; color: #fff; border: 2.5px solid #fff;
+    cursor: pointer; touch-action: none; box-shadow: 0 4px 14px rgba(0,0,0,0.6);
+  }
+  .btn-fire { background: rgba(224, 49, 49, 0.85); }
+  .btn-car  { background: rgba(252, 196, 25, 0.85); color: #000; }
+
   .arcade-footer {
-    padding: 8px 14px; background: #0d1320; border-top: 1px solid var(--border-subtle);
-    font-family: var(--font-pixel); font-size: 11px; color: var(--accent-green);
-    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;
+    padding: 6px 12px; background: #0d1320; border-top: 1px solid var(--border-subtle);
+    font-family: var(--font-pixel); font-size: 10.5px; color: var(--accent-green);
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px;
   }
 </style>
 </head>
@@ -365,9 +390,9 @@
   <div id="startScreen">
     <div class="start-container">
       <div class="title-banner">
-        <div class="title-badge">16-BIT KLİNİK, AÇIK DÜNYA & PS5 KONSOL • v5.5</div>
+        <div class="title-badge">16-BIT KLİNİK, AÇIK DÜNYA, İNTERNET KAFE & PS5 • v6.5</div>
         <div class="game-title">AÇILIN BEN DOKTORUM!</div>
-        <div class="game-sub">8 Uzmanlık Dalı • Açık Dünya Aydın • Evde Tam Ekran GTA 6 & EA FC 27 • WhatsDoc AI</div>
+        <div class="game-sub">8 Uzmanlık (270 Vaka) • Açık Dünya Aydın • İnternet Kafe • Evde PS5 & Monitör Satın Alma • TPS Silahlı GTA 6 & EA FC 27 • BetTıp & WhatsDoc AI</div>
       </div>
 
       <div class="setup-card card-box">
@@ -396,7 +421,7 @@
         <div class="field-row">
           <label>NÖBET MODU</label>
           <select id="inpDiff" class="pixel-select">
-            <option value="normal">Standart Nöbet (8 Uzmanlık x 30 Vaka + Açık Dünya + PS5)</option>
+            <option value="normal">Standart Nöbet (8 Uzmanlık x 30 Vaka + Açık Dünya + İnternet Kafe & PS5)</option>
             <option value="hard">Cuma Gece Acili (Yüksek Beyaz Kod, Rüşvet & Borç Talebi)</option>
           </select>
         </div>
@@ -405,7 +430,7 @@
       <button id="btnStartGame" class="start-btn">NÖBETİ & ŞEHRİ DEVRAL ▸</button>
 
       <div class="dev-footer">
-        <div>16-Bit Piksel Klinik • Açık Dünya Keşif • Evde Tam Ekran GTA 6 & EA FC 27</div>
+        <div>16-Bit Piksel Klinik • Açık Dünya Aydın • İnternet Kafe • Evde PS5 & Monitör • TPS GTA 6 & EA FC 27</div>
         <div style="margin-top:6px;">
           <a href="https://github.com/kurtulustas" target="_blank" rel="noopener noreferrer">developer=kurtulustas</a>
         </div>
@@ -417,7 +442,7 @@
   <div id="hud">
     <div class="hud-stats">
       <span class="stat-pill" style="color:var(--accent-gold)" id="hudDay">G1 0/5</span>
-      <span class="stat-pill" style="color:var(--accent-green)" id="hudMoney">1.500₺</span>
+      <span class="stat-pill" style="color:var(--accent-green)" id="hudMoney">1.800₺</span>
       <span class="stat-pill" style="color:var(--accent-cyan)">İTİBAR <span class="rep-bar"><span class="rep-fill" id="repFill"></span></span></span>
       <span class="stat-pill" style="color:var(--accent-purple)" id="hudTus">TUS:42</span>
       <span class="stat-pill" style="color:var(--accent-red)" id="hudWarn">⚠️0/3</span>
@@ -443,13 +468,8 @@
         <div class="rank-tag" id="rankTag">🩺 PRATİSYEN HEKİM</div>
         <div class="zoom-hint" id="zoomHint" onclick="openDrawer('radiology')">🔍 GÖRÜNTÜLEME YAKINLAŞTIR</div>
 
-        <!-- MOBİL D-PAD -->
-        <div id="mobileDpad">
-          <div></div><button class="dpad-btn" onpointerdown="worldKeys['ArrowUp']=true" onpointerup="worldKeys['ArrowUp']=false">▲</button><div></div>
-          <button class="dpad-btn" onpointerdown="worldKeys['ArrowLeft']=true" onpointerup="worldKeys['ArrowLeft']=false">◀</button>
-          <button class="dpad-btn" onpointerdown="worldKeys['ArrowDown']=true" onpointerup="worldKeys['ArrowDown']=false">▼</button>
-          <button class="dpad-btn" onpointerdown="worldKeys['ArrowRight']=true" onpointerup="worldKeys['ArrowRight']=false">▶</button>
-        </div>
+        <!-- MOBİL AÇIK DÜNYA ANALOG JOYSTICK -->
+        <div id="worldJoyWrap"><div id="worldJoyKnob"></div></div>
       </div>
 
       <div id="bottomZone">
@@ -459,7 +479,7 @@
               <span class="speaker-name" id="speakerName">SİSTEM</span>
               <span class="triage-badge t-green" id="triageBadge">HAZIR</span>
             </div>
-            <div id="dialogueText">Nöbet başladı. Sıradaki hastayı muayene et veya Açık Dünyaya çık!</div>
+            <div id="dialogueText">Nöbet başladı. Hastaları muayene et veya Açık Dünyada İnternet Kafe / Mağaza / Evine git!</div>
           </div>
           <div id="subPanel"></div>
         </div>
@@ -482,21 +502,34 @@
     </div>
   </div>
 
-  <!-- FULLSCREEN TV CONSOLE OVERLAY (PS5 PRO: GTA 6 & EA FC 27) -->
+  <!-- FULLSCREEN TV CONSOLE OVERLAY (GTA 6 TPS & EA FC 27) -->
   <div id="consoleOverlay">
     <div class="console-bar">
-      <div class="console-title" id="consoleTitle">🎮 PS5 PRO — 4K TV TAM EKRAN MODU</div>
+      <div class="console-title" id="consoleTitle">🎮 PS5 PRO — TAM EKRAN KONSOL</div>
       <div class="console-controls">
-        <button class="icon-btn" onclick="launchConsoleGame('gta6')">🚗 GTA 6: Aydın Vice</button>
-        <button class="icon-btn" onclick="launchConsoleGame('fifa')">⚽ EA FC 27: Kanat Forvet</button>
+        <button class="icon-btn" onclick="switchConsoleGame('gta6')">🔫 GTA 6 (TPS)</button>
+        <button class="icon-btn" onclick="switchConsoleGame('fifa')">⚽ EA FC 27</button>
         <button class="icon-btn" onclick="toggleBrowserFullscreen()">⛶ Gerçek Tam Ekran (F)</button>
         <button class="close-btn" onclick="closeConsole()">KONSOLU KAPAT ✕</button>
       </div>
     </div>
-    <canvas id="arcadeCanvas" width="640" height="360"></canvas>
+
+    <div id="arcadeStage">
+      <canvas id="arcadeCanvas" width="800" height="450"></canvas>
+
+      <!-- MOBİL & DOKUNMATİK SANAL ANALOG JOYSTICK -->
+      <div id="arcadeJoyBase"><div id="arcadeJoyKnob"></div></div>
+
+      <!-- MOBİL & DOKUNMATİK AKSİYON BUTONLARI -->
+      <div id="arcadeActionBtns">
+        <button class="pad-action-btn btn-car" id="btnPadSecondary">ARABA<br>(E)</button>
+        <button class="pad-action-btn btn-fire" id="btnPadPrimary">ATEŞ / ŞUT<br>(SPACE)</button>
+      </div>
+    </div>
+
     <div class="arcade-footer">
-      <span id="arcadeHelp">WASD / Ok Tuşları ile oyna • SPACE: Aksiyon / Plase Şut / El Freni</span>
-      <span id="arcadeScore">SKOR / PRİM: 0</span>
+      <span id="arcadeHelp">Joystick / WASD: Hareket | SPACE / Kırmızı Tuş: Ateş Et / Şut | E / Sarı Tuş: Arabaya Bin-İn</span>
+      <span id="arcadeScore">SKOR: 0</span>
     </div>
   </div>
 </div>
@@ -580,7 +613,7 @@ const SPECIALTIES = {
 };
 
 /* ================= GAME STATE ================= */
-const SAVE_KEY = 'acilin_ben_doktorum_v5_5';
+const SAVE_KEY = 'acilin_ben_doktorum_v6_5';
 
 const state = {
   docName: 'Dr. Muhammed Kurtuluş Taş',
@@ -594,7 +627,7 @@ const state = {
   dailyCorrect: 0,
   dailyWrong: 0,
   totalSaved: 0,
-  money: 1500,
+  money: 1800,
   bankDebt: 0,
   rep: 50,
   tusScore: 42,
@@ -621,9 +654,10 @@ const state = {
     carHealth: 100,
     phone: 'TıpPhone 17 Pro',
     homeLevel: 1,
-    ps5Owned: true
+    hasPs5: false,      // BAŞLANGIÇTA YOK — MAĞAZADAN VEYA EVDEN ALINACAK!
+    hasMonitor: false   // BAŞLANGIÇTA YOK — MAĞAZADAN VEYA EVDEN ALINACAK!
   },
-  worldPlayer: { x: 86, y: 88, dir: 'down' },
+  worldPlayer: { x: 75, y: 92 },
   crypto: {
     btcPrice: 1200,
     goldPrice: 450,
@@ -632,10 +666,10 @@ const state = {
   },
   news: [
     'SAĞLIK BÜLTENİ: Aydın Merkez Acil servisinde gece nöbeti yoğunluğu %40 arttı.',
-    'TUS MERKEZİ: Klinik branş kadroları için taban puanlar güncellendi.'
+    'TEKNOLOJİ HABER: Aydın E-Spor İnternet Kafe PS5 Pro masalarını saatlik 150₺ ile açtı!'
   ],
   iban: 'TR42 0006 1000 1907 2026 0001 09',
-  transactions: [{ desc: 'Nöbet Avansı Açılış Bakiyesi', amt: 1500, type: 'pos' }],
+  transactions: [{ desc: 'Nöbet Avansı Açılış Bakiyesi', amt: 1800, type: 'pos' }],
   loanRequests: [],
   activeLoansOut: [],
   chats: [
@@ -647,7 +681,7 @@ const state = {
       { from: 'Dr. Elif', text: 'Nöbet nasıl gidiyor? Kahve molası verirsen kantindeyim ☕' }
     ]},
     { id: 'kaan', name: '🎓 Lise Arkadaşı Kaan', role: 'Yazılımcı / Yakın Dost', persona: 'Liseden en yakın arkadaşın, yazılımcı, PS5 GTA 6 / EA FC 27 ve halı sahadan konuşmayı seven samimi dost', unread: true, msgs: [
-      { from: 'Kaan', text: 'Kanka PS5 Pro eve kurulmuş! Nöbet çıkışı GTA 6 ve EA FC 27 atalım, halı sahaya da adam lazım ⚽' }
+      { from: 'Kaan', text: 'Kanka eve PS5 Pro ve 4K monitör çekene kadar İnternet Kafede saatlik 150₺ atabiliriz, halı sahaya da adam lazım ⚽' }
     ]},
     { id: 'riza', name: '🏠 Ev Sahibi Rıza Bey', role: 'Daire Sahibi', persona: 'Hafif pimpirikli ama doktor kiracısıyla gurur duyan, arada komşuların tansiyonunu soran ev sahibi', unread: false, msgs: [
       { from: 'Rıza Bey', text: 'Doktor oğlum hayırlı nöbetler, üst kattaki teyze tansiyon aleti bozuldu diye seni sordu.' }
@@ -703,12 +737,13 @@ const state = {
 };
 
 const WORLD_BUILDINGS = [
-  { id: 'er',      name: '🏥 HASTANE ACİL',    x: 24,  y: 22, w: 96,  h: 48, color: '#1c7ed6', roof: '#1864ab' },
-  { id: 'diner',   name: '🍲 ESNAF LOKANTASI', x: 155, y: 22, w: 86,  h: 44, color: '#e67700', roof: '#d9480f' },
-  { id: 'dealer',  name: '🚗 OTO GALERİ',      x: 275, y: 22, w: 92,  h: 44, color: '#2b8a3e', roof: '#237032' },
-  { id: 'home',    name: '🏠 EVİM (PS5 & TV)', x: 388, y: 22, w: 74,  h: 48, color: '#7048e8', roof: '#5f3dc4' },
-  { id: 'pitch',   name: '⚽ HALI SAHA',       x: 155, y: 122, w: 130, h: 44, color: '#2f9e44', roof: '#37b24d' },
-  { id: 'canteen', name: '☕ HASTANE KANTİNİ', x: 24,  y: 122, w: 96,  h: 44, color: '#495057', roof: '#343a40' }
+  { id: 'er',      name: '🏥 HASTANE ACİL',    x: 16,  y: 18, w: 92,  h: 44, color: '#1c7ed6', roof: '#1864ab' },
+  { id: 'icafe',   name: '🕹️ İNTERNET KAFE',   x: 126, y: 18, w: 98,  h: 44, color: '#d6336c', roof: '#a61e4d' },
+  { id: 'tech',    name: '🖥️ PS5 & MONİTÖR',   x: 242, y: 18, w: 102, h: 44, color: '#0ca678', roof: '#087f5b' },
+  { id: 'home',    name: '🏠 EVİM',            x: 364, y: 18, w: 96,  h: 44, color: '#7048e8', roof: '#5f3dc4' },
+  { id: 'dealer',  name: '🚗 OTO GALERİ',      x: 242, y: 122,w: 102, h: 44, color: '#2b8a3e', roof: '#237032' },
+  { id: 'diner',   name: '🍲 ESNAF LOKANTASI', x: 126, y: 122,w: 98,  h: 44, color: '#e67700', roof: '#d9480f' },
+  { id: 'pitch',   name: '⚽ HALI SAHA',       x: 16,  y: 122,w: 92,  h: 44, color: '#2f9e44', roof: '#37b24d' }
 ];
 
 function saveCareer() {
@@ -726,7 +761,7 @@ function loadCareer() {
     Object.assign(state, parsed);
     if (!Array.isArray(state.usedCaseIds)) state.usedCaseIds = [];
     if (!state.crypto) state.crypto = { btcPrice: 1200, goldPrice: 450, btcQty: 0, goldQty: 0 };
-    if (!state.worldPlayer) state.worldPlayer = { x: 86, y: 88, dir: 'down' };
+    if (!state.worldPlayer) state.worldPlayer = { x: 75, y: 92 };
     return true;
   } catch (e) { return false; }
 }
@@ -756,7 +791,7 @@ const INTERNS = [
 async function generateAIReply(characterName, persona, userMessage) {
   const key = state.apiKey.trim();
   const spTitle = SPECIALTIES[state.specialty].title;
-  const sysContext = `Sen bir Türk hastane ve hayat simülasyonu oyununda karakterisin. Adın: ${characterName}. Kişiliğin: ${persona}. Konuştuğun kişi: ${state.docName} (Unvan: ${spTitle}, Bakiye: ${state.money}₺, TUS Puanı: ${state.tusScore}, Arabası: ${state.assets.car}, Gün: ${state.day}). Doğal, samimi, akıcı ve karakterine yakışan Türkçe ile 1-3 cümle cevap ver.`;
+  const sysContext = `Sen bir Türk hastane ve hayat simülasyonu oyununda karakterisin. Adın: ${characterName}. Kişiliğin: ${persona}. Konuştuğun kişi: ${state.docName} (Unvan: ${spTitle}, Bakiye: ${state.money}₺, TUS Puanı: ${state.tusScore}, Arabası: ${state.assets.car}, PS5: ${state.assets.hasPs5 ? 'Var' : 'Yok'}, Gün: ${state.day}). Doğal, samimi, akıcı ve karakterine yakışan Türkçe ile 1-3 cümle cevap ver.`;
 
   if (key) {
     try {
@@ -790,10 +825,12 @@ async function generateAIReply(characterName, persona, userMessage) {
 
   if (characterName.includes('Kaan')) {
     if (m.includes('halı saha') || m.includes('maç') || m.includes('fifa') || m.includes('fc')) {
-      return `Kanka kanattan içeri kat edip plaseyi bıraktın mı kalecinin şansı yok ⚽ Eve geçince PS5'te EA FC 27 veya gerçek halı saha yapalım!`;
+      return `Kanka kanattan içeri kat edip plaseyi bıraktın mı kalecinin şansı yok ⚽ İnternet Kafede veya halı sahada maç atalım!`;
     }
-    if (m.includes('gta') || m.includes('ps5') || m.includes('araba')) {
-      return `GTA 6 Aydın Vice modunda polislerden kaçarken sarı paketleri toplamayı unutma kanka, hem stres atıyorsun hem nakit akıyor!`;
+    if (m.includes('gta') || m.includes('ps5') || m.includes('monitör')) {
+      return state.assets.hasPs5 && state.assets.hasMonitor
+        ? `Eve PS5 Pro ve 4K monitörü dizmişsin kanka! GTA 6 Aydın Vice'da polislerle çatışırken arabaya binmeyi unutma!`
+        : `Kanka eve PS5 + Monitör alana kadar İnternet Kafede 150₺ verip masaya oturalım, hem GTA 6 hem EA FC 27 akıyor!`;
     }
     return `Helal olsun ${firstName}, hem tıp hem nöbetler derken efsane gidiyorsun. Müsait olduğun an kahve veya maç yapalım!`;
   }
@@ -875,7 +912,7 @@ function addTx(desc, amt, type) {
   if (state.transactions.length > 15) state.transactions.pop();
 }
 
-/* ================= 8 SPECIALTIES x 30 CASES = 240+ CASES ================= */
+/* ================= 8 SPECIALTIES x 30 CASES = 270 CASES ================= */
 const SPECIALTY_BLUEPRINTS = {
   ophth: [
     { diag: 'Akut Açı Kapanması Glokomu', triage: 'red', action: 'treat', mg: 'iv', treat: 'IV Mannitol + Asetazolamid + Pilokarpin', srv: 'Göz Hastalıkları', radType: 'eye', radTitle: 'TONOMETRİ & BİYOMİKROSKOP',
@@ -1225,42 +1262,107 @@ function say(speaker, text, badgeText = '', badgeClass = 't-green', pitch = 300)
   }, 11);
 }
 
-/* ================= OPEN WORLD MOVEMENT (WASD / ARROWS / D-PAD) ================= */
+/* ================= EVRENSEL ANALOG JOYSTICK SİSTEMİ (AÇIK DÜNYA & KONSOL) ================= */
 const worldKeys = {};
 window.addEventListener('keydown', e => {
   worldKeys[e.code] = true;
-  if (e.code === 'KeyF' && document.getElementById('consoleOverlay').classList.contains('open')) {
-    toggleBrowserFullscreen();
-  }
+  if (e.code === 'KeyF' && document.getElementById('consoleOverlay').classList.contains('open')) toggleBrowserFullscreen();
+  if (e.code === 'KeyE' && activeArcadeMode === 'gta6') toggleGtaVehicle();
 });
 window.addEventListener('keyup', e => { worldKeys[e.code] = false; });
 
+function bindVirtualJoystick(baseId, knobId, targetVec) {
+  const base = document.getElementById(baseId);
+  const knob = document.getElementById(knobId);
+  let activeId = null;
+
+  function updateStick(clientX, clientY) {
+    const r = base.getBoundingClientRect();
+    const cx = r.left + r.width / 2;
+    const cy = r.top + r.height / 2;
+    const maxR = r.width / 2 - 16;
+    let dx = clientX - cx;
+    let dy = clientY - cy;
+    const dist = Math.hypot(dx, dy);
+    if (dist > maxR) {
+      dx = (dx / dist) * maxR;
+      dy = (dy / dist) * maxR;
+    }
+    knob.style.transform = `translate(${dx}px, ${dy}px)`;
+    targetVec.x = dx / maxR;
+    targetVec.y = dy / maxR;
+  }
+
+  function resetStick() {
+    activeId = null;
+    knob.style.transform = 'translate(0px, 0px)';
+    targetVec.x = 0;
+    targetVec.y = 0;
+  }
+
+  base.addEventListener('pointerdown', e => {
+    e.preventDefault();
+    base.setPointerCapture(e.pointerId);
+    activeId = e.pointerId;
+    updateStick(e.clientX, e.clientY);
+  });
+  base.addEventListener('pointermove', e => {
+    if (e.pointerId === activeId) updateStick(e.clientX, e.clientY);
+  });
+  base.addEventListener('pointerup', e => { if (e.pointerId === activeId) resetStick(); });
+  base.addEventListener('pointercancel', resetStick);
+}
+
+const worldJoyVec = { x: 0, y: 0 };
+const arcadeJoyVec = { x: 0, y: 0 };
+bindVirtualJoystick('worldJoyWrap', 'worldJoyKnob', worldJoyVec);
+bindVirtualJoystick('arcadeJoyBase', 'arcadeJoyKnob', arcadeJoyVec);
+
+const padPrimary = document.getElementById('btnPadPrimary');
+padPrimary.addEventListener('pointerdown', e => { e.preventDefault(); worldKeys['Space'] = true; });
+padPrimary.addEventListener('pointerup', e => { e.preventDefault(); worldKeys['Space'] = false; });
+padPrimary.addEventListener('pointercancel', () => { worldKeys['Space'] = false; });
+
+const padSecondary = document.getElementById('btnPadSecondary');
+padSecondary.addEventListener('pointerdown', e => {
+  e.preventDefault();
+  if (activeArcadeMode === 'gta6') toggleGtaVehicle();
+});
+
+/* ================= OPEN WORLD MOVEMENT ================= */
 function enterOpenWorld() {
   state.location = 'world';
   closeDrawer();
-  document.getElementById('mobileDpad').style.display = 'grid';
+  document.getElementById('worldJoyWrap').style.display = 'block';
   document.getElementById('zoomHint').style.display = 'none';
-  document.getElementById('sceneTag').textContent = 'AYDIN AÇIK DÜNYA — WASD / OK TUŞLARIYLA GEZ';
-  say('AÇIK DÜNYA ŞEHİR MODU', 'Yön tuşları veya WASD ile Aydın sokaklarında yürü ya da arabanla gez! Hastane, Ev (PS5 Pro), Galeri, Lokanta veya Halı Sahaya kapısından girebilirsin.', 'KEŞİF', 't-green', 340);
+  document.getElementById('sceneTag').textContent = 'AYDIN AÇIK DÜNYA — JOYSTICK / WASD İLE GEZ';
+  say('AÇIK DÜNYA ŞEHİR HARİTASI', 'Sağ üstteki Joystick veya WASD ile Aydın sokaklarında yürü ya da arabanı sür!\n• 🕹️ İnternet Kafe: Saatlik 150₺ ile PS5 Oyna\n• 🖥️ PS5 & Monitör Mağazası: Evin için satın al\n• 🏠 Evim: Kendi PS5 & Monitörünle sınırsız oyna', 'KEŞİF', 't-green', 340);
   const p = document.getElementById('subPanel');
   p.innerHTML = '';
-  addChoice(p, '🏠 Doğrudan Eve Gir & PS5 Aç (GTA 6 / EA FC 27)', () => goLocation('home'), 'purple');
-  addChoice(p, '⚽ Aydın Halı Sahaya Gir (Kanat Forvet Maçı)', () => goLocation('pitch'));
+  addChoice(p, '🕹️ İnternet Kafeye Gir (150₺ Saatlik PS5)', () => goLocation('icafe'));
+  addChoice(p, '🖥️ Teknoloji Mağazasına Git (PS5 & Monitör Al)', () => goLocation('tech'), 'purple');
+  addChoice(p, '🏠 Evime Git', () => goLocation('home'));
   addChoice(p, '🏥 Hastane Polikliniğine Dön', () => nextPatient(), 'success');
 }
 
 function updateOpenWorld() {
   const wp = state.worldPlayer;
-  const spd = state.assets.car !== 'Yok (Belediye Otobüsü)' ? 2.4 : 1.5;
-  if (worldKeys['ArrowUp'] || worldKeys['KeyW']) { wp.y = Math.max(12, wp.y - spd); wp.dir = 'up'; }
-  if (worldKeys['ArrowDown'] || worldKeys['KeyS']) { wp.y = Math.min(164, wp.y + spd); wp.dir = 'down'; }
-  if (worldKeys['ArrowLeft'] || worldKeys['KeyA']) { wp.x = Math.max(12, wp.x - spd); wp.dir = 'left'; }
-  if (worldKeys['ArrowRight'] || worldKeys['KeyD']) { wp.x = Math.min(464, wp.x + spd); wp.dir = 'right'; }
+  const spd = state.assets.car !== 'Yok (Belediye Otobüsü)' ? 2.5 : 1.6;
+  let mx = worldJoyVec.x;
+  let my = worldJoyVec.y;
+  if (worldKeys['ArrowUp'] || worldKeys['KeyW']) my = -1;
+  if (worldKeys['ArrowDown'] || worldKeys['KeyS']) my = 1;
+  if (worldKeys['ArrowLeft'] || worldKeys['KeyA']) mx = -1;
+  if (worldKeys['ArrowRight'] || worldKeys['KeyD']) mx = 1;
+
+  wp.x = Math.max(12, Math.min(466, wp.x + mx * spd));
+  wp.y = Math.max(12, Math.min(166, wp.y + my * spd));
 
   for (const b of WORLD_BUILDINGS) {
     if (wp.x > b.x && wp.x < b.x + b.w && wp.y > b.y && wp.y < b.y + b.h) {
       wp.y += (wp.y < 90 ? 18 : -18);
-      document.getElementById('mobileDpad').style.display = 'none';
+      worldJoyVec.x = 0; worldJoyVec.y = 0;
+      document.getElementById('worldJoyWrap').style.display = 'none';
       if (b.id === 'er') nextPatient();
       else goLocation(b.id);
       break;
@@ -1270,7 +1372,7 @@ function updateOpenWorld() {
 
 /* ================= NEXT PATIENT & CLINICAL FLOW ================= */
 function nextPatient() {
-  document.getElementById('mobileDpad').style.display = 'none';
+  document.getElementById('worldJoyWrap').style.display = 'none';
   if (state.warnings >= 3) {
     localStorage.removeItem(SAVE_KEY);
     gameOver('3 İdari Uyarı aldın! Başhekimlik sözleşmeni feshetti — Kırsal Sağlık Ocağına Sürgün Edildin.');
@@ -1526,19 +1628,35 @@ function startMedicalMiniGame(type, label) {
   };
 }
 
-/* ================= FULLSCREEN PS5 CONSOLE (GTA 6 & EA FC 27) ================= */
+/* =========================================================================
+   TAM EKRAN KONSOL OYUN MOTORU (800x450):
+   1) GTA 6: 3. ŞAHIS BAKIŞ AÇISI (TPS) + SİLAH + POLİS ÇATIŞMASI + ARABA
+   2) EA FC 27: DÜZELTİLMİŞ KANAT FORVET, PLASE ŞUT & KALECİ FİZİĞİ
+   ========================================================================= */
 let activeArcadeMode = null;
+let arcadeIsCafeSession = false;
 let arcadeAnimId = null;
 
-function openConsole(defaultGame = 'gta6') {
+function openConsole(defaultGame = 'gta6', isCafe = false) {
   closeDrawer();
+  arcadeIsCafeSession = isCafe;
   document.getElementById('consoleOverlay').classList.add('open');
   launchConsoleGame(defaultGame);
+}
+
+function switchConsoleGame(mode) {
+  if (!arcadeIsCafeSession && (!state.assets.hasPs5 || !state.assets.hasMonitor)) {
+    alert('Evde PS5 ve Monitör kurulu değil!');
+    return;
+  }
+  launchConsoleGame(mode);
 }
 
 function closeConsole() {
   if (arcadeAnimId) { cancelAnimationFrame(arcadeAnimId); arcadeAnimId = null; }
   activeArcadeMode = null;
+  arcadeJoyVec.x = 0; arcadeJoyVec.y = 0;
+  worldKeys['Space'] = false;
   document.getElementById('consoleOverlay').classList.remove('open');
   if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
 }
@@ -1557,182 +1675,377 @@ function launchConsoleGame(mode) {
   x.imageSmoothingEnabled = false;
 
   if (mode === 'gta6') {
-    document.getElementById('consoleTitle').textContent = '🚗 PS5 PRO — GTA 6: AYDIN VICE (16-BIT)';
-    document.getElementById('arcadeHelp').textContent = 'WASD / Ok Tuşları: Sür | SPACE: El Freni | Sarı Paketleri Topla, Polisten Kaç!';
-    startGta6Mini(c, x);
+    document.getElementById('consoleTitle').textContent = '🔫 GTA 6: AYDIN VICE — 3. ŞAHIS (TPS) & SİLAH MODU';
+    document.getElementById('arcadeHelp').textContent = 'Joystick / WASD: Koş & Nişan Al | SPACE / Kırmızı Tuş: ATEŞ ET | E / Sarı Tuş: Arabaya Bin-İn';
+    document.getElementById('btnPadSecondary').style.display = 'block';
+    document.getElementById('btnPadPrimary').innerHTML = 'ATEŞ ET<br>(SPACE)';
+    startGta6ThirdPerson(c, x);
   } else {
-    document.getElementById('consoleTitle').textContent = '⚽ PS5 PRO — EA FC 27: KANAT FORVET MODU (16-BIT)';
-    document.getElementById('arcadeHelp').textContent = 'WASD / Ok Tuşları: Kanattan Kat Et | SPACE: Plase Şut Çek | Gol Attıkça Prim Kazan!';
-    startFifaMini(c, x);
+    document.getElementById('consoleTitle').textContent = '⚽ EA FC 27: KANAT FORVET MODU';
+    document.getElementById('arcadeHelp').textContent = 'Joystick / WASD: Dripling & Kat Et | SPACE / Kırmızı Tuş: PLASE ŞUT ÇEK';
+    document.getElementById('btnPadSecondary').style.display = 'none';
+    document.getElementById('btnPadPrimary').innerHTML = 'ŞUT ÇEK<br>(SPACE)';
+    startFifaFixed(c, x);
   }
 }
 
-function startGta6Mini(c, x) {
-  const car = { x: 320, y: 180, angle: 0, speed: 0 };
-  const cops = [
-    { x: 90, y: 80, speed: 1.55 },
-    { x: 540, y: 290, speed: 1.75 }
-  ];
-  let packageItem = { x: 480, y: 110 };
-  let cash = 0, stars = 1, bustedTimer = 0;
+let gtaPlayerRef = null;
+let gtaCarRef = null;
+
+function toggleGtaVehicle() {
+  if (!gtaPlayerRef || !gtaCarRef) return;
+  if (gtaPlayerRef.inCar) {
+    gtaPlayerRef.inCar = false;
+    gtaPlayerRef.x = gtaCarRef.x + 28;
+    gtaPlayerRef.y = gtaCarRef.y;
+  } else {
+    if (Math.hypot(gtaPlayerRef.x - gtaCarRef.x, gtaPlayerRef.y - gtaCarRef.y) < 55) {
+      gtaPlayerRef.inCar = true;
+    }
+  }
+}
+
+function startGta6ThirdPerson(c, x) {
+  const WORLD_SIZE = 2000;
+  const player = { x: 1000, y: 1000, angle: 0, hp: 100, inCar: false, fireCd: 0 };
+  const car = { x: 1060, y: 1000, angle: 0, speed: 0 };
+  gtaPlayerRef = player;
+  gtaCarRef = car;
+
+  const bullets = [];
+  const enemies = [];
+  const lootBags = [];
+
+  for (let i = 0; i < 12; i++) {
+    enemies.push({
+      x: 400 + Math.random() * 1200,
+      y: 400 + Math.random() * 1200,
+      hp: 60,
+      shootCd: 60 + Math.floor(Math.random() * 60)
+    });
+  }
+  for (let i = 0; i < 8; i++) {
+    lootBags.push({ x: 300 + Math.random() * 1400, y: 300 + Math.random() * 1400 });
+  }
+
+  let viceCash = 0, kills = 0, stars = 1;
+
+  function fireWeapon() {
+    if (player.fireCd > 0) return;
+    player.fireCd = 10;
+    playBlip(520, 'sawtooth', 0.05, 0.05);
+    const originX = player.inCar ? car.x : player.x;
+    const originY = player.inCar ? car.y : player.y;
+    const ang = player.inCar ? car.angle : player.angle;
+    bullets.push({
+      x: originX + Math.cos(ang) * 18,
+      y: originY + Math.sin(ang) * 18,
+      vx: Math.cos(ang) * 11,
+      vy: Math.sin(ang) * 11,
+      fromPlayer: true,
+      life: 55
+    });
+  }
 
   function loop() {
     if (activeArcadeMode !== 'gta6') return;
+    if (player.fireCd > 0) player.fireCd--;
 
-    if (bustedTimer > 0) {
-      bustedTimer--;
-      x.fillStyle = 'rgba(15, 23, 42, 0.85)'; x.fillRect(0, 0, 640, 360);
-      x.fillStyle = '#ff6b6b'; x.font = 'bold 28px monospace';
-      x.fillText('YAKALANDIN! (BUSTED)', 170, 175);
-      x.fillStyle = '#fff'; x.font = 'bold 14px monospace';
-      x.fillText('Hastane kapısında yeniden doğuluyor...', 185, 205);
-      if (bustedTimer === 0) { car.x = 320; car.y = 180; car.speed = 0; stars = 1; }
-      arcadeAnimId = requestAnimationFrame(loop);
-      return;
+    let ix = arcadeJoyVec.x;
+    let iy = arcadeJoyVec.y;
+    if (worldKeys['ArrowLeft'] || worldKeys['KeyA']) ix = -1;
+    if (worldKeys['ArrowRight'] || worldKeys['KeyD']) ix = 1;
+    if (worldKeys['ArrowUp'] || worldKeys['KeyW']) iy = -1;
+    if (worldKeys['ArrowDown'] || worldKeys['KeyS']) iy = 1;
+
+    if (player.inCar) {
+      if (iy < -0.2) car.speed = Math.min(6.2, car.speed + 0.22);
+      else if (iy > 0.2) car.speed = Math.max(-2.8, car.speed - 0.22);
+      else car.speed *= 0.94;
+
+      if (Math.abs(car.speed) > 0.25 && Math.abs(ix) > 0.15) {
+        car.angle += ix * 0.065;
+      }
+      car.x = Math.max(60, Math.min(WORLD_SIZE - 60, car.x + Math.cos(car.angle) * car.speed));
+      car.y = Math.max(60, Math.min(WORLD_SIZE - 60, car.y + Math.sin(car.angle) * car.speed));
+      player.x = car.x;
+      player.y = car.y;
+      player.angle = car.angle;
+    } else {
+      const mag = Math.hypot(ix, iy);
+      if (mag > 0.15) {
+        const nx = ix / Math.max(1, mag);
+        const ny = iy / Math.max(1, mag);
+        player.x = Math.max(40, Math.min(WORLD_SIZE - 40, player.x + nx * 3.6));
+        player.y = Math.max(40, Math.min(WORLD_SIZE - 40, player.y + ny * 3.6));
+        player.angle = Math.atan2(ny, nx);
+      }
     }
 
-    if (worldKeys['ArrowUp'] || worldKeys['KeyW']) car.speed = Math.min(4.4, car.speed + 0.16);
-    else if (worldKeys['ArrowDown'] || worldKeys['KeyS']) car.speed = Math.max(-2.2, car.speed - 0.16);
-    else car.speed *= 0.94;
+    if (worldKeys['Space']) fireWeapon();
 
-    if (worldKeys['Space']) car.speed *= 0.88;
-    if (Math.abs(car.speed) > 0.2) {
-      if (worldKeys['ArrowLeft'] || worldKeys['KeyA']) car.angle -= 0.065;
-      if (worldKeys['ArrowRight'] || worldKeys['KeyD']) car.angle += 0.065;
+    for (let i = bullets.length - 1; i >= 0; i--) {
+      const b = bullets[i];
+      b.x += b.vx;
+      b.y += b.vy;
+      b.life--;
+      if (b.life <= 0) { bullets.splice(i, 1); continue; }
+
+      if (b.fromPlayer) {
+        for (let j = enemies.length - 1; j >= 0; j--) {
+          const en = enemies[j];
+          if (Math.hypot(b.x - en.x, b.y - en.y) < 18) {
+            en.hp -= 30;
+            bullets.splice(i, 1);
+            if (en.hp <= 0) {
+              enemies.splice(j, 1);
+              kills++;
+              viceCash += 300;
+              stars = Math.min(5, Math.floor(kills / 2) + 1);
+              state.money += 120;
+              addTx('GTA 6 Vice Ödül Primi', 120, 'pos');
+              updateHud(); saveCareer();
+              enemies.push({
+                x: player.x + (Math.random() > 0.5 ? 360 : -360),
+                y: player.y + (Math.random() > 0.5 ? 260 : -260),
+                hp: 60, shootCd: 75
+              });
+            }
+            break;
+          }
+        }
+      } else {
+        if (Math.hypot(b.x - player.x, b.y - player.y) < 16) {
+          player.hp -= (player.inCar ? 4 : 10);
+          bullets.splice(i, 1);
+          if (player.hp <= 0) {
+            player.hp = 100;
+            player.x = 1000; player.y = 1000;
+            player.inCar = false;
+            stars = 1;
+          }
+        }
+      }
     }
 
-    car.x = Math.max(20, Math.min(620, car.x + Math.cos(car.angle) * car.speed));
-    car.y = Math.max(20, Math.min(340, car.y + Math.sin(car.angle) * car.speed));
+    enemies.forEach(en => {
+      const dist = Math.hypot(player.x - en.x, player.y - en.y);
+      const ang = Math.atan2(player.y - en.y, player.x - en.x);
+      if (dist > 130 && dist < 520) {
+        en.x += Math.cos(ang) * 1.65;
+        en.y += Math.sin(ang) * 1.65;
+      }
+      if (dist < 340) {
+        en.shootCd--;
+        if (en.shootCd <= 0) {
+          en.shootCd = 85;
+          bullets.push({
+            x: en.x + Math.cos(ang) * 14,
+            y: en.y + Math.sin(ang) * 14,
+            vx: Math.cos(ang) * 6.5,
+            vy: Math.sin(ang) * 6.5,
+            fromPlayer: false,
+            life: 60
+          });
+        }
+      }
+    });
 
-    if (Math.hypot(car.x - packageItem.x, car.y - packageItem.y) < 24) {
-      cash += 250;
-      stars = Math.min(5, stars + 1);
-      state.money += 100;
-      state.stress = Math.max(0, state.stress - 4);
-      addTx('PS5 GTA 6 Görev Ödülü', 100, 'pos');
-      updateHud(); saveCareer(); playSfx('coin');
-      packageItem = { x: 60 + Math.random() * 520, y: 50 + Math.random() * 260 };
-      document.getElementById('arcadeScore').textContent = `VICE CASH: $${cash} (+100₺ Hesap!) | ARANMA: ${'★'.repeat(stars)}`;
+    for (let i = lootBags.length - 1; i >= 0; i--) {
+      if (Math.hypot(player.x - lootBags[i].x, player.y - lootBags[i].y) < 26) {
+        viceCash += 250;
+        state.money += 100;
+        addTx('GTA 6 Çanta Ganimeti', 100, 'pos');
+        updateHud(); saveCareer(); playBlip(720, 'triangle', 0.08);
+        lootBags[i] = { x: 300 + Math.random() * 1400, y: 300 + Math.random() * 1400 };
+      }
     }
 
-    x.fillStyle = '#1e293b'; x.fillRect(0, 0, 640, 360);
+    document.getElementById('arcadeScore').textContent = `CAN: %${player.hp} | LEŞ: ${kills} | VICE CASH: $${viceCash} (+120₺/Leş) | ARANMA: ${'★'.repeat(stars)}`;
+
+    const camX = player.x - 400;
+    const camY = player.y - 225;
+
+    x.save();
+    x.translate(-camX, -camY);
+
+    x.fillStyle = '#1e293b';
+    x.fillRect(0, 0, WORLD_SIZE, WORLD_SIZE);
+
     x.fillStyle = '#0f172a';
-    x.fillRect(0, 155, 640, 50);
-    x.fillRect(295, 0, 50, 360);
-    x.fillStyle = '#fcc419';
-    for (let i = 0; i < 640; i += 28) x.fillRect(i, 179, 14, 2);
-    for (let j = 0; j < 360; j += 28) x.fillRect(319, j, 2, 14);
+    for (let gx = 200; gx < WORLD_SIZE; gx += 400) x.fillRect(gx, 0, 70, WORLD_SIZE);
+    for (let gy = 200; gy < WORLD_SIZE; gy += 400) x.fillRect(0, gy, WORLD_SIZE, 70);
 
-    x.fillStyle = '#334155'; x.fillRect(40, 30, 180, 95);
-    x.fillStyle = '#4c1d95'; x.fillRect(410, 30, 180, 95);
-    x.fillStyle = '#065f46'; x.fillRect(40, 235, 180, 95);
-    x.fillStyle = '#7c2d12'; x.fillRect(410, 235, 180, 95);
+    for (let bx = 290; bx < WORLD_SIZE - 200; bx += 400) {
+      for (let by = 290; by < WORLD_SIZE - 200; by += 400) {
+        x.fillStyle = '#090d16'; x.fillRect(bx + 12, by + 12, 220, 220);
+        x.fillStyle = '#334155'; x.fillRect(bx, by, 220, 220);
+        x.fillStyle = '#475569'; x.fillRect(bx + 14, by + 14, 192, 192);
+      }
+    }
 
-    x.fillStyle = '#fcc419';
-    x.fillRect(packageItem.x - 8, packageItem.y - 8, 16, 16);
-    x.fillStyle = '#000'; x.font = 'bold 11px monospace';
-    x.fillText('$', packageItem.x - 3, packageItem.y + 4);
-
-    cops.forEach((cp, idx) => {
-      const ang = Math.atan2(car.y - cp.y, car.x - cp.x);
-      cp.x += Math.cos(ang) * (cp.speed + stars * 0.14);
-      cp.y += Math.sin(ang) * (cp.speed + stars * 0.14);
-      x.fillStyle = '#ffffff'; x.fillRect(cp.x - 10, cp.y - 7, 20, 14);
-      x.fillStyle = (Math.floor(Date.now() / 120) + idx) % 2 === 0 ? '#ef4444' : '#3b82f6';
-      x.fillRect(cp.x - 4, cp.y - 3, 8, 6);
-      if (Math.hypot(car.x - cp.x, car.y - cp.y) < 18) bustedTimer = 85;
+    lootBags.forEach(lb => {
+      x.fillStyle = '#fcc419'; x.fillRect(lb.x - 10, lb.y - 10, 20, 20);
+      x.fillStyle = '#000'; x.font = 'bold 13px monospace'; x.fillText('$', lb.x - 4, lb.y + 5);
     });
 
     x.save();
     x.translate(car.x, car.y);
     x.rotate(car.angle);
-    x.fillStyle = '#ff6b6b'; x.fillRect(-13, -8, 26, 16);
-    x.fillStyle = '#38bdf8'; x.fillRect(2, -6, 6, 12);
+    x.fillStyle = '#ff6b6b'; x.fillRect(-22, -13, 44, 26);
+    x.fillStyle = '#38bdf8'; x.fillRect(4, -10, 10, 20);
+    x.fillStyle = '#fcc419'; x.fillRect(20, -10, 3, 5); x.fillRect(20, 5, 3, 5);
     x.restore();
 
-    x.fillStyle = '#fcc419'; x.font = 'bold 15px monospace';
-    x.fillText(`ARANMA: ${'★'.repeat(stars)}`, 480, 24);
+    enemies.forEach(en => {
+      x.fillStyle = '#1d4ed8'; x.fillRect(en.x - 10, en.y - 10, 20, 20);
+      x.fillStyle = '#f8f9fa'; x.fillRect(en.x - 6, en.y - 6, 12, 12);
+      x.fillStyle = '#ef4444'; x.fillRect(en.x - 12, en.y - 18, (en.hp / 60) * 24, 3);
+    });
+
+    if (!player.inCar) {
+      x.save();
+      x.translate(player.x, player.y);
+      x.rotate(player.angle);
+      x.fillStyle = '#10b981'; x.fillRect(-10, -12, 20, 24);
+      x.fillStyle = '#f1c2a5'; x.fillRect(-6, -6, 12, 12);
+      x.fillStyle = '#111827'; x.fillRect(6, 3, 18, 5);
+      x.fillStyle = '#94a3b8'; x.fillRect(20, 4, 5, 3);
+      x.restore();
+    }
+
+    bullets.forEach(b => {
+      x.fillStyle = b.fromPlayer ? '#fcc419' : '#ff6b6b';
+      x.fillRect(b.x - 3, b.y - 3, 6, 6);
+    });
+
+    x.restore();
+
+    x.fillStyle = 'rgba(9,13,22,0.8)'; x.fillRect(14, 14, 190, 44);
+    x.fillStyle = '#51cf66'; x.fillRect(22, 22, (player.hp / 100) * 174, 10);
+    x.fillStyle = '#fcc419'; x.font = 'bold 12px monospace';
+    x.fillText(`VICE CASH: $${viceCash}  ${'★'.repeat(stars)}`, 22, 48);
+    if (!player.inCar && Math.hypot(player.x - car.x, player.y - car.y) < 55) {
+      x.fillStyle = '#3bc9db'; x.font = 'bold 13px monospace';
+      x.fillText('[E veya SARI TUŞ: ARABAYA BİN]', 270, 36);
+    }
 
     arcadeAnimId = requestAnimationFrame(loop);
   }
   loop();
 }
 
-function startFifaMini(c, x) {
-  const player = { x: 110, y: 270 };
-  const keeper = { x: 585, y: 180, dir: 1 };
-  const defender = { x: 430, y: 160, dir: 1 };
-  const ball = { x: 124, y: 270, vx: 0, vy: 0, shot: false };
-  let goals = 0, shots = 0;
+function startFifaFixed(c, x) {
+  const player = { x: 140, y: 310 };
+  const keeper = { x: 730, y: 225, dir: 1 };
+  const def1 = { x: 520, y: 170, dir: 1 };
+  const def2 = { x: 610, y: 290, dir: -1 };
+  const ball = { x: 156, y: 310, vx: 0, vy: 0, shot: false, curve: 0 };
+  let goals = 0, shots = 0, bannerTimer = 0;
+
+  function resetPlay() {
+    ball.shot = false;
+    ball.vx = 0; ball.vy = 0; ball.curve = 0;
+    player.x = 130; player.y = 320;
+    ball.x = player.x + 16; ball.y = player.y;
+  }
 
   function loop() {
     if (activeArcadeMode !== 'fifa') return;
 
     if (!ball.shot) {
-      if (worldKeys['ArrowUp'] || worldKeys['KeyW']) player.y = Math.max(40, player.y - 3.2);
-      if (worldKeys['ArrowDown'] || worldKeys['KeyS']) player.y = Math.min(320, player.y + 3.2);
-      if (worldKeys['ArrowLeft'] || worldKeys['KeyA']) player.x = Math.max(40, player.x - 3.2);
-      if (worldKeys['ArrowRight'] || worldKeys['KeyD']) player.x = Math.min(540, player.x + 3.2);
-      ball.x = player.x + 12;
+      let ix = arcadeJoyVec.x;
+      let iy = arcadeJoyVec.y;
+      if (worldKeys['ArrowLeft'] || worldKeys['KeyA']) ix = -1;
+      if (worldKeys['ArrowRight'] || worldKeys['KeyD']) ix = 1;
+      if (worldKeys['ArrowUp'] || worldKeys['KeyW']) iy = -1;
+      if (worldKeys['ArrowDown'] || worldKeys['KeyS']) iy = 1;
+
+      player.x = Math.max(45, Math.min(690, player.x + ix * 3.8));
+      player.y = Math.max(45, Math.min(405, player.y + iy * 3.8));
+      ball.x = player.x + 15;
       ball.y = player.y;
 
       if (worldKeys['Space']) {
         ball.shot = true;
         shots++;
-        const targetY = player.y > 180 ? 152 : 208;
-        const ang = Math.atan2(targetY - ball.y, 600 - ball.x);
-        ball.vx = Math.cos(ang) * 7.8;
-        ball.vy = Math.sin(ang) * 7.8;
+        playBlip(300, 'triangle', 0.08);
+        const targetY = player.y > 225 ? 175 : 275;
+        const ang = Math.atan2(targetY - ball.y, 750 - ball.x);
+        ball.vx = Math.cos(ang) * 9.5;
+        ball.vy = Math.sin(ang) * 9.5;
+        ball.curve = player.y > 225 ? -0.05 : 0.05;
       }
     } else {
+      ball.vy += ball.curve;
       ball.x += ball.vx;
       ball.y += ball.vy;
-      if (Math.abs(ball.x - keeper.x) < 12 && Math.abs(ball.y - keeper.y) < 22) {
-        ball.shot = false; player.x = 110; player.y = 270;
+
+      if (Math.abs(ball.x - keeper.x) < 14 && Math.abs(ball.y - keeper.y) < 24) {
+        playBlip(180, 'square', 0.08);
+        resetPlay();
       }
-      if (Math.abs(ball.x - defender.x) < 12 && Math.abs(ball.y - defender.y) < 18) {
-        ball.shot = false; player.x = 110; player.y = 270;
+      if ((Math.abs(ball.x - def1.x) < 14 && Math.abs(ball.y - def1.y) < 20) ||
+          (Math.abs(ball.x - def2.x) < 14 && Math.abs(ball.y - def2.y) < 20)) {
+        resetPlay();
       }
-      if (ball.x >= 596) {
-        if (ball.y >= 132 && ball.y <= 228) {
+      if (ball.x >= 746) {
+        if (ball.y >= 165 && ball.y <= 285) {
           goals++;
+          bannerTimer = 70;
           state.money += 150;
           state.stress = Math.max(0, state.stress - 5);
           addTx('EA FC 27 & Halı Saha Gol Primi', 150, 'pos');
-          updateHud(); saveCareer(); playSfx('coin');
+          updateHud(); saveCareer(); playBlip(880, 'triangle', 0.16);
           document.getElementById('arcadeScore').textContent = `GOL: ${goals} / ŞUT: ${shots} (+150₺ Maç Primi!)`;
         }
-        ball.shot = false; player.x = 110; player.y = 270;
+        resetPlay();
+      } else if (ball.y < 20 || ball.y > 430) {
+        resetPlay();
       }
     }
 
-    keeper.y += keeper.dir * 2.1;
-    if (keeper.y > 215 || keeper.y < 145) keeper.dir *= -1;
-    defender.y += defender.dir * 2.5;
-    if (defender.y > 290 || defender.y < 70) defender.dir *= -1;
+    keeper.y += keeper.dir * 2.3;
+    if (keeper.y > 268 || keeper.y < 182) keeper.dir *= -1;
 
-    x.fillStyle = '#1b5e20'; x.fillRect(0, 0, 640, 360);
+    def1.y += def1.dir * 2.6;
+    if (def1.y > 350 || def1.y < 90) def1.dir *= -1;
+
+    def2.y += def2.dir * 2.9;
+    if (def2.y > 370 || def2.y < 100) def2.dir *= -1;
+
+    x.fillStyle = '#1b5e20'; x.fillRect(0, 0, 800, 450);
     x.fillStyle = '#2e7d32';
-    for (let sx = 0; sx < 640; sx += 64) x.fillRect(sx, 0, 32, 360);
+    for (let sx = 0; sx < 800; sx += 80) x.fillRect(sx, 0, 40, 450);
 
-    x.strokeStyle = '#ffffff'; x.lineWidth = 2;
-    x.strokeRect(24, 20, 576, 320);
-    x.strokeRect(480, 90, 120, 180);
-    x.fillStyle = 'rgba(255,255,255,0.22)'; x.fillRect(600, 132, 22, 96);
-    x.strokeRect(600, 132, 22, 96);
+    x.strokeStyle = '#ffffff'; x.lineWidth = 2.5;
+    x.strokeRect(30, 25, 720, 400);
+    x.strokeRect(610, 115, 140, 220);
+    x.fillStyle = 'rgba(255,255,255,0.22)'; x.fillRect(750, 165, 28, 120);
+    x.strokeRect(750, 165, 28, 120);
 
-    x.fillStyle = '#e03131'; x.fillRect(player.x - 8, player.y - 10, 16, 20);
-    x.fillStyle = '#fcc419'; x.fillRect(player.x - 6, player.y - 16, 12, 6);
+    x.fillStyle = '#e03131'; x.fillRect(player.x - 10, player.y - 12, 20, 24);
+    x.fillStyle = '#fcc419'; x.fillRect(player.x - 7, player.y - 19, 14, 7);
 
-    x.fillStyle = '#1971c2'; x.fillRect(defender.x - 8, defender.y - 10, 16, 20);
-    x.fillStyle = '#fcc419'; x.fillRect(keeper.x - 8, keeper.y - 12, 16, 24);
+    x.fillStyle = '#1971c2';
+    x.fillRect(def1.x - 10, def1.y - 12, 20, 24);
+    x.fillRect(def2.x - 10, def2.y - 12, 20, 24);
+    x.fillStyle = '#fcc419';
+    x.fillRect(keeper.x - 10, keeper.y - 15, 20, 30);
 
     x.fillStyle = '#ffffff';
-    x.beginPath(); x.arc(ball.x, ball.y, 5, 0, Math.PI * 2); x.fill();
+    x.beginPath(); x.arc(ball.x, ball.y, 6, 0, Math.PI * 2); x.fill();
 
-    x.fillStyle = '#0f172a'; x.fillRect(24, 4, 210, 22);
-    x.fillStyle = '#fcc419'; x.font = 'bold 12px monospace';
-    x.fillText(`AYDIN FC ${goals} - 0 RAKİP`, 34, 19);
+    x.fillStyle = '#0f172a'; x.fillRect(30, 6, 250, 26);
+    x.fillStyle = '#fcc419'; x.font = 'bold 14px monospace';
+    x.fillText(`AYDIN FC ${goals} - 0 RAKİP`, 42, 24);
+
+    if (bannerTimer > 0) {
+      bannerTimer--;
+      x.fillStyle = 'rgba(15, 23, 42, 0.85)'; x.fillRect(240, 185, 320, 64);
+      x.fillStyle = '#51cf66'; x.font = 'bold 28px monospace';
+      x.fillText('GOOOOOL! +150₺', 280, 226);
+    }
 
     arcadeAnimId = requestAnimationFrame(loop);
   }
@@ -1893,8 +2206,8 @@ function endOfShiftSummary() {
   const panel = document.getElementById('subPanel');
   panel.innerHTML = '';
 
-  addChoice(panel, '🏠 Eve Git & PS5 Oyna (Tam Ekran GTA 6 & EA FC 27)', () => goLocation('home'), 'purple');
-  addChoice(panel, '🌆 Açık Dünyada Şehir Turu At', () => enterOpenWorld(), 'success');
+  addChoice(panel, '🌆 Açık Dünyada Gez (İnternet Kafe / PS5 Mağaza / Ev)', () => enterOpenWorld(), 'success');
+  addChoice(panel, '🕹️ İnternet Kafeye Git (150₺ Saatlik PS5 Oyna)', () => goLocation('icafe'), 'purple');
   addChoice(panel, '🎓 TUS Çalış & 8 Uzmanlık Dalından Birini Seç', () => openDrawer('tus'));
   if (hasCar) {
     addChoice(panel, `${state.assets.car} İle Eve Sür (Yakıt: %${state.assets.fuel})`, () => driveHomeWithCar());
@@ -1960,7 +2273,7 @@ function startBusEmergency() {
   panel.appendChild(btn);
 }
 
-/* ================= SMARTPHONE APPS ================= */
+/* ================= SMARTPHONE APPS (TÜM UYGULAMALAR EKSİKSİZ) ================= */
 function openPhone() {
   document.getElementById('phoneDot').style.display = 'none';
   openPhoneApp('home');
@@ -1971,7 +2284,7 @@ function openPhoneApp(app) {
   const hStr = String(state.hour % 24).padStart(2, '0');
   body.innerHTML = `
     <div class="phone-shell">
-      <div class="phone-status"><span>TıpCell 5G</span><span>${hStr}:00</span><span>${state.apiKey ? 'AI API AKTİF' : 'DAHİLİ AI v5'}</span></div>
+      <div class="phone-status"><span>TıpCell 5G</span><span>${hStr}:00</span><span>${state.apiKey ? 'AI API AKTİF' : 'DAHİLİ AI v6.5'}</span></div>
       <div id="phoneScreen" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding-right:2px;"></div>
       <button class="choice-btn center" style="margin-top:8px;" onclick="openPhoneApp('home')">⌂ ANA EKRANA DÖN</button>
     </div>
@@ -1985,8 +2298,6 @@ function openPhoneApp(app) {
         ${state.docName}<br><span style="color:var(--accent-purple);font-size:11px;">${SPECIALTIES[state.specialty].title}</span>
       </div>
       <div class="app-grid">
-        <div class="app-icon" onclick="openConsole('gta6')"><span class="ico">🚗</span><span>PS5: GTA 6</span></div>
-        <div class="app-icon" onclick="openConsole('fifa')"><span class="ico">⚽</span><span>PS5: FC 27</span></div>
         <div class="app-icon" onclick="openPhoneApp('bank')">${reqBadge}<span class="ico">💳</span><span>TıpBank</span></div>
         <div class="app-icon" onclick="openPhoneApp('whatsdoc')"><span class="ico">💬</span><span>WhatsDoc</span></div>
         <div class="app-icon" onclick="openPhoneApp('casino')"><span class="ico">🎰</span><span>BetTıp Club</span></div>
@@ -1994,6 +2305,8 @@ function openPhoneApp(app) {
         <div class="app-icon" onclick="openPhoneApp('yemek')"><span class="ico">🍔</span><span>NöbetYe</span></div>
         <div class="app-icon" onclick="openPhoneApp('fotogram')"><span class="ico">📸</span><span>FotoGram</span></div>
         <div class="app-icon" onclick="openPhoneApp('haber')"><span class="ico">📰</span><span>TıpHaber</span></div>
+        <div class="app-icon" onclick="goLocation('icafe')"><span class="ico">🕹️</span><span>İnternet Kafe</span></div>
+        <div class="app-icon" onclick="goLocation('tech')"><span class="ico">🖥️</span><span>PS5 Mağaza</span></div>
       </div>`;
   }
   else if (app === 'bank') {
@@ -2506,20 +2819,55 @@ function takePhoto(mode, caption) {
   playSfx('coin'); saveCareer(); openPhoneApp('fotogram');
 }
 
-/* ================= OUTSIDE LOCATIONS (HOME WITH PS5, PITCH, CANTEEN, DINER, DEALER) ================= */
+/* ================= OUTSIDE LOCATIONS (HOME WITH PS5 & MONITOR PURCHASE, ICAFE, TECH STORE, PITCH, CANTEEN, DINER, DEALER) ================= */
 function goLocation(loc) {
   state.location = loc;
   state.activeStaffIdx = null;
-  document.getElementById('mobileDpad').style.display = 'none';
+  document.getElementById('worldJoyWrap').style.display = 'none';
   closeDrawer();
   const panel = document.getElementById('subPanel');
   panel.innerHTML = '';
 
   if (loc === 'home') {
-    document.getElementById('sceneTag').textContent = 'KENDİ EVİN — SALON & PS5 PRO OYUN KÖŞESİ';
-    say('EVİM GÜZEL EVİM', `Unvan: ${SPECIALTIES[state.specialty].title} | 4K TV ve PS5 Pro açık! Tam ekranda GTA 6 veya EA FC 27 oynayabilir, ya da TUS çalışabilirsin.`, 'EV & KONSOL', 't-purple', 320);
-    addChoice(panel, '🚗 TAM EKRAN PS5: GTA 6 — Aydın Vice Oyna', () => openConsole('gta6'), 'purple');
-    addChoice(panel, '⚽ TAM EKRAN PS5: EA FC 27 — Kanat Forvet Oyna', () => openConsole('fifa'), 'success');
+    document.getElementById('sceneTag').textContent = 'KENDİ EVİN — SALON & OYUN KÖŞESİ';
+    const hasSetup = state.assets.hasPs5 && state.assets.hasMonitor;
+
+    if (!hasSetup) {
+      const missing = [];
+      if (!state.assets.hasMonitor) missing.push('4K Gaming Monitör (2.200₺)');
+      if (!state.assets.hasPs5) missing.push('PS5 Pro Konsol (4.500₺)');
+      say(
+        'EVİM — KONSOL EKSİK!',
+        `Evde oyun oynayabilmek için kurulumunu tamamlamalısın!\nEksik Ekipman: ${missing.join(' + ')}\nParan yetmiyorsa İnternet Kafede saatlik 150₺ karşılığında oynayabilirsin.`,
+        'KURULUM YOK', 't-red', 240
+      );
+      if (!state.assets.hasMonitor) {
+        addChoice(panel, '🖥️ 4K Gaming Monitör Satın Al (2.200₺)', () => {
+          if (state.money >= 2200) {
+            state.money -= 2200; state.assets.hasMonitor = true;
+            addTx('4K Gaming Monitör Satın Alımı', -2200, 'neg');
+            updateHud(); saveCareer(); playSfx('coin');
+            goLocation('home');
+          } else alert('Yetersiz bakiye! 2.200₺ gerekli.');
+        }, 'purple');
+      }
+      if (!state.assets.hasPs5) {
+        addChoice(panel, '🎮 PS5 Pro Konsol Satın Al (4.500₺)', () => {
+          if (state.money >= 4500) {
+            state.money -= 4500; state.assets.hasPs5 = true;
+            addTx('PS5 Pro Konsol Satın Alımı', -4500, 'neg');
+            updateHud(); saveCareer(); playSfx('coin');
+            goLocation('home');
+          } else alert('Yetersiz bakiye! 4.500₺ gerekli.');
+        }, 'purple');
+      }
+      addChoice(panel, '🕹️ İnternet Kafeye Git (150₺ Saatlik PS5 Oyna)', () => goLocation('icafe'));
+    } else {
+      say('EVİM — PS5 PRO & 4K MONİTÖR AKTİF!', `Unvan: ${SPECIALTIES[state.specialty].title} | Kendi sistemin kurulu! Sınırsız ve ücretsiz olarak tam ekranda GTA 6 (3. Şahıs + Silah) veya EA FC 27 oynayabilirsin.`, 'SİSTEM HAZIR', 't-green', 340);
+      addChoice(panel, '🔫 TAM EKRAN PS5: GTA 6 — Aydın Vice (3. Şahıs & Silah)', () => openConsole('gta6', false), 'purple');
+      addChoice(panel, '⚽ TAM EKRAN PS5: EA FC 27 — Kanat Forvet Modu', () => openConsole('fifa', false), 'success');
+    }
+
     addChoice(panel, '📚 Evde TUS Çalışma Masası (-350₺, +3 TUS Puanı)', () => {
       if (state.money >= 350) {
         state.money -= 350; state.tusScore += 3;
@@ -2530,10 +2878,49 @@ function goLocation(loc) {
     addChoice(panel, '🌆 Açık Dünyaya Çık (Aydın Sokakları)', () => enterOpenWorld());
     addChoice(panel, '🏥 Yeni Nöbete Başla', () => nextPatient(), 'success');
   }
+  else if (loc === 'icafe') {
+    document.getElementById('sceneTag').textContent = 'AYDIN E-SPOR & İNTERNET KAFE';
+    say('İNTERNET KAFE İŞLETMECİSİ', '"Hoş geldin doktor! Evde PS5 ve monitörün yoksa dert etme; masalarımızda 4K monitör + PS5 Pro hazır. Saatlik 150₺!"', 'KAFE AÇIK', 't-yellow', 280);
+    addChoice(panel, '🔫 Masa 1 Aç: GTA 6 (3. Şahıs & Silah) Oyna (-150₺)', () => {
+      if (state.money >= 150) {
+        state.money -= 150; addTx('İnternet Kafe (GTA 6 Oturumu)', -150, 'neg');
+        updateHud(); saveCareer(); playSfx('coin');
+        openConsole('gta6', true);
+      } else alert('İnternet kafe ücreti için en az 150₺ gerekli!');
+    }, 'purple');
+    addChoice(panel, '⚽ Masa 2 Aç: EA FC 27 (Kanat Forvet) Oyna (-150₺)', () => {
+      if (state.money >= 150) {
+        state.money -= 150; addTx('İnternet Kafe (EA FC 27 Oturumu)', -150, 'neg');
+        updateHud(); saveCareer(); playSfx('coin');
+        openConsole('fifa', true);
+      } else alert('İnternet kafe ücreti için en az 150₺ gerekli!');
+    }, 'success');
+    addChoice(panel, '🌆 Açık Dünyaya Dön', () => enterOpenWorld());
+  }
+  else if (loc === 'tech') {
+    document.getElementById('sceneTag').textContent = 'AYDIN TEKNOLOJİ & KONSOL MAĞAZASI';
+    say('TEKNOLOJİ MAĞAZASI', `Evin için ekipman durumu:\n• 4K Gaming Monitör: ${state.assets.hasMonitor ? 'ALINDI ✓' : 'YOK (2.200₺)'}\n• PS5 Pro Konsol: ${state.assets.hasPs5 ? 'ALINDI ✓' : 'YOK (4.500₺)'}`, 'MAĞAZA', 't-cyan', 300);
+    addChoice(panel, state.assets.hasMonitor ? '🖥️ 4K Gaming Monitör [ALINDI ✓]' : '🖥️ 4K Gaming Monitör Al (2.200₺)', () => {
+      if (!state.assets.hasMonitor && state.money >= 2200) {
+        state.money -= 2200; state.assets.hasMonitor = true;
+        addTx('4K Gaming Monitör Satın Alımı', -2200, 'neg');
+        updateHud(); saveCareer(); playSfx('coin'); goLocation('tech');
+      } else if (!state.assets.hasMonitor) alert('Yetersiz bakiye!');
+    }, state.assets.hasMonitor ? 'success' : 'purple');
+    addChoice(panel, state.assets.hasPs5 ? '🎮 PS5 Pro Konsol [ALINDI ✓]' : '🎮 PS5 Pro Konsol Al (4.500₺)', () => {
+      if (!state.assets.hasPs5 && state.money >= 4500) {
+        state.money -= 4500; state.assets.hasPs5 = true;
+        addTx('PS5 Pro Konsol Satın Alımı', -4500, 'neg');
+        updateHud(); saveCareer(); playSfx('coin'); goLocation('tech');
+      } else if (!state.assets.hasPs5) alert('Yetersiz bakiye!');
+    }, state.assets.hasPs5 ? 'success' : 'purple');
+    addChoice(panel, '🏠 Eve Git & Kurulumu Kontrol Et', () => goLocation('home'));
+    addChoice(panel, '🌆 Açık Dünyaya Dön', () => enterOpenWorld());
+  }
   else if (loc === 'pitch') {
     document.getElementById('sceneTag').textContent = 'AYDIN HALI SAHA TESİSLERİ';
     say('HALI SAHA MAÇI', 'Kanat forvet mevkisinde maça çıkıp stres at ve galibiyet primi kazan!', 'MAÇ', 't-green', 340);
-    addChoice(panel, '⚽ Maça Çık (Tam Ekran EA FC 27 Motoru)', () => openConsole('fifa'), 'success');
+    addChoice(panel, '⚽ Halı Saha Maçına Çık (Tam Ekran)', () => openConsole('fifa', true), 'success');
     addChoice(panel, '🌆 Açık Dünyaya Dön', () => enterOpenWorld());
   }
   else if (loc === 'canteen') {
@@ -2697,7 +3084,9 @@ function openDrawer(type) {
     [
       ['🌆 Açık Dünya Modunda Yürü / Araba Sür', 'world_open'],
       ['🏥 Acil Servis & Uzmanlık Polikliniği', 'er'],
-      ['🏠 Kendi Evim (PS5 Pro: GTA 6 & EA FC 27)', 'home'],
+      ['🕹️ Aydın E-Spor & İnternet Kafe (150₺)', 'icafe'],
+      ['🖥️ Teknoloji Mağazası (PS5 & Monitör Al)', 'tech'],
+      ['🏠 Kendi Evim (Salon & Oyun Köşesi)', 'home'],
       ['⚽ Aydın Halı Saha Tesisleri', 'pitch'],
       ['🎓 TUS & 8 Uzmanlık Kariyer Merkezi', 'tus_modal'],
       ['☕ Hastane Kantini (Personel & AI Sohbet)', 'canteen'],
@@ -2707,7 +3096,7 @@ function openDrawer(type) {
       if (id === 'tus_modal') openDrawer('tus');
       else if (id === 'world_open') enterOpenWorld();
       else goLocation(id);
-    }, id === 'home' ? 'purple' : (id === 'world_open' ? 'success' : '')));
+    }, id === 'tech' ? 'purple' : (id === 'world_open' ? 'success' : '')));
   }
   else if (type === 'shop') {
     const body = openSidePanel('MASA ÖZELLEŞTİRME DÜKKÂNI');
@@ -2907,17 +3296,18 @@ function drawRadiologyZoom(c, type) {
 function renderOpenWorldScene() {
   updateOpenWorld();
   pxRect(0, 0, 480, 180, '#163020');
-  pxRect(0, 82, 480, 28, '#1e293b');
-  pxRect(130, 0, 22, 180, '#1e293b');
-  pxRect(365, 0, 22, 180, '#1e293b');
-  for (let i = 0; i < 480; i += 20) pxRect(i, 95, 10, 2, '#fcc419');
+  pxRect(0, 80, 480, 28, '#1e293b');
+  pxRect(114, 0, 10, 180, '#1e293b');
+  pxRect(228, 0, 10, 180, '#1e293b');
+  pxRect(348, 0, 12, 180, '#1e293b');
+  for (let i = 0; i < 480; i += 20) pxRect(i, 93, 10, 2, '#fcc419');
 
   for (const b of WORLD_BUILDINGS) {
     pxRect(b.x, b.y, b.w, b.h, b.color);
     pxRect(b.x, b.y, b.w, 8, b.roof);
-    pxRect(b.x + b.w / 2 - 8, b.y + b.h - 12, 16, 12, '#090d16');
-    ctx.fillStyle = '#ffffff'; ctx.font = 'bold 7px monospace';
-    ctx.fillText(b.name, b.x + 4, b.y + 20);
+    pxRect(b.x + b.w / 2 - 8, b.y + b.h - 11, 16, 11, '#090d16');
+    ctx.fillStyle = '#ffffff'; ctx.font = 'bold 6.5px monospace';
+    ctx.fillText(b.name, b.x + 3, b.y + 20);
   }
 
   const wp = state.worldPlayer;
@@ -2936,250 +3326,196 @@ function renderLocationScene() {
 
   pxRect(0, 0, 480, 124, '#111827');
   pxRect(0, 124, 480, 56, '#1e293b');
-  pxRect(0, 123, 480, 2, '#334155');
 
-  if (loc === 'canteen') {
-    pxRect(24, 26, 150, 34, '#1e293b');
-    pxRect(26, 28, 146, 30, '#0f172a');
-    ctx.fillStyle = '#fcc419'; ctx.font = 'bold 8px monospace';
-    ctx.fillText('KANTİN: ÇAY 15₺ • KAHVE 45₺', 34, 46);
-    pxRect(42, 68, 32, 26, '#475569');
-    pxRect(48, 74, 20, 12, '#0f172a');
-    pxRect(56, 80, 4, 6, '#3bc9db');
-    pxRect(20, 94, 165, 30, '#7c4d2b');
-    pxRect(20, 94, 165, 4, '#a1663b');
+  if (loc === 'home') {
+    pxRect(0, 0, 480, 124, '#1b263b');
+    pxRect(22, 16, 86, 56, '#090d16');
+    pxRect(24, 18, 82, 52, '#1d3557');
+    pxRect(90, 24, 8, 8, '#fcc419');
+    pxRect(348, 22, 112, 96, '#2b1d14');
 
-    const st = state.activeStaffIdx !== null ? state.staff[state.activeStaffIdx] : state.staff[0];
-    drawPixelCharacter(310, 74, {
-      hair: st.hair || '#2b1d14',
-      shirt: st.coat === '#ffffff' ? '#3bc9db' : st.coat,
-      isDoctor: true,
-      coatColor: '#f8f9fa',
-      bob: Math.sin(tick * 0.08) * 1.2
-    });
-    ctx.fillStyle = '#fcc419'; ctx.font = 'bold 8px monospace';
-    ctx.fillText(st.name.toUpperCase(), 286, 68);
+    // TV Sehpası & PS5 + Monitör Durumu
+    pxRect(156, 98, 168, 26, '#475569');
+    if (state.assets.hasMonitor) {
+      pxRect(170, 30, 140, 64, '#090d16');
+      ctx.strokeStyle = '#3bc9db'; ctx.lineWidth = 2; ctx.strokeRect(170, 30, 140, 64);
+      ctx.fillStyle = '#51cf66'; ctx.font = 'bold 8.5px monospace';
+      ctx.fillText(state.assets.hasPs5 ? 'PS5 + 4K MONİTÖR HAZIR!' : '4K MONİTÖR (PS5 BEKLENİYOR)', 176, 64);
+    } else {
+      ctx.fillStyle = '#94a3b8'; ctx.font = 'bold 8px monospace';
+      ctx.fillText('BOŞ TV SEHPASI (MONİTÖR & PS5 YOK)', 162, 86);
+    }
+    if (state.assets.hasPs5) {
+      pxRect(298, 82, 10, 16, '#f8f9fa');
+      pxRect(300, 82, 2, 16, '#3bc9db');
+    }
+
+    drawPixelCharacter(360, 74, { isDoctor: true, shirt: '#3bc9db', bob: Math.sin(tick * 0.08) * 1 });
+    if (state.assets.car !== 'Yok (Belediye Otobüsü)') drawPixelCar(92, 152);
   }
-  else if (loc === 'diner') {
-    pxRect(0, 0, 480, 124, '#241710');
-    pxRect(110, 78, 260, 46, '#6b4226');
-    pxRect(110, 78, 260, 4, '#9c6239');
-    pxRect(145, 66, 44, 12, '#cbd5e1');
-    pxRect(149, 64, 36, 3, '#f59f00');
-    pxRect(265, 66, 44, 12, '#cbd5e1');
-    pxRect(269, 64, 36, 3, '#e03131');
-    const stY = Math.floor(tick / 5) % 10;
-    pxRect(164, 52 - stY, 2, 4, 'rgba(255,255,255,0.7)');
-    pxRect(284, 50 - stY, 2, 4, 'rgba(255,255,255,0.7)');
+  else if (loc === 'icafe') {
+    pxRect(0, 0, 480, 124, '#1a1026');
+    pxRect(0, 124, 480, 56, '#0f172a');
+    for (let m = 0; m < 3; m++) {
+      const mx = 60 + m * 130;
+      pxRect(mx, 44, 76, 44, '#090d16');
+      ctx.strokeStyle = '#d6336c'; ctx.strokeRect(mx, 44, 76, 44);
+      ctx.fillStyle = '#fcc419'; ctx.font = 'bold 7px monospace';
+      ctx.fillText(`MASA ${m + 1}: PS5`, mx + 12, 68);
+      pxRect(mx - 6, 92, 88, 32, '#334155');
+    }
   }
-  else if (loc === 'dealer') {
-    pxRect(0, 0, 480, 124, '#0f1c26');
-    pxRect(24, 20, 220, 24, '#182b3a');
-    ctx.fillStyle = '#51cf66'; ctx.font = 'bold 9px monospace';
-    ctx.fillText('AYDIN OTO GALERİ & MAHMUT USTA', 32, 35);
-    if (state.assets.car !== 'Yok (Belediye Otobüsü)') drawPixelCar(240, 106);
-    else { ctx.fillStyle = '#e2e8f0'; ctx.fillText('Henüz aracın yok — galeriden aracını seç!', 126, 86); }
+  else if (loc === 'tech') {
+    pxRect(0, 0, 480, 124, '#0f292e');
+    pxRect(0, 124, 480, 56, '#1e293b');
+    pxRect(80, 42, 120, 62, '#090d16');
+    ctx.strokeStyle = '#3bc9db'; ctx.strokeRect(80, 42, 120, 62);
+    ctx.fillStyle = '#3bc9db'; ctx.font = 'bold 8px monospace';
+    ctx.fillText('4K GAMING MONİTÖR', 94, 75);
+    pxRect(280, 42, 120, 62, '#090d16');
+    ctx.strokeStyle = '#b197fc'; ctx.strokeRect(280, 42, 120, 62);
+    ctx.fillStyle = '#b197fc';
+    ctx.fillText('PS5 PRO KONSOL', 302, 75);
   }
   else if (loc === 'pitch') {
-    pxRect(0, 0, 480, 180, '#1b5e20');
-    ctx.strokeStyle = '#fff'; ctx.strokeRect(20, 14, 440, 152);
-    ctx.beginPath(); ctx.arc(240, 90, 28, 0, Math.PI * 2); ctx.stroke();
+    pxRect(0, 0, 480, 180, '#2b8a3e');
+    ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2; ctx.strokeRect(20, 16, 440, 148);
+    drawPixelCharacter(200, 74, { isDoctor: false, shirt: '#e03131', bob: Math.sin(tick * 0.14) * 2 });
   }
-  else if (loc === 'home') {
-    pxRect(0, 0, 480, 124, '#151c2e');
-    pxRect(36, 24, 114, 68, '#090d16');
-    ctx.strokeStyle = '#475569'; ctx.lineWidth = 2; ctx.strokeRect(36, 24, 114, 68);
-    pxRect(124, 32, 10, 10, '#fcc419');
-    if (state.assets.car !== 'Yok (Belediye Otobüsü)') drawPixelCar(92, 76);
-    // 4K Dev TV & PS5 Pro Konsol
-    pxRect(236, 30, 146, 62, '#090d16');
-    ctx.strokeStyle = '#3bc9db'; ctx.strokeRect(236, 30, 146, 62);
-    ctx.fillStyle = '#51cf66'; ctx.font = 'bold 8px monospace';
-    ctx.fillText('PS5 PRO: GTA 6 & EA FC 27', 248, 62);
-    pxRect(226, 96, 166, 28, '#475569');
-    pxRect(374, 82, 10, 14, '#f8f9fa');
-    pxRect(376, 82, 2, 14, '#3bc9db');
+  else if (loc === 'canteen') {
+    pxRect(0, 0, 480, 124, '#1e293b');
+    pxRect(28, 30, 110, 56, '#334155');
+    state.staff.forEach((st, i) => {
+      const sel = state.activeStaffIdx === i;
+      const sx = 160 + i * 74;
+      if (sel) pxRect(sx - 3, 68, 34, 48, 'rgba(252, 196, 25, 0.25)');
+      drawPixelCharacter(sx, 72, { isDoctor: true, coatColor: st.coat, hair: st.hair, shirt: '#4c6ef5', bob: Math.sin(tick * 0.08 + i) * 1 });
+    });
   }
-}
-
-function drawDetailedHospitalRoom(spec) {
-  const palettes = {
-    ophth:  { wall: '#121d33', trim: '#1d3254' },
-    cardio: { wall: '#21121b', trim: '#381d2d' },
-    emerg:  { wall: '#241316', trim: '#3d1e24' },
-    neuro:  { wall: '#19142e', trim: '#2a224d' },
-    ortho:  { wall: '#152033', trim: '#223352' },
-    peds:   { wall: '#132433', trim: '#1f3b54' },
-    ent:    { wall: '#12222b', trim: '#1d3745' },
-    surg:   { wall: '#102421', trim: '#1a3b36' },
-    none:   { wall: '#141e30', trim: '#20304d' }
-  };
-  const pal = palettes[spec] || palettes.none;
-
-  pxRect(0, 0, 480, 118, pal.wall);
-  pxRect(85, 0, 74, 3, '#e0fbfc');
-  pxRect(320, 0, 74, 3, '#e0fbfc');
-  pxRect(92, 3, 60, 115, 'rgba(224, 251, 252, 0.025)');
-  pxRect(327, 3, 60, 115, 'rgba(224, 251, 252, 0.025)');
-
-  pxRect(0, 78, 480, 40, pal.trim);
-  pxRect(0, 77, 480, 2, 'rgba(255,255,255,0.12)');
-  for (let tx = 0; tx < 480; tx += 24) pxRect(tx, 79, 1, 39, 'rgba(0,0,0,0.22)');
-
-  const shakeX = state.doorThreat ? Math.round(Math.sin(tick * 0.9) * 2) : 0;
-  const dx = 18 + shakeX;
-  pxRect(dx + 14, 15, 28, 8, state.doorThreat ? '#ff6b6b' : '#2b1419');
-  pxRect(dx + 16, 17, 24, 4, state.doorThreat ? '#ffffff' : '#e03131');
-  pxRect(dx, 26, 56, 92, '#334155');
-  pxRect(dx + 3, 29, 24, 89, '#1e293b');
-  pxRect(dx + 29, 29, 24, 89, '#1e293b');
-  pxRect(dx + 7, 36, 16, 30, '#0f2942');
-  pxRect(dx + 33, 36, 16, 30, '#0f2942');
-  pxRect(dx + 9, 38, 3, 24, '#3bc9db');
-  pxRect(dx + 35, 38, 3, 24, '#3bc9db');
-  pxRect(dx + 23, 72, 2, 8, '#fcc419');
-  pxRect(dx + 31, 72, 2, 8, '#fcc419');
-
-  if (spec === 'ophth') {
-    pxRect(88, 28, 46, 62, '#090d16');
-    pxRect(90, 30, 42, 58, '#f8f9fa');
-    ctx.fillStyle = '#000'; ctx.font = 'bold 10px monospace'; ctx.fillText('E', 108, 43);
-    ctx.font = 'bold 7px monospace'; ctx.fillText('F P', 105, 55);
-    ctx.fillText('T O Z', 101, 66); ctx.fillText('L P E D', 97, 78);
-  } else if (spec === 'cardio') {
-    pxRect(88, 30, 56, 44, '#090d16');
-    ctx.strokeStyle = '#ff6b6b'; ctx.lineWidth = 1; ctx.strokeRect(88, 30, 56, 44);
-    ctx.strokeStyle = '#51cf66'; ctx.beginPath();
-    for (let x = 91; x < 141; x += 2) {
-      const y = 55 + (((x + tick) % 16 === 0) ? -12 : 0);
-      if (x === 91) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-    }
-    ctx.stroke();
-  } else if (spec === 'neuro') {
-    pxRect(88, 30, 50, 52, '#090d16');
-    ctx.strokeStyle = '#b197fc'; ctx.strokeRect(88, 30, 50, 52);
-    ctx.beginPath(); ctx.ellipse(113, 56, 13, 18, 0, 0, Math.PI * 2); ctx.stroke();
-  } else {
-    pxRect(88, 26, 58, 48, '#070b14');
-    pxRect(87, 25, 60, 2, '#475569');
-    pxRect(87, 73, 60, 2, '#475569');
-    pxRect(116, 26, 2, 48, '#475569');
-    pxRect(98, 34, 2, 2, '#fcc419');
-    pxRect(132, 40, 2, 2, '#ffffff');
-    pxRect(104, 48, 2, 2, '#3bc9db');
+  else if (loc === 'diner') {
+    pxRect(0, 0, 480, 124, '#2b1d14');
+    pxRect(70, 82, 140, 42, '#7f4f24');
+    drawPixelCharacter(240, 74, { isDoctor: false, shirt: '#f8f9fa', bob: Math.sin(tick * 0.08) * 1 });
+    drawPixelCharacter(320, 74, { isDoctor: true, shirt: '#3bc9db', bob: 0 });
   }
-
-  pxRect(334, 26, 48, 66, '#334155');
-  pxRect(337, 29, 42, 60, '#0f172a');
-  pxRect(337, 48, 42, 2, '#475569');
-  pxRect(337, 68, 42, 2, '#475569');
-  pxRect(342, 39, 5, 9, '#3bc9db');
-  pxRect(350, 41, 5, 7, '#ff6b6b');
-  pxRect(360, 38, 6, 10, '#51cf66');
-  pxRect(344, 59, 6, 9, '#fcc419');
-  pxRect(355, 60, 5, 8, '#b197fc');
-
-  const negW = state.upgrades.dualMonitor ? 74 : 52;
-  pxRect(392, 28, negW, 42, '#1e293b');
-  pxRect(394, 30, negW - 4, 38, state.examDone.rad ? '#103c42' : '#090d16');
-  if (state.examDone.rad) {
-    pxRect(402, 36, 16, 24, '#3bc9db');
-    pxRect(422, 38, 14, 20, '#51cf66');
+  else if (loc === 'dealer') {
+    pxRect(0, 0, 480, 124, '#0f172a');
+    for (let x = 20; x < 460; x += 28) pxRect(x, 12, 14, 3, '#fcc419');
+    drawPixelCar(240, 122);
+    drawPixelCharacter(90, 76, { isDoctor: true, shirt: '#3bc9db', bob: 0 });
   }
 }
 
-function renderScene() {
+function renderLoop() {
   tick++;
   ctx.clearRect(0, 0, 480, 180);
 
   if (state.location !== 'er') {
     renderLocationScene();
-    requestAnimationFrame(renderScene);
+    requestAnimationFrame(renderLoop);
     return;
   }
 
-  drawDetailedHospitalRoom(state.specialty);
+  const sp = state.specialty;
+  let wallTop = '#141e30', wallMid = '#1b2840', trimCol = '#2d4163';
+  if (sp === 'ophth') { wallTop = '#0f292e'; wallMid = '#153b42'; trimCol = '#22b8cf'; }
+  else if (sp === 'cardio') { wallTop = '#29141d'; wallMid = '#3b1c29'; trimCol = '#e64980'; }
+  else if (sp === 'neuro') { wallTop = '#1e1633'; wallMid = '#2b204a'; trimCol = '#7950f2'; }
+  else if (sp === 'peds') { wallTop = '#142921'; wallMid = '#1d3b30'; trimCol = '#20c997'; }
 
-  const p = state.currentPatient;
-  if (p) {
-    const bob = Math.sin(tick * 0.08) * 1.1;
-    const blink = (tick % 135) < 4;
+  pxRect(0, 0, 480, 78, wallTop);
+  pxRect(0, 78, 480, 40, wallMid);
+  pxRect(0, 76, 480, 3, trimCol);
+  for (let wx = 0; wx < 480; wx += 32) pxRect(wx, 78, 1, 40, 'rgba(0,0,0,0.2)');
+
+  pxRect(18, 26, 56, 92, '#2b3a55');
+  pxRect(22, 30, 48, 88, '#131b2b');
+  pxRect(60, 72, 4, 8, '#fcc419');
+
+  pxRect(88, 28, 66, 44, '#070b14');
+  ctx.strokeStyle = '#475569'; ctx.lineWidth = 2; ctx.strokeRect(88, 28, 66, 44);
+  if (state.currentPatient && state.examDone.rad) {
+    pxRect(92, 32, 58, 36, '#132a3a');
+    pxRect(118, 36, 4, 28, '#3bc9db');
+    pxRect(104, 42, 12, 3, '#3bc9db'); pxRect(124, 42, 12, 3, '#3bc9db');
+    pxRect(104, 50, 12, 3, '#3bc9db'); pxRect(124, 50, 12, 3, '#3bc9db');
+    pxRect(106, 56, 10, 8, '#fcc419');
+  } else {
+    ctx.fillStyle = '#475569'; ctx.font = 'bold 7px monospace'; ctx.fillText('NEGATOSKOP', 98, 52);
+  }
+
+  pxRect(172, 24, 96, 36, '#090d16');
+  ctx.strokeStyle = '#3b4d6b'; ctx.strokeRect(172, 24, 96, 36);
+  ctx.fillStyle = '#fcc419'; ctx.font = 'bold 8px monospace';
+  const bannerLabel = sp === 'none' ? 'ACİL TRİYAJ' : SPECIALTIES[sp].serviceName.toUpperCase();
+  ctx.fillText(bannerLabel.slice(0, 14), 179, 45);
+
+  pxRect(334, 26, 48, 66, '#334155');
+  pxRect(337, 29, 42, 60, '#e9ecef');
+  pxRect(341, 34, 34, 2, '#1c7ed6');
+  pxRect(341, 40, 26, 2, '#adb5bd');
+  pxRect(341, 46, 30, 2, '#adb5bd');
+  pxRect(341, 52, 22, 2, '#e03131');
+
+  pxRect(410, 24, 52, 46, '#2b3a55');
+  pxRect(414, 28, 44, 38, '#0b132b');
+  pxRect(444, 33, 6, 6, '#fcc419');
+  pxRect(418, 52, 8, 14, '#1e293b');
+  pxRect(430, 48, 10, 18, '#1e293b');
+
+  const blinkNow = (tick % 130) < 5;
+  const intern = INTERNS[state.internIdx];
+  drawPixelCharacter(170, 76, { isDoctor: true, shirt: intern.color, blink: blinkNow, bob: Math.sin(tick * 0.06) * 0.6 });
+
+  if (state.currentPatient) {
+    const app = state.currentPatient.appearance || {};
     drawPixelCharacter(218, 74, {
-      skin: p.appearance.skin,
-      hair: p.appearance.hair,
-      shirt: p.appearance.shirt,
-      isDoctor: false,
-      flush: p.appearance.flush,
-      cyanosis: p.appearance.cyanosis,
-      sweat: p.appearance.sweat,
-      pupils: p.appearance.pupils,
-      blink,
-      bob
+      ...app, isDoctor: false, blink: blinkNow,
+      bob: Math.sin(tick * 0.09) * (state.currentPatient.triage === 'red' ? 1.5 : 0.9)
     });
   }
 
-  const intern = INTERNS[state.internIdx];
-  drawPixelCharacter(378, 76, {
-    skin: '#f1c2a5',
-    hair: '#212529',
-    shirt: intern.color,
-    isDoctor: true,
-    coatColor: '#f8f9fa',
-    blink: (tick % 170) < 4,
-    bob: Math.cos(tick * 0.07) * 0.8
-  });
+  drawPixelCharacter(388, 76, { isDoctor: true, shirt: '#3bc9db', blink: blinkNow, bob: Math.cos(tick * 0.07) * 0.7 });
 
   pxRect(0, 118, 480, 62, '#131b2e');
   pxRect(0, 118, 480, 4, '#3b4d6b');
-  pxRect(0, 122, 480, 2, '#1e293b');
+  pxRect(0, 122, 480, 3, '#0b101b');
 
   pxRect(22, 96, 62, 36, '#1e293b');
   pxRect(25, 99, 56, 26, '#06090f');
-  pxRect(46, 132, 14, 5, '#334155');
-  const pulseX = Math.floor((tick * 1.8) % 50);
-  pxRect(27 + pulseX, 112 - (pulseX > 20 && pulseX < 25 ? 8 : 0), 3, 2, '#51cf66');
-  pxRect(27 + ((pulseX + 46) % 50), 112, 2, 1, 'rgba(81,207,102,0.5)');
+  ctx.strokeStyle = '#132a1c'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(25, 112); ctx.lineTo(81, 112); ctx.stroke();
+  const px = Math.floor((tick * 1.8) % 52);
+  let py = 112;
+  if (px > 18 && px < 22) py = 102;
+  else if (px >= 22 && px < 25) py = 119;
+  pxRect(27 + px, py, 3, 2, '#51cf66');
+  pxRect(46, 132, 14, 6, '#334155');
 
-  pxRect(188, 128, 72, 40, '#1e293b');
-  pxRect(191, 131, 66, 34, '#f8f9fa');
-  pxRect(196, 136, 36, 2, '#334155');
-  pxRect(196, 142, 52, 2, '#64748b');
-  pxRect(196, 148, 44, 2, '#64748b');
-  pxRect(196, 154, 28, 2, '#e03131');
-  pxRect(266, 136, 3, 24, '#3bc9db');
-  pxRect(266, 134, 3, 2, '#fcc419');
+  pxRect(102, 126, 24, 18, '#f8f9fa');
+  pxRect(104, 128, 20, 2, '#e03131');
+  pxRect(104, 133, 16, 2, '#495057');
 
-  const stColor = state.upgrades.littmann ? '#ff6b6b' : '#3bc9db';
-  pxRect(294, 136, 14, 2, stColor);
-  pxRect(292, 138, 2, 12, stColor);
-  pxRect(308, 138, 2, 12, stColor);
-  pxRect(294, 150, 14, 2, stColor);
-  pxRect(300, 152, 2, 6, stColor);
-  pxRect(299, 158, 4, 4, '#e2e8f0');
+  pxRect(310, 96, 62, 36, '#1e293b');
+  pxRect(313, 99, 56, 26, '#0d1b2a');
+  pxRect(317, 103, 22, 3, '#3bc9db');
+  pxRect(317, 109, 36, 2, '#adb5bd');
+  pxRect(317, 114, 28, 2, '#51cf66');
+  pxRect(334, 132, 14, 6, '#334155');
 
-  const thColor = state.upgrades.thermos ? '#51cf66' : '#f76707';
-  pxRect(344, 118, 12, 20, thColor);
-  pxRect(343, 115, 14, 3, '#cbd5e1');
-  const steamY = Math.floor(tick / 6) % 8;
-  pxRect(349, 107 - steamY, 2, 3, 'rgba(255,255,255,0.75)');
-
+  if (state.upgrades.thermos) {
+    pxRect(384, 118, 8, 16, '#e03131');
+    pxRect(384, 116, 8, 2, '#adb5bd');
+  }
   if (state.upgrades.cactus) {
-    pxRect(118, 112, 8, 14, '#51cf66');
-    pxRect(115, 116, 3, 5, '#51cf66');
-    pxRect(126, 115, 3, 5, '#51cf66');
-    pxRect(114, 126, 16, 12, '#d9480f');
+    pxRect(402, 125, 10, 9, '#d9480f');
+    pxRect(404, 116, 6, 9, '#40c057');
   }
 
-  pxRect(408, 128, 38, 26, '#991b1b');
-  pxRect(410, 130, 34, 22, '#dc2626');
-  pxRect(421, 124, 12, 4, '#1e293b');
-  pxRect(425, 134, 4, 14, '#ffffff');
-  pxRect(420, 139, 14, 4, '#ffffff');
-
-  requestAnimationFrame(renderScene);
+  requestAnimationFrame(renderLoop);
 }
 
-requestAnimationFrame(renderScene);
+requestAnimationFrame(renderLoop);
 </script>
 </body>
 </html>
