@@ -3,322 +3,382 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>AÇILIN BEN DOKTORUM! v3.1 — 16-Bit Klinik Simülasyonu & 8 Uzmanlık</title>
-<meta name="description" content="16-Bit Piksel Tıp Simülasyonu, 8 Uzmanlık Dalı, Her Branşa 30 Özel Vaka, Mini-Oyunlar & TıpBank. developer=kurtulustas">
+<title>AÇILIN BEN DOKTORUM! v4.0 — 16-Bit Klinik Simülasyonu & Tam Ekran PC</title>
+<meta name="description" content="16-Bit Piksel Tıp Simülasyonu, 8 Uzmanlık Dalı, Blackjack, Poker, At Yarışı, WhatsDoc AI & Tam Ekran PC Modu. developer=kurtulustas">
 <style>
   :root {
-    --bg-dark: #07090e;
-    --panel-dark: #0d111a;
-    --border-light: #e9ecef;
+    --bg-main: #0b101b;
+    --bg-panel: #121927;
+    --bg-card: #182234;
+    --border-subtle: #2c3b57;
+    --border-bright: #4c6ef5;
     --accent-cyan: #3bc9db;
-    --accent-gold: #ffd43b;
-    --accent-red: #ff5252;
+    --accent-gold: #fcc419;
+    --accent-red: #ff6b6b;
     --accent-green: #51cf66;
     --accent-purple: #b197fc;
-    --text-main: #f8f9fa;
-    --text-muted: #adb5bd;
-    --font-pixel: ui-monospace, 'Cascadia Mono', 'SFMono-Regular', Menlo, Monaco, Consolas, monospace;
+    --text-main: #f1f3f5;
+    --text-muted: #90a4ae;
+    --font-ui: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    --font-pixel: ui-monospace, 'Cascadia Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
     width: 100%; height: 100dvh; overflow: hidden;
-    background: #030407; color: var(--text-main);
-    font-family: var(--font-pixel);
-    display: flex; justify-content: center; align-items: center;
+    background: #06090f; color: var(--text-main);
+    font-family: var(--font-ui);
   }
+
+  /* APP SHELL: MOBİLDE TEK SÜTUN, PC'DE TAM EKRAN & SPLIT-SCREEN */
   #app {
-    width: 100%; max-width: 680px; height: 100dvh;
-    background: var(--bg-dark);
-    border-left: 3px solid var(--border-light);
-    border-right: 3px solid var(--border-light);
+    width: 100%; height: 100dvh;
+    background: var(--bg-main);
     display: flex; flex-direction: column;
     position: relative; overflow: hidden;
   }
-  .pixel-box {
-    background: var(--panel-dark);
-    border: 3px solid var(--border-light);
-    box-shadow: inset 0 0 0 2px #000000;
-    position: relative;
+  #workspace {
+    flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative;
+  }
+  #primaryCol {
+    flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0;
+  }
+  #sideDrawer {
+    display: none;
+    background: #0d1320;
+    border-left: 2px solid var(--border-subtle);
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* PC MASAÜSTÜ TAM EKRAN & İKİYE BÖLÜNME OPTİMİZASYONU */
+  @media (min-width: 960px) {
+    #workspace { flex-direction: row; }
+    #app.split-open #sideDrawer {
+      display: flex;
+      width: 440px;
+      min-width: 440px;
+      max-width: 460px;
+      animation: slideInRight 0.18s ease-out;
+    }
+    #sceneWrap { height: 48% !important; min-height: 260px !important; }
+    #dialogueText { font-size: 14.5px !important; }
+    .choice-btn { font-size: 13px !important; padding: 9px 12px !important; }
+    .act-btn { font-size: 13px !important; }
+  }
+  @media (max-width: 959px) {
+    #app.split-open #sideDrawer {
+      display: flex;
+      position: absolute;
+      inset: 46px 0 0 0;
+      z-index: 45;
+      border-left: none;
+    }
+  }
+  @keyframes slideInRight {
+    from { opacity: 0.4; transform: translateX(18px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .card-box {
+    background: var(--bg-panel);
+    border: 1.5px solid var(--border-subtle);
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.35);
   }
 
   /* START SCREEN */
   #startScreen {
     position: absolute; inset: 0; z-index: 60;
-    background: var(--bg-dark);
-    display: flex; flex-direction: column; justify-content: space-between;
-    padding: 12px; overflow-y: auto;
+    background: radial-gradient(circle at top, #162238 0%, #080c14 100%);
+    display: flex; justify-content: center; align-items: center;
+    padding: 16px; overflow-y: auto;
+  }
+  .start-container {
+    width: 100%; max-width: 560px;
+    display: flex; flex-direction: column; gap: 12px;
   }
   .title-banner {
-    text-align: center; padding: 12px 8px;
-    background: #0a0e17;
+    text-align: center; padding: 18px 14px;
+    background: linear-gradient(135deg, #131d31 0%, #0d1422 100%);
+    border: 1.5px solid #364fc7; border-radius: 10px;
   }
   .title-badge {
-    display: inline-block; background: #141c2b; color: var(--accent-cyan);
-    font-size: 10.5px; font-weight: 900; padding: 3px 8px; letter-spacing: 1px;
-    margin-bottom: 5px; border: 2px solid var(--accent-cyan);
+    display: inline-block; background: rgba(59, 201, 219, 0.14); color: var(--accent-cyan);
+    font-family: var(--font-pixel); font-size: 11px; font-weight: 800; padding: 4px 10px;
+    border-radius: 20px; border: 1px solid var(--accent-cyan); margin-bottom: 6px;
   }
   .game-title {
-    font-size: clamp(20px, 5vw, 27px); font-weight: 900;
-    color: var(--text-main); letter-spacing: 1px;
+    font-family: var(--font-pixel); font-size: clamp(22px, 4vw, 30px); font-weight: 900;
+    color: #fff; letter-spacing: 0.5px;
   }
-  .game-sub { font-size: 10.5px; color: var(--accent-green); margin-top: 4px; }
-  .setup-card { padding: 10px; display: flex; flex-direction: column; gap: 7px; margin: 6px 0; }
-  .field-row { display: flex; flex-direction: column; gap: 3px; }
-  .field-row label { font-size: 10px; color: var(--accent-gold); font-weight: 800; }
+  .game-sub { font-size: 12px; color: var(--accent-green); margin-top: 5px; font-weight: 600; }
+  .setup-card { padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+  .field-row { display: flex; flex-direction: column; gap: 4px; text-align: left; }
+  .field-row label { font-size: 11px; color: var(--accent-gold); font-weight: 700; letter-spacing: 0.3px; }
   .pixel-input, .pixel-select {
-    width: 100%; padding: 7px 9px; background: #05070c;
-    border: 2px solid #868e96; color: var(--text-main);
-    font-family: var(--font-pixel); font-size: 12px; outline: none;
+    width: 100%; padding: 9px 11px; background: #090d16;
+    border: 1.5px solid var(--border-subtle); border-radius: 6px; color: #fff;
+    font-family: var(--font-ui); font-size: 13px; outline: none;
   }
   .pixel-input:focus { border-color: var(--accent-cyan); }
-  .avatar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+  .avatar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
   .av-btn {
-    padding: 6px 4px; background: #080b12; border: 2px solid #495057;
-    color: #fff; font-family: var(--font-pixel); font-size: 10.5px; cursor: pointer;
+    padding: 8px 4px; background: #0e1420; border: 1.5px solid var(--border-subtle);
+    border-radius: 6px; color: #dee2e6; font-size: 12px; font-weight: 600; cursor: pointer;
   }
-  .av-btn.active { border-color: var(--accent-cyan); color: var(--accent-cyan); font-weight: 900; background: #101926; }
+  .av-btn.active { border-color: var(--accent-cyan); color: var(--accent-cyan); background: rgba(59,201,219,0.12); font-weight: 800; }
   .start-btn {
-    width: 100%; padding: 12px; background: #101926;
-    border: 3px solid var(--accent-green); color: var(--accent-green); font-family: var(--font-pixel);
-    font-size: 14px; font-weight: 900; cursor: pointer; letter-spacing: 1px;
+    width: 100%; padding: 13px; background: linear-gradient(90deg, #2b8a3e, #37b24d);
+    border: none; border-radius: 8px; color: #fff; font-family: var(--font-pixel);
+    font-size: 15px; font-weight: 900; cursor: pointer; letter-spacing: 0.5px;
+    box-shadow: 0 4px 14px rgba(55, 178, 77, 0.35);
   }
-  .start-btn:hover { background: var(--accent-green); color: #000; }
+  .start-btn:hover { filter: brightness(1.08); }
   .continue-btn {
-    width: 100%; padding: 10px; margin-bottom: 6px;
-    background: #101926; border: 3px solid var(--accent-gold); color: var(--accent-gold);
-    font-family: var(--font-pixel); font-size: 13px; font-weight: 900; cursor: pointer; display: none;
+    width: 100%; padding: 10px; background: rgba(252, 196, 25, 0.14);
+    border: 1.5px solid var(--accent-gold); border-radius: 7px; color: var(--accent-gold);
+    font-family: var(--font-pixel); font-size: 13px; font-weight: 800; cursor: pointer; display: none;
   }
-  .dev-footer { text-align: center; font-size: 10.5px; color: var(--text-muted); padding-top: 5px; }
+  .dev-footer { text-align: center; font-size: 11px; color: var(--text-muted); }
   .dev-footer a {
-    color: var(--accent-cyan); text-decoration: none; font-weight: 800;
-    padding: 2px 7px; border: 1px solid #868e96; background: #080b12;
+    color: var(--accent-cyan); text-decoration: none; font-weight: 700;
+    padding: 3px 9px; border-radius: 5px; border: 1px solid var(--border-subtle); background: #0d1320;
   }
 
   /* HUD */
   #hud {
-    height: 44px; min-height: 44px; padding: 0 6px;
-    background: #080b12; border-bottom: 3px solid var(--border-light);
-    display: flex; align-items: center; justify-content: space-between; gap: 3px; font-size: 10.5px;
+    height: 46px; min-height: 46px; padding: 0 12px;
+    background: #0d1320; border-bottom: 1.5px solid var(--border-subtle);
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
   }
-  .hud-stats { display: flex; align-items: center; gap: 5px; overflow: hidden; font-weight: 900; }
-  .stat-pill { padding: 2px 4px; white-space: nowrap; }
-  .rep-bar-wrap { display: inline-flex; align-items: center; gap: 4px; }
+  .hud-stats { display: flex; align-items: center; gap: 10px; overflow-x: auto; font-family: var(--font-pixel); font-size: 11.5px; font-weight: 800; }
+  .stat-pill { white-space: nowrap; display: inline-flex; align-items: center; gap: 4px; }
   .rep-bar {
-    width: 34px; height: 10px; background: #212529; border: 1px solid #fff; display: inline-block;
+    width: 44px; height: 9px; background: #1e2738; border-radius: 4px; overflow: hidden; display: inline-block; border: 1px solid #495057;
   }
-  .rep-fill { height: 100%; background: var(--accent-cyan); width: 50%; }
-  .hud-btns { display: flex; gap: 3px; }
+  .rep-fill { height: 100%; background: linear-gradient(90deg, #22b8cf, #51cf66); width: 50%; }
+  .hud-btns { display: flex; gap: 5px; flex-shrink: 0; }
   .icon-btn {
-    background: #0d111a; border: 2px solid #adb5bd; color: var(--accent-gold);
-    padding: 3px 5px; font-size: 11px; cursor: pointer; font-family: var(--font-pixel);
-    position: relative;
+    background: var(--bg-card); border: 1.5px solid var(--border-subtle); border-radius: 6px;
+    color: #fff; padding: 5px 8px; font-size: 12px; font-weight: 700; cursor: pointer;
+    position: relative; display: inline-flex; align-items: center; gap: 4px;
   }
-  .icon-btn:hover { border-color: var(--accent-cyan); }
+  .icon-btn:hover { border-color: var(--accent-cyan); background: #1f2b42; }
   .badge-dot {
-    position: absolute; top: -4px; right: -4px; width: 9px; height: 9px;
-    background: var(--accent-red); border: 1px solid #fff; border-radius: 50%; display: none;
+    position: absolute; top: -3px; right: -3px; width: 9px; height: 9px;
+    background: var(--accent-red); border: 1.5px solid #0d1320; border-radius: 50%; display: none;
   }
 
   /* TOP SCENE */
   #sceneWrap {
-    position: relative; width: 100%; height: 43%; min-height: 196px;
-    background: #06080d; border-bottom: 3px solid var(--border-light); overflow: hidden;
+    position: relative; width: 100%; height: 42%; min-height: 205px;
+    background: #080c14; border-bottom: 1.5px solid var(--border-subtle); overflow: hidden;
   }
   #gameCanvas { width: 100%; height: 100%; display: block; image-rendering: pixelated; }
-  .crt-overlay {
-    position: absolute; inset: 0; pointer-events: none;
-    background: repeating-linear-gradient(0deg, rgba(0,0,0,0.12) 0px, rgba(0,0,0,0.12) 1px, transparent 1px, transparent 3px);
-  }
   .scene-tag {
-    position: absolute; top: 6px; left: 6px;
-    background: rgba(7,9,14,0.92); border: 2px solid var(--border-light);
-    padding: 2px 6px; font-size: 9.5px; color: var(--accent-gold); font-weight: 900;
+    position: absolute; top: 8px; left: 10px;
+    background: rgba(11, 16, 27, 0.88); border: 1px solid var(--border-subtle); border-radius: 5px;
+    padding: 3px 8px; font-family: var(--font-pixel); font-size: 10.5px; color: var(--accent-gold); font-weight: 800;
   }
   .clock-tag {
-    position: absolute; top: 6px; right: 6px;
-    background: rgba(7,9,14,0.92); border: 2px solid var(--border-light);
-    padding: 2px 6px; font-size: 9.5px; color: var(--accent-cyan); font-weight: 900;
+    position: absolute; top: 8px; right: 10px;
+    background: rgba(11, 16, 27, 0.88); border: 1px solid var(--border-subtle); border-radius: 5px;
+    padding: 3px 8px; font-family: var(--font-pixel); font-size: 10.5px; color: var(--accent-cyan); font-weight: 800;
   }
   .rank-tag {
-    position: absolute; bottom: 6px; left: 6px;
-    background: rgba(7,9,14,0.92); border: 2px solid var(--accent-purple);
-    padding: 2px 6px; font-size: 9.5px; color: var(--accent-purple); font-weight: 900;
+    position: absolute; bottom: 8px; left: 10px;
+    background: rgba(11, 16, 27, 0.88); border: 1px solid var(--accent-purple); border-radius: 5px;
+    padding: 3px 8px; font-family: var(--font-pixel); font-size: 10.5px; color: var(--accent-purple); font-weight: 800;
   }
   .zoom-hint {
-    position: absolute; bottom: 6px; right: 6px;
-    background: rgba(7,9,14,0.92); border: 2px solid var(--accent-green);
-    padding: 3px 7px; font-size: 9.5px; color: var(--accent-green); cursor: pointer; display: none; font-weight: 900;
+    position: absolute; bottom: 8px; right: 10px;
+    background: rgba(11, 16, 27, 0.92); border: 1.5px solid var(--accent-green); border-radius: 5px;
+    padding: 4px 9px; font-family: var(--font-pixel); font-size: 10.5px; color: var(--accent-green); cursor: pointer; display: none; font-weight: 800;
   }
 
-  /* BOTTOM RPG ZONE */
+  /* BOTTOM CLINICAL ZONE (SOLDAN SAĞA TEMİZ HİZALAMA) */
   #bottomZone {
     flex: 1; display: flex; flex-direction: column;
-    background: var(--bg-dark); padding: 7px; gap: 7px; overflow: hidden;
+    background: var(--bg-main); padding: 10px; gap: 8px; overflow: hidden;
   }
   #dialogueBox {
-    flex: 1; padding: 9px 11px; display: flex; flex-direction: column;
-    justify-content: space-between; overflow-y: auto; background: var(--panel-dark);
+    flex: 1; padding: 12px 14px; display: flex; flex-direction: column;
+    justify-content: space-between; overflow-y: auto; text-align: left;
   }
   .speaker-header {
     display: flex; justify-content: space-between; align-items: center;
-    border-bottom: 2px solid #2b3344; padding-bottom: 4px; margin-bottom: 5px;
+    border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; margin-bottom: 8px;
   }
-  .speaker-name { color: var(--accent-gold); font-weight: 900; font-size: 12px; }
-  .triage-badge { font-size: 10px; padding: 1px 6px; font-weight: 900; border: 2px solid #fff; }
-  .t-red { background: #2b0b0e; color: var(--accent-red); border-color: var(--accent-red); }
-  .t-yellow { background: #2b2208; color: var(--accent-gold); border-color: var(--accent-gold); }
-  .t-green { background: #0b2613; color: var(--accent-green); border-color: var(--accent-green); }
+  .speaker-name { color: var(--accent-gold); font-weight: 800; font-size: 13.5px; text-align: left; }
+  .triage-badge { font-family: var(--font-pixel); font-size: 10px; padding: 2px 8px; font-weight: 800; border-radius: 4px; }
+  .t-red { background: rgba(255,107,107,0.16); color: var(--accent-red); border: 1px solid var(--accent-red); }
+  .t-yellow { background: rgba(252,196,25,0.16); color: var(--accent-gold); border: 1px solid var(--accent-gold); }
+  .t-green { background: rgba(81,207,102,0.16); color: var(--accent-green); border: 1px solid var(--accent-green); }
 
-  #dialogueText { font-size: 12.5px; line-height: 1.48; color: #f8f9fa; min-height: 36px; white-space: pre-line; }
-  #subPanel { display: flex; flex-direction: column; gap: 5px; margin-top: 6px; }
+  #dialogueText {
+    font-size: 13.5px; line-height: 1.55; color: var(--text-main);
+    min-height: 40px; white-space: pre-line; text-align: left;
+  }
+  #subPanel { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; width: 100%; }
+
+  /* SOLDAN SAĞA KESİN HİZALI BUTONLAR */
   .choice-btn {
-    width: 100%; text-align: left; padding: 7px 9px;
-    background: #080b12; border: 2px solid #495057;
-    color: #f8f9fa; font-family: var(--font-pixel); font-size: 11.5px;
-    cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 6px;
+    width: 100%; text-align: left; padding: 9px 12px;
+    background: var(--bg-card); border: 1.5px solid var(--border-subtle); border-radius: 6px;
+    color: var(--text-main); font-family: var(--font-ui); font-size: 12.5px; font-weight: 600;
+    cursor: pointer; display: flex; align-items: center; justify-content: flex-start; gap: 8px;
+    transition: all 0.12s ease;
   }
-  .choice-btn::before { content: "▸ "; color: var(--accent-cyan); font-weight: 900; }
-  .choice-btn:hover, .choice-btn:active { border-color: var(--accent-cyan); color: var(--accent-cyan); background: #0f1724; }
-  .choice-btn.danger { border-color: var(--accent-red); color: #ff8787; }
-  .choice-btn.success { border-color: var(--accent-green); color: var(--accent-green); }
-  .choice-btn.purple { border-color: var(--accent-purple); color: var(--accent-purple); }
+  .choice-btn::before { content: "▸"; color: var(--accent-cyan); font-weight: 900; flex-shrink: 0; }
+  .choice-btn:hover, .choice-btn:active { border-color: var(--accent-cyan); color: #fff; background: #1f2c44; transform: translateX(2px); }
+  .choice-btn.danger { border-color: rgba(255,107,107,0.65); color: #ffa8a8; }
+  .choice-btn.danger::before { color: var(--accent-red); }
+  .choice-btn.success { border-color: rgba(81,207,102,0.65); color: #b2f2bb; }
+  .choice-btn.success::before { color: var(--accent-green); }
+  .choice-btn.purple { border-color: rgba(177,151,252,0.65); color: #d0bfff; }
+  .choice-btn.purple::before { color: var(--accent-purple); }
+  .choice-btn.center { justify-content: center; text-align: center; }
+  .choice-btn.center::before { content: ""; display: none; }
 
-  .chat-input-bar { display: flex; gap: 5px; margin-top: 4px; }
+  .chat-input-bar { display: flex; gap: 6px; margin-top: 6px; }
   .chat-input-bar input {
-    flex: 1; background: #05070c; border: 2px solid #adb5bd;
-    color: #fff; padding: 7px 8px; font-family: var(--font-pixel); font-size: 12px; outline: none;
+    flex: 1; background: #090d16; border: 1.5px solid var(--border-subtle); border-radius: 6px;
+    color: #fff; padding: 8px 10px; font-family: var(--font-ui); font-size: 12.5px; outline: none;
   }
+  .chat-input-bar input:focus { border-color: var(--accent-cyan); }
   .chat-send-btn {
-    background: #101926; color: var(--accent-cyan); border: 2px solid var(--accent-cyan);
-    padding: 0 12px; font-family: var(--font-pixel); font-weight: 900; font-size: 12px; cursor: pointer;
+    background: #1c7ed6; color: #fff; border: none; border-radius: 6px;
+    padding: 0 14px; font-weight: 700; font-size: 12px; cursor: pointer;
   }
 
   /* 4 CLINICAL ACTION TABS */
-  #mainActions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; height: 46px; min-height: 46px; }
+  #mainActions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; height: 46px; min-height: 46px; }
   .act-btn {
-    background: #0d111a;
-    border: 3px solid #868e96; color: var(--text-main);
-    font-family: var(--font-pixel); font-size: 11px; font-weight: 900;
-    cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px;
+    background: var(--bg-panel); border: 1.5px solid var(--border-subtle); border-radius: 7px;
+    color: var(--text-main); font-family: var(--font-ui); font-size: 12.5px; font-weight: 700;
+    cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;
   }
   .act-btn.active, .act-btn:hover {
-    border-color: var(--accent-cyan); color: var(--accent-cyan); background: #121b2b;
+    border-color: var(--accent-cyan); color: var(--accent-cyan); background: rgba(59, 201, 219, 0.12);
   }
 
-  /* MODAL & MINI-GAMES */
-  #modal {
-    position: absolute; inset: 0; z-index: 45;
-    background: rgba(3, 5, 9, 0.96);
-    display: none; flex-direction: column; padding: 10px;
-  }
-  .modal-card { flex: 1; display: flex; flex-direction: column; padding: 10px; overflow: hidden; }
-  .modal-head {
+  /* SIDE DRAWER (PC SPLIT-SCREEN & MOBILE OVERLAY) */
+  .drawer-head {
     display: flex; justify-content: space-between; align-items: center;
-    border-bottom: 3px solid var(--border-light); padding-bottom: 7px; margin-bottom: 8px;
+    padding: 10px 14px; background: #121927; border-bottom: 1.5px solid var(--border-subtle);
   }
-  .modal-title { font-size: 13px; font-weight: 900; color: var(--accent-gold); }
+  .drawer-title { font-family: var(--font-pixel); font-size: 12.5px; font-weight: 800; color: var(--accent-gold); }
   .close-btn {
-    background: #1a0b0e; color: var(--accent-red); border: 2px solid var(--accent-red);
-    padding: 3px 9px; font-family: var(--font-pixel); font-weight: 900; cursor: pointer;
+    background: rgba(255,107,107,0.16); color: var(--accent-red); border: 1px solid var(--accent-red);
+    border-radius: 5px; padding: 4px 10px; font-size: 11.5px; font-weight: 800; cursor: pointer;
   }
-  .modal-body { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 7px; font-size: 12px; }
+  .drawer-body {
+    flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 9px; text-align: left;
+  }
 
-  .mg-box {
-    background: #080b12; border: 3px solid var(--border-light); padding: 10px;
-    display: flex; flex-direction: column; gap: 8px; align-items: center; text-align: center;
-  }
-  #mgCanvas {
-    width: 100%; max-width: 320px; height: 150px;
-    background: #05070c; border: 3px solid var(--border-light); image-rendering: pixelated;
-  }
-  .mg-action-btn {
-    width: 100%; padding: 12px; background: #101926;
-    border: 3px solid var(--accent-green); color: var(--accent-green); font-family: var(--font-pixel);
-    font-size: 14px; font-weight: 900; cursor: pointer;
-  }
-  .mg-action-btn:hover { background: var(--accent-green); color: #000; }
-
-  /* PHONE UI */
-  .phone-frame {
-    border: 3px solid var(--border-light); background: #07090e;
-    padding: 10px; flex: 1; display: flex; flex-direction: column; justify-content: space-between;
-    overflow: hidden;
+  /* SMARTPHONE UI */
+  .phone-shell {
+    border: 2px solid #364fc7; border-radius: 16px; background: #090d16;
+    padding: 12px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; overflow: hidden;
   }
   .phone-status {
-    display: flex; justify-content: space-between; font-size: 10px; color: var(--accent-green);
-    border-bottom: 2px solid #2b3344; padding-bottom: 5px; margin-bottom: 6px;
+    display: flex; justify-content: space-between; font-family: var(--font-pixel); font-size: 10px; color: var(--accent-green);
+    border-bottom: 1px solid var(--border-subtle); padding-bottom: 6px; margin-bottom: 8px;
   }
-  .app-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 6px 0; }
+  .app-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 4px 0; }
   .app-icon {
-    background: #0d111a; border: 2px solid #868e96; padding: 10px 4px;
-    text-align: center; cursor: pointer; display: flex; flex-direction: column; gap: 4px; align-items: center;
-    font-size: 11px; color: #fff; font-weight: 800; position: relative;
+    background: var(--bg-card); border: 1.5px solid var(--border-subtle); border-radius: 10px; padding: 11px 4px;
+    text-align: center; cursor: pointer; display: flex; flex-direction: column; gap: 5px; align-items: center;
+    font-size: 11.5px; color: #f1f3f5; font-weight: 700; position: relative; transition: 0.12s;
   }
-  .app-icon:hover { border-color: var(--accent-cyan); color: var(--accent-cyan); }
-  .app-icon span.ico { font-size: 20px; }
+  .app-icon:hover { border-color: var(--accent-cyan); transform: translateY(-2px); background: #202d46; }
+  .app-icon span.ico { font-size: 22px; }
+
+  /* CASINO / CARDS / HORSE RACING */
+  .casino-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
+  .c-tab {
+    padding: 7px 4px; background: var(--bg-card); border: 1.5px solid var(--border-subtle); border-radius: 6px;
+    color: #dee2e6; font-size: 11.5px; font-weight: 700; cursor: pointer; text-align: center;
+  }
+  .c-tab.active { border-color: var(--accent-gold); color: var(--accent-gold); background: rgba(252,196,25,0.12); }
+  .card-row { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin: 6px 0; }
+  .p-card {
+    width: 48px; height: 68px; background: #f8f9fa; color: #111; border-radius: 6px;
+    border: 2px solid #adb5bd; display: flex; flex-direction: column; justify-content: space-between;
+    padding: 4px 5px; font-family: var(--font-pixel); font-weight: 900; font-size: 13px;
+    cursor: pointer; user-select: none; position: relative;
+  }
+  .p-card.red { color: #e03131; }
+  .p-card.held { border-color: var(--accent-gold); box-shadow: 0 0 0 2px var(--accent-gold); transform: translateY(-4px); }
+  .p-card .hold-tag {
+    position: absolute; bottom: -14px; left: 50%; transform: translateX(-50%);
+    font-size: 8.5px; background: var(--accent-gold); color: #000; padding: 1px 4px; border-radius: 3px;
+  }
+  #raceCanvas, #mgCanvas, #zoomCanvas, #photoCanvas {
+    width: 100%; background: #06090f; border: 1.5px solid var(--border-subtle); border-radius: 8px; image-rendering: pixelated;
+  }
   .bank-card {
-    background: #0b1914; border: 3px solid var(--accent-green); padding: 10px; color: #fff;
+    background: linear-gradient(135deg, #0f2922 0%, #122036 100%);
+    border: 1.5px solid var(--accent-green); border-radius: 10px; padding: 12px; color: #fff;
   }
   .tx-row {
-    display: flex; justify-content: space-between; font-size: 11px;
-    padding: 5px 6px; background: #0d111a; border-left: 3px solid var(--accent-gold);
+    display: flex; justify-content: space-between; font-size: 11.5px;
+    padding: 6px 8px; background: var(--bg-card); border-radius: 5px; border-left: 3px solid var(--accent-gold);
   }
-  .tx-row.neg { border-left-color: var(--accent-red); color: #ff8787; }
-  .tx-row.pos { border-left-color: var(--accent-green); color: var(--accent-green); }
-  #zoomCanvas, #photoCanvas {
-    width: 100%; max-height: 220px; background: #05070c;
-    border: 3px solid var(--border-light); image-rendering: pixelated;
-  }
+  .tx-row.neg { border-left-color: var(--accent-red); color: #ffa8a8; }
+  .tx-row.pos { border-left-color: var(--accent-green); color: #b2f2bb; }
 </style>
 </head>
 <body>
 <div id="app">
   <!-- START SCREEN -->
   <div id="startScreen">
-    <div class="title-banner pixel-box">
-      <div class="title-badge">16-BIT KLİNİK SİMÜLASYONU • v3.1</div>
-      <div class="game-title">AÇILIN BEN DOKTORUM!</div>
-      <div class="game-sub">8 Uzmanlık Dalı • Her Branşa 30 Özel Vaka (240+ Vaka) • TUS & TıpBank</div>
-    </div>
+    <div class="start-container">
+      <div class="title-banner">
+        <div class="title-badge">16-BIT KLİNİK SİMÜLASYONU • v4.0</div>
+        <div class="game-title">AÇILIN BEN DOKTORUM!</div>
+        <div class="game-sub">Tam Ekran PC Modu • 8 Uzmanlık Dalı • Blackjack, Poker & At Yarışı • WhatsDoc AI</div>
+      </div>
 
-    <div class="setup-card pixel-box">
-      <button id="btnContinueSave" class="continue-btn">▸ KAYITLI KARİYERDEN DEVAM ET</button>
-      <div class="field-row">
-        <label>HEKİM ADI SOYADI</label>
-        <input id="inpDocName" class="pixel-input" type="text" value="Dr. Muhammed Kurtuluş Taş" maxlength="32">
-      </div>
-      <div class="field-row">
-        <label>GÖREV YERİ / HASTANE</label>
-        <input id="inpHospName" class="pixel-input" type="text" value="Aydın Merkez Acil Eğitim Hast." maxlength="34">
-      </div>
-      <div class="field-row">
-        <label>DOKTOR TARZI</label>
-        <div class="avatar-grid" id="avatarGrid">
-          <button type="button" class="av-btn active" data-av="0">Klasik</button>
-          <button type="button" class="av-btn" data-av="1">Gözlüklü</button>
-          <button type="button" class="av-btn" data-av="2">Uykusuz</button>
-          <button type="button" class="av-btn" data-av="3">Karizma</button>
+      <div class="setup-card card-box">
+        <button id="btnContinueSave" class="continue-btn">▸ KAYITLI KARİYERDEN DEVAM ET</button>
+        <div class="field-row">
+          <label>HEKİM ADI SOYADI</label>
+          <input id="inpDocName" class="pixel-input" type="text" value="Dr. Muhammed Kurtuluş Taş" maxlength="32">
+        </div>
+        <div class="field-row">
+          <label>GÖREV YERİ / HASTANE</label>
+          <input id="inpHospName" class="pixel-input" type="text" value="Aydın Merkez Acil Eğitim Hast." maxlength="34">
+        </div>
+        <div class="field-row">
+          <label>DOKTOR TARZI</label>
+          <div class="avatar-grid" id="avatarGrid">
+            <button type="button" class="av-btn active" data-av="0">Klasik</button>
+            <button type="button" class="av-btn" data-av="1">Gözlüklü</button>
+            <button type="button" class="av-btn" data-av="2">Uykusuz</button>
+            <button type="button" class="av-btn" data-av="3">Karizma</button>
+          </div>
+        </div>
+        <div class="field-row">
+          <label>OPSİYONEL AI API ANAHTARI (GEMINI / OPENAI — BOŞSA DAHİLİ AI ÇALIŞIR)</label>
+          <input id="inpApiKey" class="pixel-input" type="password" placeholder="AIza... veya sk-... (İsteğe bağlı gerçek AI sohbeti)">
+        </div>
+        <div class="field-row">
+          <label>NÖBET MODU</label>
+          <select id="inpDiff" class="pixel-select">
+            <option value="normal">Standart Nöbet (8 Uzmanlık x 30 Vaka + Genel Acil)</option>
+            <option value="hard">Cuma Gece Acili (Yüksek Beyaz Kod, Rüşvet & Borç Talebi)</option>
+          </select>
         </div>
       </div>
-      <div class="field-row">
-        <label>OPSİYONEL AI API ANAHTARI (GEMINI / OPENAI — BOŞSA DAHİLİ AI ÇALIŞIR)</label>
-        <input id="inpApiKey" class="pixel-input" type="password" placeholder="AIza... veya sk-... (İsteğe bağlı gerçek AI sohbeti)">
-      </div>
-      <div class="field-row">
-        <label>NÖBET MODU</label>
-        <select id="inpDiff" class="pixel-select">
-          <option value="normal">Standart Nöbet (8 Uzmanlık x 30 Vaka + Genel Acil)</option>
-          <option value="hard">Cuma Gece Acili (Yüksek Beyaz Kod, Rüşvet & Borç Talebi)</option>
-        </select>
-      </div>
-    </div>
 
-    <button id="btnStartGame" class="start-btn">NÖBETİ DEVRAL ▸</button>
+      <button id="btnStartGame" class="start-btn">NÖBETİ DEVRAL ▸</button>
 
-    <div class="dev-footer">
-      <div>8 Branş Atmosferi • 240 Uzmanlık Vakası • Canlı Vaka & Sosyalleşme</div>
-      <div style="margin-top:4px;">
-        <a href="https://github.com/kurtulustas" target="_blank" rel="noopener noreferrer">developer=kurtulustas</a>
+      <div class="dev-footer">
+        <div>PC'de Tam Ekran & Bölünmüş Akıllı Telefon • Mobilde Tam Uyumlu</div>
+        <div style="margin-top:6px;">
+          <a href="https://github.com/kurtulustas" target="_blank" rel="noopener noreferrer">developer=kurtulustas</a>
+        </div>
       </div>
     </div>
   </div>
@@ -328,59 +388,60 @@
     <div class="hud-stats">
       <span class="stat-pill" style="color:var(--accent-gold)" id="hudDay">G1 0/5</span>
       <span class="stat-pill" style="color:var(--accent-green)" id="hudMoney">1.500₺</span>
-      <span class="stat-pill rep-bar-wrap" style="color:var(--accent-cyan)">İTİBAR<span class="rep-bar"><span class="rep-fill" id="repFill"></span></span></span>
+      <span class="stat-pill" style="color:var(--accent-cyan)">İTİBAR <span class="rep-bar"><span class="rep-fill" id="repFill"></span></span></span>
       <span class="stat-pill" style="color:var(--accent-purple)" id="hudTus">TUS:42</span>
       <span class="stat-pill" style="color:var(--accent-red)" id="hudWarn">⚠️0/3</span>
     </div>
     <div class="hud-btns">
-      <button class="icon-btn" onclick="openModal('tus')" title="TUS & 8 Uzmanlık">🎓</button>
-      <button class="icon-btn" onclick="openPhone()" title="Akıllı Telefon">📱<span class="badge-dot" id="phoneDot"></span></button>
-      <button class="icon-btn" onclick="openModal('map')" title="Hastane ve Şehir">🗺️</button>
-      <button class="icon-btn" onclick="openModal('shop')" title="Masa Dükkânı">🛒</button>
+      <button class="icon-btn" onclick="openDrawer('tus')" title="TUS & 8 Uzmanlık">🎓 Uzmanlık</button>
+      <button class="icon-btn" onclick="openPhone()" title="Akıllı Telefon">📱 Telefon<span class="badge-dot" id="phoneDot"></span></button>
+      <button class="icon-btn" onclick="openDrawer('map')" title="Hastane ve Şehir">🗺️ Harita</button>
+      <button class="icon-btn" onclick="openDrawer('shop')" title="Masa Dükkânı">🛒 Ekipman</button>
       <button class="icon-btn" id="btnMusic" onclick="toggleMusic()" title="8-Bit Gece Müziği">🎵</button>
       <button class="icon-btn" id="btnSound" onclick="toggleSound()" title="Ses Efektleri">🔊</button>
     </div>
   </div>
 
-  <!-- TOP SCENE -->
-  <div id="sceneWrap">
-    <canvas id="gameCanvas" width="340" height="210"></canvas>
-    <div class="crt-overlay"></div>
-    <div class="scene-tag" id="sceneTag">ACİL SERVİS — ODA 1</div>
-    <div class="clock-tag" id="clockTag">20:00</div>
-    <div class="rank-tag" id="rankTag">🩺 PRATİSYEN HEKİM</div>
-    <div class="zoom-hint" id="zoomHint" onclick="openModal('radiology')">🔍 GÖRÜNTÜLEME YAKINLAŞTIR</div>
-  </div>
+  <!-- WORKSPACE (PC'DE EKRAN İKİYE BÖLÜNEBİLİR) -->
+  <div id="workspace">
+    <!-- SOL ANA SÜTUN -->
+    <div id="primaryCol">
+      <div id="sceneWrap">
+        <canvas id="gameCanvas" width="640" height="240"></canvas>
+        <div class="scene-tag" id="sceneTag">ACİL SERVİS — ODA 1</div>
+        <div class="clock-tag" id="clockTag">20:00</div>
+        <div class="rank-tag" id="rankTag">🩺 PRATİSYEN HEKİM</div>
+        <div class="zoom-hint" id="zoomHint" onclick="openDrawer('radiology')">🔍 GÖRÜNTÜLEME YAKINLAŞTIR</div>
+      </div>
 
-  <!-- BOTTOM CLINICAL RPG ZONE -->
-  <div id="bottomZone">
-    <div id="dialogueBox" class="pixel-box">
-      <div>
-        <div class="speaker-header">
-          <span class="speaker-name" id="speakerName">SİSTEM</span>
-          <span class="triage-badge t-green" id="triageBadge">HAZIR</span>
+      <div id="bottomZone">
+        <div id="dialogueBox" class="card-box">
+          <div>
+            <div class="speaker-header">
+              <span class="speaker-name" id="speakerName">SİSTEM</span>
+              <span class="triage-badge t-green" id="triageBadge">HAZIR</span>
+            </div>
+            <div id="dialogueText">Nöbet başladı. Sıradaki hastayı muayene et!</div>
+          </div>
+          <div id="subPanel"></div>
         </div>
-        <div id="dialogueText">Nöbet başladı. Sıradaki hastayı muayene et!</div>
+
+        <div id="mainActions">
+          <button class="act-btn active" id="tabTalk" onclick="setTab('talk')">💬 Konuş</button>
+          <button class="act-btn" id="tabExam" onclick="setTab('exam')">🩺 Muayene</button>
+          <button class="act-btn" id="tabFile" onclick="setTab('file')">🩻 Dosya</button>
+          <button class="act-btn" id="tabDecide" onclick="setTab('decide')">📋 Karar</button>
+        </div>
       </div>
-      <div id="subPanel"></div>
     </div>
 
-    <div id="mainActions">
-      <button class="act-btn active" id="tabTalk" onclick="setTab('talk')">💬 KONUŞ</button>
-      <button class="act-btn" id="tabExam" onclick="setTab('exam')">🩺 MUAYENE</button>
-      <button class="act-btn" id="tabFile" onclick="setTab('file')">🩻 DOSYA</button>
-      <button class="act-btn" id="tabDecide" onclick="setTab('decide')">📋 KARAR</button>
-    </div>
-  </div>
-
-  <!-- MODAL -->
-  <div id="modal">
-    <div class="modal-card pixel-box">
-      <div class="modal-head">
-        <span class="modal-title" id="modalTitle">BAŞLIK</span>
-        <button class="close-btn" onclick="closeModal()">KAPAT [X]</button>
+    <!-- SAĞ YAN PANEL (PC'DE BÖLÜNMÜŞ EKRAN, MOBİLDE TAM PANEL) -->
+    <div id="sideDrawer">
+      <div class="drawer-head">
+        <span class="drawer-title" id="drawerTitle">AKILLI TELEFON</span>
+        <button class="close-btn" onclick="closeDrawer()">KAPAT ✕</button>
       </div>
-      <div class="modal-body" id="modalBody"></div>
+      <div class="drawer-body" id="drawerBody"></div>
     </div>
   </div>
 </div>
@@ -418,7 +479,7 @@ function startNightMusic() {
       const o = audioCtx.createOscillator(), g = audioCtx.createGain();
       o.type = 'triangle';
       o.frequency.setValueAtTime(freq, audioCtx.currentTime);
-      g.gain.setValueAtTime(0.018, audioCtx.currentTime);
+      g.gain.setValueAtTime(0.016, audioCtx.currentTime);
       g.gain.exponentialRampToValueAtTime(0.0008, audioCtx.currentTime + 0.36);
       o.connect(g); g.connect(audioCtx.destination);
       o.start(); o.stop(audioCtx.currentTime + 0.38);
@@ -426,7 +487,7 @@ function startNightMusic() {
   }, 420);
 }
 
-function playBlip(pitch = 320, type = 'triangle', dur = 0.035, vol = 0.03) {
+function playBlip(pitch = 320, type = 'triangle', dur = 0.032, vol = 0.028) {
   if (!soundOn) return;
   try {
     initAudio();
@@ -447,9 +508,10 @@ function playSfx(kind) {
   else if (kind === 'coin') { playBlip(660, 'triangle', 0.08, 0.07); setTimeout(() => playBlip(990, 'triangle', 0.14, 0.07), 80); }
   else if (kind === 'heart') { playBlip(95, 'sine', 0.11, 0.11); setTimeout(() => playBlip(80, 'sine', 0.13, 0.09), 135); }
   else if (kind === 'msg') { playBlip(520, 'sine', 0.07, 0.06); setTimeout(() => playBlip(780, 'sine', 0.09, 0.06), 75); }
+  else if (kind === 'card') { playBlip(480, 'triangle', 0.04, 0.05); }
 }
 
-/* ================= 8 SPECIALTIES & CAREER RANKS ================= */
+/* ================= 8 SPECIALTIES ================= */
 const SPECIALTIES = {
   none:   { id: 'none',   title: 'Pratisyen Hekim',           icon: '🩺', reqTus: 40, reqRep: 40, bonusPay: 0,   serviceName: 'Acil Servis' },
   ophth:  { id: 'ophth',  title: 'Göz Hastalıkları Uzmanı',   icon: '👁️', reqTus: 54, reqRep: 50, bonusPay: 220, serviceName: 'Göz Hastalıkları' },
@@ -462,8 +524,8 @@ const SPECIALTIES = {
   surg:   { id: 'surg',   title: 'Genel Cerrahi Uzmanı',      icon: '🔪', reqTus: 56, reqRep: 52, bonusPay: 240, serviceName: 'Genel Cerrahi' }
 };
 
-/* ================= GAME STATE & LOCALSTORAGE ================= */
-const SAVE_KEY = 'acilin_ben_doktorum_v3_1';
+/* ================= GAME STATE ================= */
+const SAVE_KEY = 'acilin_ben_doktorum_v4_0';
 
 const state = {
   docName: 'Dr. Muhammed Kurtuluş Taş',
@@ -499,30 +561,49 @@ const state = {
   upgrades: { thermos: false, cactus: false, littmann: false, dualMonitor: false },
   assets: {
     car: 'Yok (Belediye Otobüsü)',
-    carColor: '#ff4d5e',
+    carColor: '#ff6b6b',
     fuel: 100,
     carHealth: 100,
-    phone: 'Standart Akıllı Telefon',
+    phone: 'TıpPhone 17 Pro',
     homeLevel: 1
   },
+  crypto: {
+    btcPrice: 1200,
+    goldPrice: 450,
+    btcQty: 0,
+    goldQty: 0
+  },
+  news: [
+    'SAĞLIK BÜLTENİ: Aydın Merkez Acil servisinde gece nöbeti yoğunluğu %40 arttı.',
+    'TUS MERKEZİ: Klinik branş kadroları için taban puanlar güncellendi.'
+  ],
   iban: 'TR42 0006 1000 1907 2026 0001 09',
   transactions: [{ desc: 'Nöbet Avansı Açılış Bakiyesi', amt: 1500, type: 'pos' }],
   loanRequests: [],
   activeLoansOut: [],
   chats: [
-    { id: 'grp', name: '🏥 Acil Nöbet Grubu', persona: 'Acil servis doktor ve hemşirelerinin yoğun nöbet grubu', unread: true, msgs: [
+    { id: 'grp', name: '🏥 Acil Nöbet Grubu', role: 'Hastane Ekibi', persona: 'Acil servis doktor ve hemşirelerinin yoğun nöbet grubu, esprili ve destekleyici', unread: true, msgs: [
       { from: 'Başhemşire Zeynep', text: 'Arkadaşlar 2. ambulans yolda, Kırmızı Alanı boş tutalım.' },
-      { from: 'Uzm. Dr. Mert', text: 'Tüm polikliniklerin görüntüleme cihazları (BT, Biyomikroskop, Odyometri) aktif!' }
+      { from: 'Uzm. Dr. Mert', text: 'Tüm görüntüleme cihazları (BT, Biyomikroskop, Odyometri) aktif!' }
     ]},
-    { id: 'chief', name: '👔 Başhekimlik Duyuru', persona: 'Hastane Başhekimi, disiplinli ve kurallara önem veren yönetici', unread: false, msgs: [
-      { from: 'Başhekim', text: '8 farklı uzmanlık dalımızda asistan kadroları TUS puanına göre açılmıştır.' }
-    ]},
-    { id: 'elif', name: '🩺 Asistan Dr. Elif', persona: 'Dahiliye asistanı, esprili, zeki, sana ilgi duyan meslektaşın', unread: true, msgs: [
+    { id: 'elif', name: '🩺 Asistan Dr. Elif', role: 'Dahiliye Asistanı', persona: 'Dahiliye asistanı, esprili, zeki, sana ilgi duyan ve flörtöz meslektaşın', unread: true, msgs: [
       { from: 'Dr. Elif', text: 'Nöbet nasıl gidiyor? Kahve molası verirsen kantindeyim ☕' }
+    ]},
+    { id: 'kaan', name: '🎓 Lise Arkadaşı Kaan', role: 'Yazılımcı / Yakın Dost', persona: 'Liseden en yakın arkadaşın, yazılımcı, kripto/borsa ve arabalardan konuşmayı seven, samimi ve goygoycu dost', unread: true, msgs: [
+      { from: 'Kaan', text: 'Kanka doktor oldun bizi unuttun! Ne zaman araba çekiyorsun altına, halı sahaya adam lazım ⚽' }
+    ]},
+    { id: 'riza', name: '🏠 Ev Sahibi Rıza Bey', role: 'Daire Sahibi', persona: 'Hafif pimpirikli ama doktor kiracısıyla gurur duyan, arada komşuların tansiyonunu soran ev sahibi', unread: false, msgs: [
+      { from: 'Rıza Bey', text: 'Doktor oğlum hayırlı nöbetler, üst kattaki teyze tansiyon aleti bozuldu diye seni sordu.' }
+    ]},
+    { id: 'mahmut', name: '🔧 Sanayi Ustası Mahmut', role: 'Oto Tamir & Modifiye', persona: 'Eski toprak sanayi ustası, Şahin ve Alman arabalarının dilinden anlayan babacan usta', unread: false, msgs: [
+      { from: 'Mahmut Usta', text: 'Doktorum arabanın yağını suyunu eksik etme, sanayiye yolun düşerse çayımız demli.' }
+    ]},
+    { id: 'chief', name: '👔 Başhekimlik Makamı', role: 'Hastane Yönetimi', persona: 'Hastane Başhekimi, disiplinli, kurallara önem veren ama başarılı hekimleri takdir eden yönetici', unread: false, msgs: [
+      { from: 'Başhekim', text: '8 farklı uzmanlık dalımızda asistan kadroları TUS puanına göre açılmıştır.' }
     ]}
   ],
   posts: [
-    { author: 'Dr. Muhammed Kurtuluş Taş', caption: 'Gece 02:00 acil nöbeti, TUS soruları ve piksel EKG... ☕🩺', likes: 34, comment: 'Başhemşire Zeynep: Eline sağlık hocam!' }
+    { author: 'Dr. Muhammed Kurtuluş Taş', caption: 'Gece 02:00 acil nöbeti, TUS soruları ve piksel EKG... ☕🩺', likes: 34 }
   ],
   staff: [
     { id: 'elif', name: 'Asistan Dr. Elif', role: 'Dahiliye Asistanı', coat: '#ffffff', hair: '#4a2511', love: 25, stage: 0,
@@ -578,6 +659,8 @@ function loadCareer() {
     const parsed = JSON.parse(raw);
     Object.assign(state, parsed);
     if (!Array.isArray(state.usedCaseIds)) state.usedCaseIds = [];
+    if (!state.crypto) state.crypto = { btcPrice: 1200, goldPrice: 450, btcQty: 0, goldQty: 0 };
+    if (!Array.isArray(state.news)) state.news = ['SAĞLIK BÜLTENİ: Gece nöbeti devam ediyor.'];
     return true;
   } catch (e) { return false; }
 }
@@ -599,13 +682,16 @@ if (localStorage.getItem(SAVE_KEY)) {
 const INTERNS = [
   { name: 'İntörn Berk', trait: 'Hızlı ama epikriz okumadan antibiyotik yazar!', color: '#3bc9db', flaw: 'allergy' },
   { name: 'İntörn Selin', trait: 'Uykusuz; çay verilmezse stetoskopu yanlış tutar.', color: '#b197fc', flaw: 'sleepy' },
-  { name: 'İntörn Emre', trait: 'Teorik dehası ama hastaya kaba davranıp kavga çıkarır.', color: '#ffd43b', flaw: 'rude' },
+  { name: 'İntörn Emre', trait: 'Teorik dehası ama hastaya kaba davranıp kavga çıkarır.', color: '#fcc419', flaw: 'rude' },
   { name: 'İntörn Zeynep', trait: 'İlk günü, çok heyecanlı ama doğru yönlendirilirse süper.', color: '#51cf66', flaw: 'nervous' }
 ];
 
-/* ================= HYBRID AI CHAT ENGINE ================= */
-async function generateAIReply(characterName, persona, userMessage) {
+/* ================= RICH CONTEXT-AWARE AI ENGINE ================= */
+async function generateAIReply(characterName, persona, userMessage, history = []) {
   const key = state.apiKey.trim();
+  const spTitle = SPECIALTIES[state.specialty].title;
+  const sysContext = `Sen bir Türk hastane ve hayat simülasyonu oyununda karakterisin. Adın: ${characterName}. Kişiliğin: ${persona}. Konuştuğun kişi: ${state.docName} (Unvan: ${spTitle}, Bakiye: ${state.money}₺, TUS Puanı: ${state.tusScore}, Arabası: ${state.assets.car}, Gün: ${state.day}). Doğal, samimi, akıcı ve karakterine yakışan Türkçe ile 1-3 cümle cevap ver.`;
+
   if (key) {
     try {
       if (key.startsWith('AIza') || key.startsWith('AQ.')) {
@@ -613,7 +699,7 @@ async function generateAIReply(characterName, persona, userMessage) {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
           body: JSON.stringify({
-            contents: [{ parts: [{ text: `Sen bir Türk hastane simülasyon oyununda karakterisin. Adın: ${characterName}. Kişiliğin: ${persona}. Konuştuğun kişi: ${state.docName} (${SPECIALTIES[state.specialty].title}). Kısa, doğal, samimi ve Türkçe 1-3 cümleyle cevap ver.\nOyuncunun mesajı: "${userMessage}"` }] }]
+            contents: [{ parts: [{ text: `${sysContext}\nOyuncunun mesajı: "${userMessage}"` }] }]
           })
         });
         const data = await res.json();
@@ -626,7 +712,7 @@ async function generateAIReply(characterName, persona, userMessage) {
           body: JSON.stringify({
             model: 'gpt-4o-mini',
             messages: [
-              { role: 'system', content: `Sen bir Türk hastane oyununda karakterisin. Adın: ${characterName}. Kişiliğin: ${persona}. Oyuncu: ${state.docName}. Kısa ve doğal Türkçe 1-3 cümle cevap ver.` },
+              { role: 'system', content: sysContext },
               { role: 'user', content: userMessage }
             ]
           })
@@ -638,32 +724,71 @@ async function generateAIReply(characterName, persona, userMessage) {
     } catch (e) {}
   }
 
+  // GELİŞMİŞ DAHİLİ YAPAY ZEKA (KARAKTER + OYUN DURUMU + KONU ANALİZİ)
   const m = userMessage.toLowerCase();
-  if (m.includes('tus') || m.includes('uzman') || m.includes('göz') || m.includes('kardiyo')) {
-    return `Senin klinik pratiğinle TUS'u rahat devirirsin ${state.docName.split(' ')[1] || 'hocam'}! Hedeflediğin uzmanlık polikliniğinde şimdiden adın geçiyor.`;
+  const firstName = state.docName.replace(/^Dr\.\s*/i, '').split(' ')[0] || 'Hocam';
+
+  if (characterName.includes('Kaan')) {
+    if (m.includes('halı saha') || m.includes('maç') || m.includes('top')) {
+      return `Kanka sen kanattan içeri kat edip plaseyi bıraktın mı zaten maç bitiyor ⚽ Nöbet çıkışını ayarla bu hafta sonu kadroyu kuruyorum!`;
+    }
+    if (m.includes('araba') || m.includes('şahin') || m.includes('sedan')) {
+      return state.assets.car.includes('Yok')
+        ? `Oğlum ${state.money}₺ birikmişin var, az daha nöbet tut da galeriden sağlam bir araba çekelim, otobüs çilesi bitsin!`
+        : `${state.assets.car} yakışır kardeşime! Akşam bir tur atalım da piyasa doktor görsün.`;
+    }
+    if (m.includes('kumar') || m.includes('poker') || m.includes('blackjack') || m.includes('at') || m.includes('para')) {
+      return `BetTıp'ta kendini kaptırma kanka, kasa her zaman kazanır! Ama at yarışında 3 numaralı Rüzgar'ın Gölgesi fena koşuyor diyorlar 👀`;
+    }
+    return `Valla helal olsun ${firstName}, hem tıp fakültesi hem ağır nöbetler derken efsane gidiyorsun. Müsait olduğun an kahve veya maç yapalım!`;
   }
-  if (m.includes('kahve') || m.includes('çay')) {
-    return `Valla bu nöbet temposunda ilaç gibi gider! İki dakika soluklanalım, acil biraz nefes aldı.`;
+
+  if (characterName.includes('Rıza')) {
+    if (m.includes('kira') || m.includes('para') || m.includes('aidat')) {
+      return `Senden kıymetli mi doktor evladım, nöbetlerin yoğun biliyorum. Sen hastaları iyileştir gerisi kolay.`;
+    }
+    if (m.includes('tansiyon') || m.includes('hasta') || m.includes('ilaç') || m.includes('ağrı')) {
+      return `Allah razı olsun oğlum, apartmanda senin gibi doktor olunca hepimizin içi rahat. Yarın gündüz uğrarsan bir çayımızı iç.`;
+    }
+    return `Sağ olasın ${firstName} oğlum, komşular hep senin ne kadar ilgili bir hekim olduğundan bahsediyor. Kolay gelsin nöbetinde.`;
   }
-  if (m.includes('araba') || m.includes('şahin') || m.includes('sedan') || m.includes('sanayi')) {
-    return state.assets.car.includes('Yok')
-      ? 'Belediye otobüsüyle nöbete gidip gelmek de ayrı macera ama yakında altına güzel bir araba çekersin!'
-      : `${state.assets.car} almışsın hayırlı olsun! Yakıtına ve sanayi bakımlarına dikkat et, yolda bırakmasın.`;
+
+  if (characterName.includes('Mahmut')) {
+    if (m.includes('hararet') || m.includes('arıza') || m.includes('tamir') || m.includes('bakım') || m.includes('şahin')) {
+      return `Şahin dediğin nazlı makinedir doktorum, devri çok zorlamazsan ömürlük gider. Sıkıntı çıkarsa dükkan senin, hemen hallederiz!`;
+    }
+    return `Eyvallah doktorum! Can kurtaran adama sanayide öncelik her zaman bizdedir, lastiğine taş değmesin.`;
   }
-  if (m.includes('sevgili') || m.includes('buluş') || m.includes('yemek') || m.includes('akşam')) {
-    return characterName.includes('Elif')
-      ? 'Bunu senden duymak yüzümü güldürdü... Nöbet listeleri izin verdiği ilk akşam baş başa çıkalım, söz!'
-      : 'Nöbet çıkışı güzel bir esnaf lokantasında çorba içip dertleşmek hepimize iyi gelir.';
+
+  if (characterName.includes('Elif')) {
+    if (m.includes('kahve') || m.includes('çay') || m.includes('mola') || m.includes('buluş') || m.includes('yemek')) {
+      return `Bunu senden duymak bile nöbet yorgunluğumu aldı ${firstName}... 10 dakikaya kantinde buluşalım mı, söz bu sefer kahveler benden ☕`;
+    }
+    if (m.includes('tus') || m.includes('uzman') || m.includes('göz') || m.includes('kardiyo')) {
+      return `Senin şu anki ${state.tusScore} TUS puanın ve klinik pratiğinle istediğin polikliniğe girersin. ${spTitle} sana çok yakışıyor zaten.`;
+    }
+    return `Seninle aynı nöbette denk gelmek günün en güzel olayı ${firstName}. Biraz soluklanınca mutlaka konuşalım!`;
   }
-  const generic = [
-    `Çok haklısın, bu hastanede senin gibi hem işini bilen hem de iletişimi güçlü bir hekimle çalışmak büyük şans.`,
-    `Bunu hiç bu açıdan düşünmemiştim! Nöbet arası biraz daha detaylı konuşalım bunu.`,
-    `Kesinlikle katılıyorum. Bugün poliklinikteki atmosferi tek başına toparladın resmen, eline sağlık!`
+
+  if (characterName.includes('Başhekim')) {
+    return `${state.docName}, şu ana kadar ${state.totalSaved} hastayı başarıyla tedavi ettiniz ve itibarınız ${state.rep}/100 seviyesinde. Disiplini elden bırakmayın.`;
+  }
+
+  if (m.includes('tus') || m.includes('uzman')) {
+    return `TUS puanın ${state.tusScore} seviyesine ulaşmış ${firstName}! Üst menüdeki Uzmanlık merkezinden kadroları kontrol etmeyi unutma.`;
+  }
+  if (m.includes('para') || m.includes('borç') || m.includes('maaş')) {
+    return `TıpBank hesabında ${state.money}₺ var. Nöbet sonu döner sermaye ödemeleriyle bütçen daha da rahatlayacaktır.`;
+  }
+  const smartReplies = [
+    `Çok haklısın ${firstName}, bu tempoda soğukkanlı kalabilmek gerçek hekimlik işi. Poliklinikte harika iş çıkarıyorsun.`,
+    `Bunu duymak güzel! Nöbet biraz sakinleşince oturup detaylıca konuşalım bunu.`,
+    `Kesinlikle katılıyorum. Bugün ekibin moralini tek başına yükselttin resmen, eline sağlık!`
   ];
-  return generic[Math.floor(Math.random() * generic.length)];
+  return smartReplies[Math.floor(Math.random() * smartReplies.length)];
 }
 
-/* ================= BORROW / LOAN STORIES ================= */
+/* ================= BORROW / LOAN SCENARIOS ================= */
 const BORROW_SCENARIOS = [
   {
     id: 'loan_berk', from: 'İntörn Berk', role: 'Acil İntörnü',
@@ -735,7 +860,7 @@ function addTx(desc, amt, type) {
   if (state.transactions.length > 15) state.transactions.pop();
 }
 
-/* ================= 8 SPECIALTIES x 30 UNIQUE CASES = 240 SPECIALTY CASES ================= */
+/* ================= 8 SPECIALTIES x 30 CASES = 240+ CASES ================= */
 const SPECIALTY_BLUEPRINTS = {
   ophth: [
     { diag: 'Akut Açı Kapanması Glokomu', triage: 'red', action: 'treat', mg: 'iv', treat: 'IV Mannitol + Asetazolamid + Pilokarpin', srv: 'Göz Hastalıkları', radType: 'eye', radTitle: 'TONOMETRİ & BİYOMİKROSKOP',
@@ -784,7 +909,7 @@ const SPECIALTY_BLUEPRINTS = {
       comp: 'Sırtımda iki kürek kemiğimin arasında bıçak saplanır ve yırtılır gibi ani ağrı başladı!',
       vit: 'Sağ Kol TA: 195/110 | Sol Kol TA: 135/80 (Fark >20 mmHg)!', exam: 'Aort odağında yeni diyastolik üfürüm.', pupil: 'Pupiller izokorik.',
       rad: 'Asendan aortada intimal flep ve çift lümen — Stanford Tip A Diseksiyon!', labs: 'D-Dimer: 6.400 ng/mL', hint: 'Yırtıcı sırt ağrısı + iki kol tansiyon farkı = Aort Diseksiyonu!' },
-    { diag: 'Akut Dekompanse Kalp Yetersizliği (Akciğer Ödemi)', triage: 'red', action: 'treat', mg: 'iv', treat: 'IV Furosemid + Nitrogliserin + CPAP', srv: 'Kardiyoloji', radType: 'chest', radTitle: 'AKCİĞER GRAFİSİ',
+    { diag: 'Akut Dekompanse Kalp Yetersizliği', triage: 'red', action: 'treat', mg: 'iv', treat: 'IV Furosemid + Nitrogliserin + CPAP', srv: 'Kardiyoloji', radType: 'chest', radTitle: 'AKCİĞER GRAFİSİ',
       comp: 'Gece boğulma hissiyle uyandım, pembe köpüklü balgam çıkarıyorum oturmadan nefes alamıyorum!',
       vit: 'TA: 185/105 | Nabız: 126 | SpO2: %85!', exam: 'Tüm akciğer alanlarında yaygın yaş raller (fokurdama).', pupil: 'Pupiller izokorik.',
       rad: 'Kardiyomegali, Kerley B çizgileri ve yarasa kanadı pulmoner ödem!', labs: 'NT-proBNP: 14.500 pg/mL', hint: 'Pembe köpüklü balgam + yaygın raller = Akut Akciğer Ödemi! IV diüretik & vazodilatör uygula.' }
@@ -806,7 +931,7 @@ const SPECIALTY_BLUEPRINTS = {
       comp: 'Adetim 2 hafta gecikti, aniden sağ kasığımda bıçak saplanır ağrı oldu ve bayıldım!',
       vit: 'TA: 82/48! | Nabız: 128 | Beta-hCG: POZİTİF!', exam: 'Batında yaygın hassasiyet ve defans.', pupil: 'Soluk konjonktiva.',
       rad: 'Douglas boşluğunda yoğun serbest sıvı (hemoperitoneum) + boş uterus!', labs: 'Hgb: 7.8 g/dL', hint: 'Beta-hCG pozitif + şok + batında serbest sıvı = Rüptüre Ektopik Gebelik! Kadın Doğuma yatır.' },
-    { diag: 'Organofosfat (Tarım İlacı) Zehirlenmesi', triage: 'red', action: 'treat', mg: 'iv', treat: 'IV Atropin + Pralidoksim + Dekontaminasyon', srv: 'Acil Resüsitasyon', radType: 'ecg', radTitle: 'TOKSİKOLOJİ MONİTÖRÜ',
+    { diag: 'Organofosfat Zehirlenmesi', triage: 'red', action: 'treat', mg: 'iv', treat: 'IV Atropin + Pralidoksim + Dekontaminasyon', srv: 'Acil Resüsitasyon', radType: 'ecg', radTitle: 'TOKSİKOLOJİ MONİTÖRÜ',
       comp: 'Bahçede tarım ilacı sıkarken üstüme döküldü, ağzımdan köpük geliyor, nefesim daralıyor!',
       vit: 'TA: 90/55 | Nabız: 46/dk (Bradikardi) | SpO2: %89', exam: 'Aşırı tükürük, terleme, bronkore ve sarımsak kokusu!', pupil: 'İğne başı pupilla (Miyozis)!',
       rad: 'Kolinerjik Kriz (DUMBBELS)! Yüksek doz IV Atropin şart!', labs: 'Psödokolinesteraz düzeyi çok düşük.', hint: 'Tarım ilacı + miyozis + bronkore = Organofosfat zehirlenmesi! IV Atropin uygula.' },
@@ -898,11 +1023,11 @@ const SPECIALTY_BLUEPRINTS = {
       comp: 'Boğaz ağrım 4 gündür arttı, ağzımı açamıyorum, sesim sıcak patates yutmuş gibi boğuk çıkıyor!',
       vit: 'Ateş: 39.0°C | Nabız: 112 | Trismus: POZİTİF!', exam: 'Sağ tonsil mediale itilmiş, UVULA KARŞI TARAFA (SOLA) DEVİYE!', pupil: 'Pupiller izokorik.',
       rad: 'Sağ peritonsiller bölgede 3.5 cm apse koleksiyonu!', labs: 'WBC: 19.400 | CRP: 155 mg/L', hint: 'Trismus + uvula deviasyonu + sıcak patates sesi = Peritonsiller Apse! Drenaj için KBB’ye yatır.' },
-    { diag: 'Posterior Epistaksis (Durdurulamayan Burun Kanaması)', triage: 'red', action: 'treat', mg: 'decon', treat: 'Posterior Foley/Balon Tamponad + Traneksamik Asit', srv: 'KBB', radType: 'ecg', radTitle: 'KOAGÜLASYON & VİTAL TAKİP',
+    { diag: 'Posterior Epistaksis', triage: 'red', action: 'treat', mg: 'decon', treat: 'Posterior Foley/Balon Tamponad + Traneksamik Asit', srv: 'KBB', radType: 'ecg', radTitle: 'KOAGÜLASYON & VİTAL TAKİP',
       comp: 'Tansiyon hastasıyım; 1 saattir burnumdan ve genzimden oluk oluk kan geliyor, buz koydum durmuyor!',
       vit: 'TA: 190/105 | Nabız: 118 | SpO2: %95', exam: 'Anterior tampona rağmen orofarenksten aktif kan akışı!', pupil: 'Pupiller izokorik.',
       rad: 'Posterior sfenopalatin arter kaynaklı şiddetli epistaksis!', labs: 'Hgb: 9.8 | INR: 1.2', hint: 'Genze akan şiddetli burun kanaması = Posterior Epistaksis! Balon tamponad uygula.' },
-    { diag: 'Ani İdiyopatik Sensörinöral İşitme Kaybı', triage: 'yellow', action: 'admit', srv: 'KBB', radType: 'brain', radTitle: 'ODYOMETRİ & WEBER TESTİ',
+    { diag: 'Ani İdiyopatik İşitme Kaybı', triage: 'yellow', action: 'admit', srv: 'KBB', radType: 'brain', radTitle: 'ODYOMETRİ & WEBER TESTİ',
       comp: 'Sabah uyandığımda sağ kulağım tamamen sağır olmuş gibi duymuyor ve çok şiddetli çınlıyor!',
       vit: 'TA: 120/75 | Nabız: 80', exam: 'Otoskopi normal; Weber testi SAĞLAM kulağa (sola) lateralize!', pupil: 'Pupiller izokorik.',
       rad: 'Odyometride ardışık 3 frekansta >30 dB sensörinöral işitme kaybı!', labs: 'Erken sistemik steroid tedavisi kritik.', hint: 'Otoskopi normal + Weber sağlam tarafa lateralize = Ani İşitme Kaybı! KBB’ye yatır.' },
@@ -924,7 +1049,7 @@ const SPECIALTY_BLUEPRINTS = {
       comp: 'Dün göbeğim ağrıyordu bugün sağ alt karnıma indi, iştahım kesildi ve kustum.',
       vit: 'Ateş: 37.9°C | Nabız: 102 | TA: 120/75', exam: 'McBurney noktasında defans, rebound ve Rovsing POZİTİF!', pupil: 'Pupiller izokorik.',
       rad: '11 mm çaplı komprese olmayan inflame apendiks ve çevre yağ dokuda kirlenme!', labs: 'WBC: 16.400 | CRP: 72 mg/L', hint: 'McBurney rebound + 11 mm apendiks = Akut Apandisit! Genel Cerrahiye yatır.' },
-    { diag: 'Peptik Ülser Perforasyonu (Akut Batın)', triage: 'red', action: 'admit', srv: 'Genel Cerrahi', radType: 'chest', radTitle: 'AYAKTA DİREKT KARIN GRAFİSİ',
+    { diag: 'Peptik Ülser Perforasyonu', triage: 'red', action: 'admit', srv: 'Genel Cerrahi', radType: 'chest', radTitle: 'AYAKTA DİREKT KARIN GRAFİSİ',
       comp: 'Mide ülserim vardı; 1 saat önce karnıma bıçak saplanır gibi ağrı girdi, nefes bile alamıyorum!',
       vit: 'TA: 95/60 | Nabız: 124 | Ateş: 38.1°C', exam: 'TAHTA KARIN (Yaygın rijidite) ve bağırsak sesleri kayıp!', pupil: 'Pupiller izokorik.',
       rad: 'Sağ diyafram altında serbest hava (Pnömoperitoneum)!', labs: 'WBC: 18.200 | Laktat: 3.8', hint: 'Tahta karın + diyafram altı serbest hava = Peptik Ülser Perforasyonu! Genel Cerrahiye yatır.' },
@@ -951,14 +1076,13 @@ function buildAllCases() {
   const list = [];
   const firstNames = ['Ahmet','Fatma','Mehmet','Ayşe','Mustafa','Emine','Ali','Hatice','Hüseyin','Zeynep','Hasan','Elif','İbrahim','Meryem','İsmail','Şerife','Osman','Sultan','Yusuf','Hanife','Murat','Zehra','Ömer','Havva','Ramazan','Hayriye','Halil','Cemile','Süleyman','Fadime','Abdullah','Kader','Mahmut','Büşra','Recep','Esra','Salih','Merve','Kadir','Sema','Emre','Kübra','Burak','Derya','Furkan','Gül','Enes','Tuğba','Serkan','Ebru','Cem','Selin','Kaan','Melis','Bora','İrem','Tolga','Gizem','Ozan','Nihan'];
   const contexts = [
-    'Nöbetin en yoğun saatinde 112 ambulansı ile getirildi.',
-    'Yakınlarının kolunda acil polikliniğe başvurdu.',
-    'Gece yarısı şikayetleri aniden şiddetlenince hastaneye koşmuş.',
+    '112 ambulansı ile acil polikliniğe getirildi.',
+    'Yakınlarının kolunda başvurdu.',
+    'Gece yarısı şikayetleri şiddetlenince hastaneye koşmuş.',
     'Sabah saatlerinden beri evde beklemiş, durumu ağırlaşınca gelmiş.',
-    'İş yerinden mesai arkadaşları tarafından acile ulaştırılmış.'
+    'İş yerinden mesai arkadaşları tarafından ulaştırılmış.'
   ];
 
-  // 8 uzmanlık dalı x 30 özel vaka = 240 branş vakası
   Object.keys(SPECIALTY_BLUEPRINTS).forEach((specKey, sIdx) => {
     const bps = SPECIALTY_BLUEPRINTS[specKey];
     for (let i = 0; i < 30; i++) {
@@ -1001,7 +1125,6 @@ function buildAllCases() {
     }
   });
 
-  // Genel Acil (Pratisyen) havuzu için 30 vaka
   const genTemplates = [
     { diag: 'Lober Pnömoni + Hipoksi', triage: 'yellow', action: 'admit', srv: 'Göğüs Hastalıkları', radType: 'chest', radTitle: 'AKCİĞER GRAFİSİ',
       comp: 'Üç gündür ateşim ve öksürüğüm var, nefesim daralıyor.', vit: 'Ateş: 38.9°C | Nabız: 108 | SpO2: %91', exam: 'Sağ alt lobda krepitan raller.', pupil: 'Pupiller izokorik.',
@@ -1027,7 +1150,6 @@ function buildAllCases() {
       hint: gt.hint
     });
   }
-
   return list;
 }
 const ALL_CASES = buildAllCases();
@@ -1085,7 +1207,7 @@ function say(speaker, text, badgeText = '', badgeClass = 't-green', pitch = 300)
       if (i % 3 === 0 && text[i] !== ' ') playBlip(pitch);
       i++;
     } else clearInterval(typeTimer);
-  }, 12);
+  }, 11);
 }
 
 function nextPatient() {
@@ -1105,6 +1227,10 @@ function nextPatient() {
     ? `${state.hospName.toUpperCase()} — ODA 1`
     : `${sp.icon} ${sp.title.toUpperCase()} POLİKLİNİĞİ`;
   document.getElementById('zoomHint').style.display = 'none';
+
+  // Piyasa fiyatlarını dinamik güncelle
+  state.crypto.btcPrice = Math.max(450, Math.round(state.crypto.btcPrice * (0.90 + Math.random() * 0.22)));
+  state.crypto.goldPrice = Math.max(300, Math.round(state.crypto.goldPrice * (0.96 + Math.random() * 0.09)));
 
   if (Math.random() < (state.diff === 'hard' ? 0.55 : 0.40)) triggerRandomLoanRequest();
   checkLoanRepayments();
@@ -1219,7 +1345,7 @@ function setTab(tab) {
       state.examDone.rad = true;
       document.getElementById('zoomHint').style.display = 'block';
       say(p.radTitle, p.radFinding, 'GÖRÜNTÜLEME', 't-yellow', 360);
-      openModal('radiology');
+      openDrawer('radiology');
     });
     addChoice(panel, `Kan & Biyokimya Tahlilleri ${state.examDone.labs ? '✓' : ''}`, () => {
       state.examDone.labs = true;
@@ -1253,80 +1379,85 @@ function setTab(tab) {
   }
 }
 
-/* ================= 4 INTERACTIVE MEDICAL MINI-GAMES ================= */
-let mgLoopId = null;
-function startMedicalMiniGame(type, label) {
-  const modal = document.getElementById('modal');
-  const title = document.getElementById('modalTitle');
-  const body = document.getElementById('modalBody');
-  modal.style.display = 'flex';
-  if (mgLoopId) cancelAnimationFrame(mgLoopId);
+/* ================= SPLIT-SCREEN DRAWER CONTROLLER ================= */
+let activeLoopId = null;
+function openSidePanel(titleText) {
+  if (activeLoopId) { cancelAnimationFrame(activeLoopId); activeLoopId = null; }
+  document.getElementById('app').classList.add('split-open');
+  document.getElementById('drawerTitle').textContent = titleText;
+  const body = document.getElementById('drawerBody');
+  body.innerHTML = '';
+  return body;
+}
 
+function closeDrawer() {
+  if (activeLoopId) { cancelAnimationFrame(activeLoopId); activeLoopId = null; }
+  document.getElementById('app').classList.remove('split-open');
+}
+
+/* ================= 4 INTERACTIVE MEDICAL MINI-GAMES ================= */
+function startMedicalMiniGame(type, label) {
   const titles = {
     cardioversion: 'SENKRONİZE KARDİYOVERSİYON',
     iv: 'IV DAMAR YOLU & İLAÇ BOLUSU',
     fracture: 'KIRIK / ÇIKIK REDÜKSİYON HİZALAMA',
     decon: 'İĞNE DEKOMPRESYON / OKÜLER YIKAMA'
   };
-  title.textContent = titles[type] || 'KLİNİK MÜDAHALE';
-
+  const body = openSidePanel(titles[type] || 'KLİNİK MÜDAHALE');
   body.innerHTML = `
-    <div class="mg-box">
-      <div style="font-size:11.5px;color:var(--accent-gold);font-weight:900;">${label}</div>
-      <canvas id="mgCanvas" width="320" height="150"></canvas>
-      <div style="font-size:11px;color:var(--accent-green);">Hareketli gösterge YEŞİL hedef bölgeye geldiğinde müdahaleyi uygula!</div>
-      <button id="mgActionBtn" class="mg-action-btn">🩺 MÜDAHALEYİ UYGULA</button>
+    <div class="card-box" style="padding:12px;display:flex;flex-direction:column;gap:10px;align-items:center;text-align:center;">
+      <div style="font-size:12.5px;color:var(--accent-gold);font-weight:800;">${label}</div>
+      <canvas id="mgCanvas" width="360" height="160"></canvas>
+      <div style="font-size:12px;color:var(--accent-green);">Hareketli gösterge YEŞİL hedef bölgeye geldiğinde müdahaleyi uygula!</div>
+      <button id="mgActionBtn" class="start-btn" style="padding:11px;">🩺 MÜDAHALEYİ UYGULA</button>
     </div>
   `;
 
   const c = document.getElementById('mgCanvas');
   const x = c.getContext('2d');
-  let cursor = 20, dir = 1, speed = 3.8, targetStart = 128, targetW = 64, finished = false;
+  let cursor = 20, dir = 1, speed = 4.1, targetStart = 148, targetW = 68, finished = false;
 
   function renderMg() {
     if (finished) return;
     cursor += dir * speed;
-    if (cursor >= 295) { cursor = 295; dir = -1; }
+    if (cursor >= 335) { cursor = 335; dir = -1; }
     if (cursor <= 25) { cursor = 25; dir = 1; }
 
-    x.fillStyle = '#05070c'; x.fillRect(0, 0, 320, 150);
-
+    x.fillStyle = '#06090f'; x.fillRect(0, 0, 360, 160);
     if (type === 'cardioversion') {
-      x.strokeStyle = '#ff5252'; x.lineWidth = 2; x.beginPath();
-      for (let i = 10; i < 310; i += 4) {
-        const py = 52 + Math.sin(i * 0.22 + cursor * 0.05) * 24;
+      x.strokeStyle = '#ff6b6b'; x.lineWidth = 2; x.beginPath();
+      for (let i = 10; i < 350; i += 4) {
+        const py = 54 + Math.sin(i * 0.22 + cursor * 0.05) * 24;
         if (i === 10) x.moveTo(i, py); else x.lineTo(i, py);
       }
       x.stroke();
     } else if (type === 'fracture') {
-      x.fillStyle = '#f8f9fa';
-      x.fillRect(70, 42, 85, 16);
-      x.fillRect(162, 42 + (cursor - 160) * 0.14, 85, 16);
+      x.fillStyle = '#f1f3f5';
+      x.fillRect(85, 44, 90, 18);
+      x.fillRect(182, 44 + (cursor - 180) * 0.14, 90, 18);
     } else if (type === 'iv') {
-      x.fillStyle = '#3bc9db'; x.fillRect(20, 45, 280, 18);
-      x.fillStyle = '#ffffff'; x.fillRect(20, 51, 280, 5);
+      x.fillStyle = '#3bc9db'; x.fillRect(24, 46, 312, 18);
+      x.fillStyle = '#ffffff'; x.fillRect(24, 52, 312, 5);
     } else {
       x.strokeStyle = '#51cf66'; x.lineWidth = 2;
-      x.strokeRect(85, 24, 150, 56);
-      x.fillStyle = '#ffd43b'; x.fillText('ANATOMİK HEDEF', 112, 55);
+      x.strokeRect(100, 26, 160, 56);
+      x.fillStyle = '#fcc419'; x.font = 'bold 11px monospace'; x.fillText('ANATOMİK HEDEF', 132, 58);
     }
 
-    x.fillStyle = '#1c2333'; x.fillRect(20, 102, 280, 22);
-    x.fillStyle = '#51cf66'; x.fillRect(targetStart, 102, targetW, 22);
-    x.strokeStyle = '#ffffff'; x.lineWidth = 2; x.strokeRect(targetStart, 102, targetW, 22);
+    x.fillStyle = '#1a2336'; x.fillRect(20, 108, 320, 24);
+    x.fillStyle = '#51cf66'; x.fillRect(targetStart, 108, targetW, 24);
+    x.strokeStyle = '#ffffff'; x.lineWidth = 2; x.strokeRect(targetStart, 108, targetW, 24);
 
-    x.fillStyle = '#ffd43b'; x.fillRect(cursor - 4, 96, 8, 34);
-
-    mgLoopId = requestAnimationFrame(renderMg);
+    x.fillStyle = '#fcc419'; x.fillRect(cursor - 4, 102, 8, 36);
+    activeLoopId = requestAnimationFrame(renderMg);
   }
   renderMg();
 
   document.getElementById('mgActionBtn').onclick = () => {
     if (finished) return;
     finished = true;
-    cancelAnimationFrame(mgLoopId);
     const hit = cursor >= targetStart && cursor <= (targetStart + targetW);
-    closeModal();
+    closeDrawer();
     if (hit) {
       state.tusScore += 1;
       completeCase(true, `MÜKEMMEL ZAMANLAMA! ${label} başarıyla uygulandı! (+1 TUS Puanı & +500₺)`);
@@ -1453,7 +1584,7 @@ function completeCase(success, msg) {
   addChoice(panel, 'Sıradaki Hastayı Çağır', () => nextPatient(), 'success');
 }
 
-/* ================= END OF SHIFT + EPİKRİZ KARNESİ ================= */
+/* ================= END OF SHIFT ================= */
 function endOfShiftSummary() {
   const correctToday = state.dailyCorrect;
   const wrongToday = state.dailyWrong;
@@ -1475,6 +1606,7 @@ function endOfShiftSummary() {
   }
   state.money += payroll;
   addTx(`Gün ${state.day - 1} Döner Sermaye & Nöbet Bordrosu`, payroll, 'pos');
+  state.news.unshift(`GÜN ${state.day - 1} BÜLTENİ: ${state.docName}, nöbette ${correctToday} vakayı başarıyla yönetti.`);
   updateHud();
   saveCareer();
 
@@ -1489,7 +1621,7 @@ function endOfShiftSummary() {
   const panel = document.getElementById('subPanel');
   panel.innerHTML = '';
 
-  addChoice(panel, 'TUS Çalış & 8 Uzmanlık Dalından Birini Seç', () => openModal('tus'), 'purple');
+  addChoice(panel, 'TUS Çalış & 8 Uzmanlık Dalından Birini Seç', () => openDrawer('tus'), 'purple');
   if (hasCar) {
     addChoice(panel, `${state.assets.car} İle Eve Sür (Yakıt: %${state.assets.fuel} | Kondisyon: %${state.assets.carHealth})`, () => driveHomeWithCar(), 'success');
   } else {
@@ -1515,7 +1647,7 @@ function driveHomeWithCar() {
     playSfx('alarm');
     state.assets.carHealth = Math.max(20, state.assets.carHealth - 30);
     const issue = isSahin
-      ? 'Modifiyeli Şahin yolda hararet yaptı ve egzoz patlattı! Sanayi ustası 450₺ masraf çıkardı.'
+      ? 'Modifiyeli Şahin yolda hararet yaptı ve egzoz patlattı! Mahmut Usta 450₺ masraf çıkardı.'
       : 'Alman Sedan uyarı verdi: Periyodik bakım ve sensör arızası! Servis 850₺ masraf çıkardı.';
     const cost = isSahin ? 450 : 850;
     state.money = Math.max(0, state.money - cost);
@@ -1530,7 +1662,6 @@ function driveHomeWithCar() {
   }
 }
 
-/* ================= BUS 110 BPM CPR ================= */
 function startBusEmergency() {
   playSfx('alarm');
   let compressions = 0;
@@ -1539,13 +1670,14 @@ function startBusEmergency() {
   panel.innerHTML = '';
   const btn = document.createElement('button');
   btn.className = 'choice-btn danger';
-  btn.innerHTML = '<span>GÖĞÜS BASISI UYGULA (0 / 10)</span><span>110 BPM</span>';
+  btn.textContent = 'GÖĞÜS BASISI UYGULA (0 / 10) — 110 BPM';
   btn.onclick = () => {
     compressions++; playSfx('heart');
-    btn.innerHTML = `<span>GÖĞÜS BASISI UYGULA (${compressions} / 10)</span><span>DEVAM!</span>`;
+    btn.textContent = `GÖĞÜS BASISI UYGULA (${compressions} / 10) — DEVAM!`;
     if (compressions >= 10) {
       state.money += 600; state.rep = Math.min(100, state.rep + 8);
       addTx('Belediye / Bakanlık Kahramanlık Ödülü', 600, 'pos');
+      state.news.unshift(`MANŞET: ${state.docName}, belediye otobüsünde kalbi duran yolcuyu hayata döndürdü!`);
       updateHud(); saveCareer();
       say('YEREL HABERLER MANŞETİ!', `"${state.docName}, otobüste kalbi duran vatandaşı hayata döndürdü!" (+600₺ & +8 İtibar)`, 'KAHRAMAN', 't-green', 440);
       panel.innerHTML = '';
@@ -1555,61 +1687,63 @@ function startBusEmergency() {
   panel.appendChild(btn);
 }
 
-/* ================= SMARTPHONE APPS ================= */
+/* ================= SMARTPHONE APPS (9 APPS + REAL CASINO) ================= */
 function openPhone() {
   document.getElementById('phoneDot').style.display = 'none';
   openPhoneApp('home');
 }
 
 function openPhoneApp(app) {
-  const modal = document.getElementById('modal');
-  const title = document.getElementById('modalTitle');
-  const body = document.getElementById('modalBody');
-  modal.style.display = 'flex';
-  title.textContent = `${state.assets.phone.toUpperCase()}`;
-
+  const body = openSidePanel(`${state.assets.phone.toUpperCase()}`);
   const hStr = String(state.hour % 24).padStart(2, '0');
-  body.innerHTML = `<div class="phone-frame">
-    <div class="phone-status"><span>TıpCell 5G</span><span>${hStr}:00</span><span>${state.apiKey ? 'AI BAĞLI' : 'DAHİLİ AI'}</span></div>
-    <div id="phoneScreen" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px;"></div>
-    <button class="choice-btn" style="margin-top:8px;justify-content:center;" onclick="openPhoneApp('home')">ANA EKRAN</button>
-  </div>`;
+  body.innerHTML = `
+    <div class="phone-shell">
+      <div class="phone-status"><span>TıpCell 5G</span><span>${hStr}:00</span><span>${state.apiKey ? 'AI API AKTİF' : 'DAHİLİ AI v4'}</span></div>
+      <div id="phoneScreen" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding-right:2px;"></div>
+      <button class="choice-btn center" style="margin-top:8px;" onclick="openPhoneApp('home')">⌂ ANA EKRANA DÖN</button>
+    </div>
+  `;
   const scr = document.getElementById('phoneScreen');
 
   if (app === 'home') {
     const reqBadge = state.loanRequests.length ? `<span class="badge-dot" style="display:block;"></span>` : '';
     scr.innerHTML = `
-      <div style="text-align:center;font-size:11px;color:var(--accent-gold);padding:4px;">${state.docName}<br><span style="color:var(--accent-purple)">${SPECIALTIES[state.specialty].title}</span></div>
+      <div style="text-align:center;font-size:12px;color:var(--accent-gold);padding:4px;font-weight:700;">
+        ${state.docName}<br><span style="color:var(--accent-purple);font-size:11px;">${SPECIALTIES[state.specialty].title}</span>
+      </div>
       <div class="app-grid">
         <div class="app-icon" onclick="openPhoneApp('bank')">${reqBadge}<span class="ico">💳</span><span>TıpBank</span></div>
-        <div class="app-icon" onclick="openPhoneApp('whatsdoc')"><span class="ico">💬</span><span>WhatsDoc AI</span></div>
+        <div class="app-icon" onclick="openPhoneApp('whatsdoc')"><span class="ico">💬</span><span>WhatsDoc</span></div>
+        <div class="app-icon" onclick="openPhoneApp('casino')"><span class="ico">🎰</span><span>BetTıp Club</span></div>
+        <div class="app-icon" onclick="openPhoneApp('borsa')"><span class="ico">📈</span><span>TıpBorsa</span></div>
+        <div class="app-icon" onclick="openPhoneApp('yemek')"><span class="ico">🍔</span><span>NöbetYe</span></div>
         <div class="app-icon" onclick="openPhoneApp('fotogram')"><span class="ico">📸</span><span>FotoGram</span></div>
-        <div class="app-icon" onclick="openModal('tus')"><span class="ico">🎓</span><span>TUS Portal</span></div>
-        <div class="app-icon" onclick="openPhoneApp('bettip')"><span class="ico">🎰</span><span>BetTıp</span></div>
-        <div class="app-icon" onclick="openModal('map')"><span class="ico">🗺️</span><span>Harita</span></div>
+        <div class="app-icon" onclick="openPhoneApp('haber')"><span class="ico">📰</span><span>TıpHaber</span></div>
+        <div class="app-icon" onclick="openDrawer('tus')"><span class="ico">🎓</span><span>TUS Portal</span></div>
+        <div class="app-icon" onclick="openDrawer('map')"><span class="ico">🗺️</span><span>Harita</span></div>
       </div>`;
   }
   else if (app === 'bank') {
     scr.innerHTML = `
       <div class="bank-card">
-        <div style="font-size:10px;color:var(--accent-green)">TIPBANK VADESİZ HESAP</div>
-        <div style="font-size:20px;font-weight:900;margin:4px 0;">${state.money.toLocaleString('tr-TR')} ₺</div>
-        <div style="font-size:9px;color:#ccc;">IBAN: ${state.iban}</div>
-        ${state.bankDebt > 0 ? `<div style="font-size:10px;color:var(--accent-red);margin-top:4px;">Aktif Kredi Borcu: ${state.bankDebt}₺</div>` : ''}
+        <div style="font-size:10px;color:var(--accent-green);font-weight:800;">TIPBANK VADESİZ HESAP</div>
+        <div style="font-size:21px;font-weight:900;margin:4px 0;">${state.money.toLocaleString('tr-TR')} ₺</div>
+        <div style="font-size:9.5px;color:#adb5bd;">IBAN: ${state.iban}</div>
+        ${state.bankDebt > 0 ? `<div style="font-size:11px;color:var(--accent-red);margin-top:4px;font-weight:700;">Aktif Kredi Borcu: ${state.bankDebt}₺</div>` : ''}
       </div>
-      <div style="font-size:11px;color:var(--accent-gold);font-weight:900;margin-top:4px;">BORÇ TALEPLERİ (${state.loanRequests.length})</div>
+      <div style="font-size:11.5px;color:var(--accent-gold);font-weight:800;margin-top:4px;">GELEN BORÇ TALEPLERİ (${state.loanRequests.length})</div>
     `;
     state.loanRequests.forEach(req => {
       const box = document.createElement('div');
-      box.style.cssText = 'background:#080b12;border:2px solid var(--accent-gold);padding:8px;display:flex;flex-direction:column;gap:6px;';
+      box.style.cssText = 'background:var(--bg-card);border:1.5px solid var(--accent-gold);border-radius:7px;padding:9px;display:flex;flex-direction:column;gap:6px;';
       box.innerHTML = `
-        <div style="display:flex;justify-content:space-between;font-weight:900;color:var(--accent-gold);">
+        <div style="display:flex;justify-content:space-between;font-weight:800;color:var(--accent-gold);font-size:12px;">
           <span>${req.from}</span><span>İstenen: ${req.amount}₺</span>
         </div>
-        <div style="font-size:11px;line-height:1.4;">"${req.story}"</div>
+        <div style="font-size:11.5px;line-height:1.45;">"${req.story}"</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
-          <button class="choice-btn success" style="justify-content:center;" onclick="resolveLoan('${req.id}', true)">FAST Gönder</button>
-          <button class="choice-btn danger" style="justify-content:center;" onclick="resolveLoan('${req.id}', false)">Reddet</button>
+          <button class="choice-btn success center" onclick="resolveLoan('${req.id}', true)">FAST Gönder</button>
+          <button class="choice-btn danger center" onclick="resolveLoan('${req.id}', false)">Reddet</button>
         </div>`;
       scr.appendChild(box);
     });
@@ -1633,63 +1767,425 @@ function openPhoneApp(app) {
     });
   }
   else if (app === 'whatsdoc') {
-    scr.innerHTML = `<div style="font-size:12px;color:var(--accent-green);font-weight:900;">WHATSDOC AI SOHBETLER</div>`;
+    scr.innerHTML = `<div style="font-size:12.5px;color:var(--accent-green);font-weight:800;">WHATSDOC AI — KİŞİLER & GRUPLAR</div>`;
     state.chats.forEach((ch, idx) => {
       const last = ch.msgs[ch.msgs.length - 1];
       const b = document.createElement('div');
-      b.style.cssText = 'background:#0d111a;border:2px solid #495057;padding:8px;cursor:pointer;';
-      b.innerHTML = `<div style="font-weight:900;color:var(--accent-gold);">${ch.name}</div><div style="font-size:11px;color:#ccc;margin-top:3px;">${last.from}: ${last.text}</div>`;
+      b.style.cssText = 'background:var(--bg-card);border:1.5px solid var(--border-subtle);border-radius:8px;padding:9px;cursor:pointer;';
+      b.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-weight:800;color:var(--accent-gold);font-size:12.5px;">${ch.name}</span>
+          <span style="font-size:10px;color:var(--accent-cyan);">${ch.role || ''}</span>
+        </div>
+        <div style="font-size:11.5px;color:#ced4da;margin-top:4px;line-height:1.35;">${last.from}: ${last.text}</div>`;
       b.onclick = () => openChatThread(idx);
       scr.appendChild(b);
     });
   }
+  else if (app === 'casino') {
+    openCasinoGame(scr, 'blackjack');
+  }
+  else if (app === 'borsa') {
+    const cr = state.crypto;
+    scr.innerHTML = `
+      <div style="background:var(--bg-card);border:1.5px solid var(--accent-cyan);border-radius:8px;padding:10px;">
+        <div style="color:var(--accent-cyan);font-weight:800;font-size:12.5px;">TIPBORSA — CANLI PİYASA</div>
+        <div style="font-size:11.5px;margin-top:5px;">• TıpCoin (TPC): <strong>${cr.btcPrice}₺</strong> (Cüzdan: ${cr.btcQty} Adet)</div>
+        <div style="font-size:11.5px;margin-top:3px;">• Gram Altın: <strong>${cr.goldPrice}₺</strong> (Cüzdan: ${cr.goldQty} Gr)</div>
+      </div>
+      <button class="choice-btn success" onclick="tradeAsset('btc', 1)">1 Adet TıpCoin Al (-${cr.btcPrice}₺)</button>
+      <button class="choice-btn danger" onclick="tradeAsset('btc', -1)">1 Adet TıpCoin Sat (+${cr.btcPrice}₺)</button>
+      <button class="choice-btn success" onclick="tradeAsset('gold', 1)">1 Gram Altın Al (-${cr.goldPrice}₺)</button>
+      <button class="choice-btn danger" onclick="tradeAsset('gold', -1)">1 Gram Altın Sat (+${cr.goldPrice}₺)</button>
+    `;
+  }
+  else if (app === 'yemek') {
+    scr.innerHTML = `
+      <div style="background:var(--bg-card);border:1.5px solid var(--accent-gold);border-radius:8px;padding:10px;">
+        <div style="color:var(--accent-gold);font-weight:800;font-size:12.5px;">NÖBETYE — HASTANEYE HIZLI SİPARİŞ</div>
+        <div style="font-size:11.5px;color:#ced4da;margin-top:3px;">Güncel Stres Seviyesi: <strong>%${state.stress}</strong></div>
+      </div>
+      <button class="choice-btn" onclick="orderFood('Adana Dürüm & Ayran', 140, 12)">🌯 Adana Dürüm & Ayran (-140₺, -12 Stres)</button>
+      <button class="choice-btn" onclick="orderFood('Double Espresso & Brownie', 95, 8)">☕ Double Espresso & Brownie (-95₺, -8 Stres)</button>
+      <button class="choice-btn" onclick="orderFood('Acil Servis Ekibine Lahmacun Ziyafeti', 420, 20)">🍕 Ekibe Lahmacun Söyle (-420₺, -20 Stres & +5 İtibar)</button>
+    `;
+  }
   else if (app === 'fotogram') {
     scr.innerHTML = `
-      <div style="font-size:12px;color:var(--accent-gold);font-weight:900;">FOTOGRAM — PİKSEL PAYLAŞIM</div>
-      <canvas id="photoCanvas" width="280" height="120"></canvas>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;">
-        <button class="choice-btn" onclick="takePhoto('tea','Nöbet masasında çay ve EKG keyfi ☕🩺')">Nöbet Çayı Çek</button>
+      <div style="font-size:12px;color:var(--accent-gold);font-weight:800;">FOTOGRAM — PİKSEL PAYLAŞIM</div>
+      <canvas id="photoCanvas" width="320" height="120"></canvas>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+        <button class="choice-btn" onclick="takePhoto('tea','Nöbet masasında çay ve EKG ☕🩺')">Nöbet Çayı Çek</button>
         <button class="choice-btn" onclick="takePhoto('car','Nöbet çıkışı direksiyon başı 🚗💨')">Araç Pozu Çek</button>
       </div>
     `;
     drawRetroPhoto('tea');
     state.posts.forEach(pt => {
       const d = document.createElement('div');
-      d.style.cssText = 'background:#0d111a;border:2px solid #343a40;padding:7px;font-size:11px;';
+      d.style.cssText = 'background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:7px;padding:8px;font-size:11.5px;';
       d.innerHTML = `<strong style="color:var(--accent-cyan)">@${pt.author.replace(/\s+/g,'').toLowerCase()}</strong><br>${pt.caption}<br><span style="color:var(--accent-red)">♥ ${pt.likes} Beğeni</span>`;
       scr.appendChild(d);
     });
   }
-  else if (app === 'bettip') {
-    scr.innerHTML = `
-      <div style="background:#1c0b0e;border:2px solid var(--accent-red);padding:9px;">
-        <div style="color:var(--accent-red);font-weight:900;">BETTIP — KAÇAK KRİPTO SLOT</div>
-        <div style="font-size:11px;margin-top:4px;">Yüksek risk! Kaybedersen stres artar, çok oynarsan Başhekimlik soruşturma açar.</div>
-      </div>
-      <button class="choice-btn" onclick="playBet(300)">300₺ Bahis Oyna (2.1x Kazanç Şansı)</button>
-      <button class="choice-btn danger" onclick="playBet(1000)">1.000₺ Yüksek Bahis Oyna</button>
-      <div id="betResult" style="padding:8px;font-size:12px;color:var(--accent-gold);"></div>
-    `;
+  else if (app === 'haber') {
+    scr.innerHTML = `<div style="font-size:12.5px;color:var(--accent-gold);font-weight:800;">TIPHABER — GÜNCEL MANŞETLER</div>`;
+    state.news.forEach(n => {
+      const d = document.createElement('div');
+      d.style.cssText = 'background:var(--bg-card);border-left:3px solid var(--accent-cyan);padding:9px;border-radius:5px;font-size:12px;line-height:1.45;';
+      d.textContent = n;
+      scr.appendChild(d);
+    });
   }
 }
 
+function tradeAsset(kind, dir) {
+  const cr = state.crypto;
+  if (kind === 'btc') {
+    if (dir === 1 && state.money >= cr.btcPrice) { state.money -= cr.btcPrice; cr.btcQty++; addTx('TıpCoin Alımı', -cr.btcPrice, 'neg'); }
+    else if (dir === -1 && cr.btcQty > 0) { state.money += cr.btcPrice; cr.btcQty--; addTx('TıpCoin Satışı', cr.btcPrice, 'pos'); }
+    else { alert('İşlem için bakiye veya varlık yetersiz!'); return; }
+  } else {
+    if (dir === 1 && state.money >= cr.goldPrice) { state.money -= cr.goldPrice; cr.goldQty++; addTx('Gram Altın Alımı', -cr.goldPrice, 'neg'); }
+    else if (dir === -1 && cr.goldQty > 0) { state.money += cr.goldPrice; cr.goldQty--; addTx('Gram Altın Satışı', cr.goldPrice, 'pos'); }
+    else { alert('İşlem için bakiye veya altın yetersiz!'); return; }
+  }
+  playSfx('coin'); updateHud(); saveCareer(); openPhoneApp('borsa');
+}
+
+function orderFood(name, cost, stressDrop) {
+  if (state.money < cost) { alert('Yetersiz bakiye!'); return; }
+  state.money -= cost;
+  state.stress = Math.max(0, state.stress - stressDrop);
+  if (cost >= 400) state.rep = Math.min(100, state.rep + 5);
+  addTx(`NöbetYe: ${name}`, -cost, 'neg');
+  playSfx('coin'); updateHud(); saveCareer();
+  alert(`${name} hastaneye ulaştı! Stresin %${stressDrop} azaldı.`);
+  openPhoneApp('yemek');
+}
+
+/* ================= REAL CASINO ENGINE: BLACKJACK, 5-CARD POKER, HORSE RACING ================= */
+const bjState = { deck: [], player: [], dealer: [], bet: 200, active: false, msg: 'Bahis miktarını seçip Blackjack elini başlat!' };
+const pkState = { deck: [], hand: [], held: [false,false,false,false,false], bet: 200, phase: 'deal', msg: 'Kart dağıt ve tutmak istediğin kartlara tıkla!' };
+const hrState = { selectedHorse: 0, bet: 250, running: false, msg: 'Favori atını seç ve yarışı başlat!' };
+
+const HORSES = [
+  { name: '1. Karayel', odd: 2.0, color: '#3bc9db' },
+  { name: '2. Rüzgarın Gölgesi', odd: 3.2, color: '#fcc419' },
+  { name: '3. Şahbatur', odd: 4.5, color: '#51cf66' },
+  { name: '4. Gece Nöbeti', odd: 6.5, color: '#ff6b6b' }
+];
+
+function createDeck() {
+  const suits = ['♠','♥','♦','♣'];
+  const vals = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
+  const d = [];
+  for (const s of suits) for (const v of vals) d.push({ s, v });
+  for (let i = d.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [d[i], d[j]] = [d[j], d[i]];
+  }
+  return d;
+}
+
+function renderCardHTML(card, idx = -1, held = false, clickable = false) {
+  const isRed = card.s === '♥' || card.s === '♦';
+  const onclick = clickable ? `onclick="togglePokerHold(${idx})"` : '';
+  return `<div class="p-card ${isRed ? 'red' : ''} ${held ? 'held' : ''}" ${onclick}>
+    <div>${card.v}</div>
+    <div style="text-align:center;font-size:16px;">${card.s}</div>
+    <div style="text-align:right;">${card.v}</div>
+    ${held ? '<span class="hold-tag">TUT</span>' : ''}
+  </div>`;
+}
+
+function bjScore(hand) {
+  let sum = 0, aces = 0;
+  for (const c of hand) {
+    if (['J','Q','K'].includes(c.v)) sum += 10;
+    else if (c.v === 'A') { sum += 11; aces++; }
+    else sum += Number(c.v);
+  }
+  while (sum > 21 && aces > 0) { sum -= 10; aces--; }
+  return sum;
+}
+
+function openCasinoGame(scr, mode) {
+  scr.innerHTML = `
+    <div class="casino-tabs">
+      <div class="c-tab ${mode === 'blackjack' ? 'active' : ''}" onclick="openCasinoGame(document.getElementById('phoneScreen'), 'blackjack')">🃏 Blackjack 21</div>
+      <div class="c-tab ${mode === 'poker' ? 'active' : ''}" onclick="openCasinoGame(document.getElementById('phoneScreen'), 'poker')">♠️ Video Poker</div>
+      <div class="c-tab ${mode === 'horse' ? 'active' : ''}" onclick="openCasinoGame(document.getElementById('phoneScreen'), 'horse')">🏇 At Yarışı</div>
+    </div>
+    <div id="casinoBody" style="display:flex;flex-direction:column;gap:8px;margin-top:4px;"></div>
+  `;
+  const cb = document.getElementById('casinoBody');
+
+  if (mode === 'blackjack') {
+    const pScore = bjScore(bjState.player);
+    const dScore = bjState.active ? '?' : bjScore(bjState.dealer);
+    cb.innerHTML = `
+      <div style="background:var(--bg-card);border:1.5px solid var(--border-subtle);border-radius:8px;padding:9px;">
+        <div style="font-size:11px;color:var(--accent-gold);font-weight:800;">KRUPİYE ELİ (${dScore})</div>
+        <div class="card-row">
+          ${bjState.dealer.map((c, idx) => (bjState.active && idx === 1) ? '<div class="p-card" style="background:#1c7ed6;color:#fff;justify-content:center;align-items:center;">?</div>' : renderCardHTML(c)).join('')}
+        </div>
+        <div style="font-size:11px;color:var(--accent-cyan);font-weight:800;margin-top:8px;">SENİN ELİN (${pScore})</div>
+        <div class="card-row">${bjState.player.map(c => renderCardHTML(c)).join('')}</div>
+        <div style="font-size:11.5px;color:#f1f3f5;text-align:center;margin-top:6px;">${bjState.msg}</div>
+      </div>
+    `;
+    if (!bjState.active) {
+      addChoice(cb, '200₺ Bahisle Kart Dağıt', () => startBlackjack(200), 'success');
+      addChoice(cb, '500₺ Yüksek Bahisle Kart Dağıt', () => startBlackjack(500), 'danger');
+    } else {
+      addChoice(cb, 'Kart Çek (Hit)', () => bjHit(), 'success');
+      addChoice(cb, 'Kal (Stand — Krupiye Oynar)', () => bjStand());
+      if (bjState.player.length === 2 && state.money >= bjState.bet) {
+        addChoice(cb, `Bahsi 2x Katla (+${bjState.bet}₺ & Tek Kart)`, () => bjDouble(), 'purple');
+      }
+    }
+  }
+  else if (mode === 'poker') {
+    cb.innerHTML = `
+      <div style="background:var(--bg-card);border:1.5px solid var(--border-subtle);border-radius:8px;padding:9px;">
+        <div style="font-size:10.5px;color:var(--accent-gold);text-align:center;">Jacks or Better (1x) • İki Çift (2x) • Üçlü (3x) • Kent/Floş (5x) • Full House (8x)</div>
+        <div class="card-row" style="margin:12px 0 18px 0;">
+          ${pkState.hand.map((c, i) => renderCardHTML(c, i, pkState.held[i], pkState.phase === 'draw')).join('')}
+        </div>
+        <div style="font-size:11.5px;color:#f1f3f5;text-align:center;">${pkState.msg}</div>
+      </div>
+    `;
+    if (pkState.phase === 'deal') {
+      addChoice(cb, '250₺ Bahisle 5 Kart Dağıt', () => pokerDeal(250), 'success');
+      addChoice(cb, '600₺ Bahisle 5 Kart Dağıt', () => pokerDeal(600), 'danger');
+    } else {
+      addChoice(cb, 'Seçilmeyen Kartları Değiştir & Sonucu Gör', () => pokerDraw(), 'success');
+    }
+  }
+  else if (mode === 'horse') {
+    cb.innerHTML = `
+      <canvas id="raceCanvas" width="360" height="135"></canvas>
+      <div style="font-size:11.5px;color:var(--accent-gold);text-align:center;font-weight:700;">${hrState.msg}</div>
+    `;
+    drawHorseTrack([16, 16, 16, 16]);
+    if (!hrState.running) {
+      HORSES.forEach((h, idx) => {
+        const sel = hrState.selectedHorse === idx ? ' [SEÇİLİ ✓]' : '';
+        addChoice(cb, `${h.name} (Oran: ${h.odd}x)${sel}`, () => {
+          hrState.selectedHorse = idx;
+          openCasinoGame(document.getElementById('phoneScreen'), 'horse');
+        }, hrState.selectedHorse === idx ? 'purple' : '');
+      });
+      addChoice(cb, '300₺ Bahis Yatır & Yarışı Başlat!', () => startHorseRace(300), 'success');
+    }
+  }
+}
+
+function startBlackjack(bet) {
+  if (state.money < bet) { alert('Yetersiz bakiye!'); return; }
+  state.money -= bet;
+  updateHud();
+  bjState.bet = bet;
+  bjState.deck = createDeck();
+  bjState.player = [bjState.deck.pop(), bjState.deck.pop()];
+  bjState.dealer = [bjState.deck.pop(), bjState.deck.pop()];
+  bjState.active = true;
+  bjState.msg = 'Karar senin: Kart Çek veya Kal!';
+  playSfx('card');
+  if (bjScore(bjState.player) === 21) { bjStand(); return; }
+  openCasinoGame(document.getElementById('phoneScreen'), 'blackjack');
+}
+
+function bjHit() {
+  bjState.player.push(bjState.deck.pop());
+  playSfx('card');
+  if (bjScore(bjState.player) > 21) {
+    bjState.active = false;
+    bjState.msg = `21'i Aştın (${bjScore(bjState.player)})! Krupiye kazandı.`;
+    state.stress = Math.min(100, state.stress + 6);
+    addTx('BetTıp Blackjack Kaybı', -bjState.bet, 'neg');
+    saveCareer();
+  }
+  openCasinoGame(document.getElementById('phoneScreen'), 'blackjack');
+}
+
+function bjDouble() {
+  state.money -= bjState.bet;
+  bjState.bet *= 2;
+  updateHud();
+  bjState.player.push(bjState.deck.pop());
+  playSfx('card');
+  if (bjScore(bjState.player) > 21) {
+    bjState.active = false;
+    bjState.msg = `2x Katladın ama 21'i aştın! (-${bjState.bet}₺)`;
+    addTx('BetTıp Blackjack Kaybı', -bjState.bet, 'neg');
+    saveCareer();
+    openCasinoGame(document.getElementById('phoneScreen'), 'blackjack');
+  } else {
+    bjStand();
+  }
+}
+
+function bjStand() {
+  bjState.active = false;
+  while (bjScore(bjState.dealer) < 17) bjState.dealer.push(bjState.deck.pop());
+  const ps = bjScore(bjState.player), ds = bjScore(bjState.dealer);
+  if (ds > 21 || ps > ds) {
+    const win = Math.round(bjState.bet * (ps === 21 && bjState.player.length === 2 ? 2.5 : 2));
+    state.money += win;
+    bjState.msg = `KAZANDIN! (${ps} vs ${ds}) +${win}₺ hesabına geçti!`;
+    addTx('BetTıp Blackjack Kazancı', win - bjState.bet, 'pos');
+    playSfx('coin');
+  } else if (ps === ds) {
+    state.money += bjState.bet;
+    bjState.msg = `BERABERE (${ps} - ${ds})! Bahsin iade edildi.`;
+  } else {
+    bjState.msg = `KRUPİYE KAZANDI (${ds} vs ${ps}).`;
+    addTx('BetTıp Blackjack Kaybı', -bjState.bet, 'neg');
+  }
+  updateHud(); saveCareer();
+  openCasinoGame(document.getElementById('phoneScreen'), 'blackjack');
+}
+
+function pokerDeal(bet) {
+  if (state.money < bet) { alert('Yetersiz bakiye!'); return; }
+  state.money -= bet;
+  updateHud();
+  pkState.bet = bet;
+  pkState.deck = createDeck();
+  pkState.hand = [pkState.deck.pop(), pkState.deck.pop(), pkState.deck.pop(), pkState.deck.pop(), pkState.deck.pop()];
+  pkState.held = [false,false,false,false,false];
+  pkState.phase = 'draw';
+  pkState.msg = 'Tutmak istediğin kartlara dokun, sonra diğerlerini değiştir!';
+  playSfx('card');
+  openCasinoGame(document.getElementById('phoneScreen'), 'poker');
+}
+
+function togglePokerHold(idx) {
+  if (pkState.phase !== 'draw') return;
+  pkState.held[idx] = !pkState.held[idx];
+  playSfx('card');
+  openCasinoGame(document.getElementById('phoneScreen'), 'poker');
+}
+
+function pokerDraw() {
+  for (let i = 0; i < 5; i++) {
+    if (!pkState.held[i]) pkState.hand[i] = pkState.deck.pop();
+  }
+  pkState.phase = 'deal';
+  const mult = evaluatePokerHand(pkState.hand);
+  if (mult > 0) {
+    const prize = pkState.bet * mult;
+    state.money += prize;
+    pkState.msg = `TEBRİKLER! (${mult}x Ödeme) +${prize}₺ kazandın!`;
+    addTx('BetTıp Video Poker Kazancı', prize - pkState.bet, 'pos');
+    playSfx('coin');
+  } else {
+    pkState.msg = 'El eşleşmedi! Tekrar deneyebilirsin.';
+    addTx('BetTıp Video Poker Kaybı', -pkState.bet, 'neg');
+  }
+  updateHud(); saveCareer();
+  openCasinoGame(document.getElementById('phoneScreen'), 'poker');
+}
+
+function evaluatePokerHand(hand) {
+  const rankMap = { '2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,'10':10,'J':11,'Q':12,'K':13,'A':14 };
+  const ranks = hand.map(c => rankMap[c.v]).sort((a,b) => a - b);
+  const suits = hand.map(c => c.s);
+  const isFlush = suits.every(s => s === suits[0]);
+  const isStraight = ranks.every((r, i) => i === 0 || r === ranks[i - 1] + 1);
+  const counts = {};
+  ranks.forEach(r => counts[r] = (counts[r] || 0) + 1);
+  const vals = Object.values(counts).sort((a,b) => b - a);
+
+  if (isFlush && isStraight) return 15;
+  if (vals[0] === 4) return 10;
+  if (vals[0] === 3 && vals[1] === 2) return 8;
+  if (isFlush) return 6;
+  if (isStraight) return 5;
+  if (vals[0] === 3) return 3;
+  if (vals[0] === 2 && vals[1] === 2) return 2;
+  if (vals[0] === 2) {
+    const pairRank = Number(Object.keys(counts).find(k => counts[k] === 2));
+    if (pairRank >= 11) return 1;
+  }
+  return 0;
+}
+
+function drawHorseTrack(posArr) {
+  const c = document.getElementById('raceCanvas');
+  if (!c) return;
+  const x = c.getContext('2d');
+  x.fillStyle = '#14261c'; x.fillRect(0, 0, 360, 135);
+  x.fillStyle = '#ffffff'; x.fillRect(326, 0, 4, 135);
+  HORSES.forEach((h, i) => {
+    const y = 14 + i * 30;
+    x.strokeStyle = 'rgba(255,255,255,0.2)';
+    x.beginPath(); x.moveTo(0, y + 22); x.lineTo(360, y + 22); x.stroke();
+    x.fillStyle = h.color;
+    x.fillRect(posArr[i], y + 4, 24, 12);
+    x.fillRect(posArr[i] + 18, y - 2, 8, 8);
+    x.fillStyle = '#000'; x.font = 'bold 9px monospace';
+    x.fillText(String(i + 1), posArr[i] + 8, y + 13);
+  });
+}
+
+function startHorseRace(bet) {
+  if (state.money < bet) { alert('Yetersiz bakiye!'); return; }
+  state.money -= bet;
+  updateHud();
+  hrState.running = true;
+  hrState.msg = 'YARIŞ BAŞLADI! Atlar son düzlüğe giriyor...';
+  openCasinoGame(document.getElementById('phoneScreen'), 'horse');
+
+  const pos = [16, 16, 16, 16];
+  const timer = setInterval(() => {
+    let winner = -1;
+    for (let i = 0; i < 4; i++) {
+      const baseSpd = i === 0 ? 3.4 : (i === 1 ? 3.1 : (i === 2 ? 2.9 : 2.7));
+      pos[i] += baseSpd + Math.random() * 4.2;
+      if (pos[i] >= 312 && winner === -1) winner = i;
+    }
+    drawHorseTrack(pos);
+    if (winner !== -1) {
+      clearInterval(timer);
+      hrState.running = false;
+      if (winner === hrState.selectedHorse) {
+        const prize = Math.round(bet * HORSES[winner].odd);
+        state.money += prize;
+        hrState.msg = `KAZANAN: ${HORSES[winner].name}! +${prize}₺ kazandın!`;
+        addTx(`BetTıp At Yarışı (${HORSES[winner].name})`, prize - bet, 'pos');
+        playSfx('coin');
+      } else {
+        hrState.msg = `Yarışı ${HORSES[winner].name} kazandı! Senin atın geride kaldı.`;
+        addTx('BetTıp At Yarışı Kaybı', -bet, 'neg');
+      }
+      updateHud(); saveCareer();
+      if (document.getElementById('phoneScreen')) openCasinoGame(document.getElementById('phoneScreen'), 'horse');
+    }
+  }, 55);
+}
+
+/* ================= WHATSDOC AI CHAT THREAD ================= */
 async function openChatThread(idx) {
   const ch = state.chats[idx];
   const scr = document.getElementById('phoneScreen');
-  scr.innerHTML = `<div style="font-weight:900;color:var(--accent-gold);border-bottom:2px solid #2b3344;padding-bottom:4px;">${ch.name}</div>`;
+  scr.innerHTML = `<div style="font-weight:800;color:var(--accent-gold);border-bottom:1px solid var(--border-subtle);padding-bottom:6px;font-size:13px;">${ch.name} <span style="font-size:10.5px;color:var(--accent-cyan);font-weight:600;">(${ch.role || ''})</span></div>`;
   const list = document.createElement('div');
-  list.style.cssText = 'flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:6px;';
+  list.style.cssText = 'flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:6px;padding:4px 0;';
   ch.msgs.forEach(m => {
+    const isMe = m.from === state.docName;
     const d = document.createElement('div');
-    d.style.cssText = 'background:#0d111a;border:1px solid #2b3344;padding:7px;font-size:11px;line-height:1.4;white-space:pre-line;';
-    d.innerHTML = `<strong style="color:var(--accent-cyan)">${m.from}:</strong> ${m.text}`;
+    d.style.cssText = `background:${isMe ? '#19324d' : 'var(--bg-card)'};border:1px solid var(--border-subtle);border-radius:8px;padding:8px 10px;font-size:12px;line-height:1.45;white-space:pre-line;`;
+    d.innerHTML = `<strong style="color:${isMe ? 'var(--accent-green)' : 'var(--accent-cyan)'}">${m.from}:</strong> ${m.text}`;
     list.appendChild(d);
   });
   scr.appendChild(list);
+  list.scrollTop = list.scrollHeight;
 
   const bar = document.createElement('div');
   bar.className = 'chat-input-bar';
-  bar.innerHTML = `<input id="phoneMsgInp" type="text" placeholder="Mesajını elle yaz..."><button class="chat-send-btn" id="phoneMsgSend">GÖNDER</button>`;
+  bar.innerHTML = `<input id="phoneMsgInp" type="text" placeholder="Mesajını yaz..."><button class="chat-send-btn" id="phoneMsgSend">Gönder</button>`;
   scr.appendChild(bar);
 
   const sendFn = async () => {
@@ -1700,7 +2196,7 @@ async function openChatThread(idx) {
     ch.msgs.push({ from: state.docName, text: txt });
     playSfx('msg');
     openChatThread(idx);
-    const reply = await generateAIReply(ch.name, ch.persona || ch.name, txt);
+    const reply = await generateAIReply(ch.name, ch.persona || ch.name, txt, ch.msgs);
     ch.msgs.push({ from: ch.name.replace(/^[^\wğüşöçıİĞÜŞÖÇ]+\s*/, ''), text: reply });
     playSfx('msg');
     saveCareer();
@@ -1714,54 +2210,28 @@ function drawRetroPhoto(mode) {
   const c = document.getElementById('photoCanvas');
   if (!c) return;
   const x = c.getContext('2d');
-  x.fillStyle = '#07090e';
-  x.fillRect(0, 0, 280, 120);
-  x.strokeStyle = '#3bc9db'; x.strokeRect(4, 4, 272, 112);
-  x.fillStyle = '#ffd43b'; x.font = 'bold 12px monospace';
+  x.fillStyle = '#0d1320'; x.fillRect(0, 0, 320, 120);
+  x.strokeStyle = '#3bc9db'; x.strokeRect(4, 4, 312, 112);
+  x.fillStyle = '#fcc419'; x.font = 'bold 12px monospace';
   x.fillText(mode === 'tea' ? 'ACİL NÖBET HATIRASI' : `${state.assets.car.toUpperCase()}`, 16, 26);
-  x.fillStyle = '#51cf66'; x.fillRect(110, 46, 56, 48);
-  x.fillStyle = '#000'; x.fillText('16-BIT', 116, 74);
+  x.fillStyle = '#51cf66'; x.fillRect(126, 46, 68, 48);
+  x.fillStyle = '#000'; x.fillText('16-BIT', 136, 74);
 }
 
 function takePhoto(mode, caption) {
   drawRetroPhoto(mode);
   state.posts.unshift({
     author: state.docName, caption,
-    likes: 18 + Math.floor(Math.random() * 45),
-    comment: 'İntörn Berk: Hocam ateş ediyorsunuz 🔥'
+    likes: 18 + Math.floor(Math.random() * 45)
   });
   playSfx('coin'); saveCareer(); openPhoneApp('fotogram');
 }
 
-function playBet(stake) {
-  if (state.money < stake) { alert('Yetersiz bakiye!'); return; }
-  state.money -= stake;
-  const win = Math.random() < 0.42;
-  const res = document.getElementById('betResult');
-  if (win) {
-    const prize = Math.round(stake * (stake >= 1000 ? 2.4 : 2.1));
-    state.money += prize;
-    addTx('BetTıp Bahis Kazancı', prize - stake, 'pos');
-    playSfx('coin');
-    res.textContent = `KAZANDIN! +${prize}₺ hesabına geçti!`;
-  } else {
-    state.stress = Math.min(100, state.stress + 14);
-    addTx('BetTıp Bahis Kaybı', -stake, 'neg');
-    playSfx('alarm');
-    res.textContent = `KAYBETTİN! -${stake}₺ gitti ve stresin %14 arttı!`;
-    if (stake >= 1000 && Math.random() < 0.35) {
-      state.warnings++;
-      res.textContent += ' Başhekimlik şüpheli hesap hareketi tespit etti (+1 Uyarı)!';
-    }
-  }
-  updateHud(); saveCareer();
-}
-
-/* ================= OUTSIDE LOCATIONS + LIVE AI CHAT ================= */
+/* ================= OUTSIDE LOCATIONS ================= */
 function goLocation(loc) {
   state.location = loc;
   state.activeStaffIdx = null;
-  closeModal();
+  closeDrawer();
   const panel = document.getElementById('subPanel');
   panel.innerHTML = '';
 
@@ -1786,7 +2256,7 @@ function goLocation(loc) {
   else if (loc === 'dealer') {
     document.getElementById('sceneTag').textContent = 'OTO GALERİ, AKARYAKIT & SANAYİ';
     const hasCar = state.assets.car !== 'Yok (Belediye Otobüsü)';
-    say('GALERİ & SANAYİ USTASI', hasCar
+    say('GALERİ & MAHMUT USTA', hasCar
       ? `Aracın: ${state.assets.car} | Yakıt: %${state.assets.fuel} | Mekanik Kondisyon: %${state.assets.carHealth}`
       : 'Henüz aracın yok, belediye otobüsüyle gidip geliyorsun. Bütçene göre araç seç!', 'GALERİ', 't-yellow', 260);
     addChoice(panel, '1998 Modifiyeli Şahin Al (2.800₺ — Sık Sanayi Riski)', () => buyAsset('car', 'Modifiyeli Şahin', 2800));
@@ -1833,7 +2303,7 @@ function interactStaff(idx) {
 
   const bar = document.createElement('div');
   bar.className = 'chat-input-bar';
-  bar.innerHTML = `<input id="canteenChatInp" type="text" placeholder="${st.name} ile konuşmak için elle yaz..."><button class="chat-send-btn" id="canteenChatBtn">KONUŞ</button>`;
+  bar.innerHTML = `<input id="canteenChatInp" type="text" placeholder="${st.name} ile konuşmak için yaz..."><button class="chat-send-btn" id="canteenChatBtn">Konuş</button>`;
   panel.appendChild(bar);
 
   const askStaff = async () => {
@@ -1873,49 +2343,43 @@ function buyAsset(key, val, cost) {
   if (key === 'car') {
     state.assets.fuel = 100;
     state.assets.carHealth = 100;
-    state.assets.carColor = val.includes('Alman') ? '#51cf66' : '#ff5252';
+    state.assets.carColor = val.includes('Alman') ? '#51cf66' : '#ff6b6b';
   }
   addTx(`Satın Alma: ${val}`, -cost, 'neg');
   playSfx('coin'); updateHud(); saveCareer();
   say('SATIN ALINDI!', `Hayırlı olsun ${state.docName}! Yeni eşyan doğrudan yaşam sahnene eklendi.`, 'YENİ EŞYA', 't-green', 420);
 }
 
-/* ================= MODALS (RADIOLOGY, 8 SPECIALTIES TUS CENTER, MAP, SHOP) ================= */
-function openModal(type) {
-  const modal = document.getElementById('modal');
-  const title = document.getElementById('modalTitle');
-  const body = document.getElementById('modalBody');
-  modal.style.display = 'flex';
-  body.innerHTML = '';
-
+/* ================= DRAWER MODALS (RADIOLOGY, 8 SPECIALTIES, MAP, SHOP) ================= */
+function openDrawer(type) {
   if (type === 'radiology') {
     const p = state.currentPatient;
-    title.textContent = p ? `${p.radTitle}` : 'GÖRÜNTÜLEME EKRANI';
+    const body = openSidePanel(p ? `${p.radTitle}` : 'GÖRÜNTÜLEME EKRANI');
     if (!p) { body.textContent = 'Aktif hasta yok.'; return; }
     const c = document.createElement('canvas');
-    c.id = 'zoomCanvas'; c.width = 320; c.height = 185;
+    c.id = 'zoomCanvas'; c.width = 360; c.height = 190;
     body.appendChild(c);
     drawRadiologyZoom(c, p.radType);
     const info = document.createElement('div');
-    info.style.cssText = 'padding:8px;background:#080b12;border:2px solid var(--accent-green);color:#fff;line-height:1.5;';
+    info.style.cssText = 'padding:10px;background:var(--bg-card);border:1.5px solid var(--accent-green);border-radius:7px;color:#fff;line-height:1.5;font-size:12.5px;';
     info.innerHTML = `<strong style="color:var(--accent-gold)">KLİNİK GÖRÜNTÜLEME RAPORU:</strong><br>${p.radFinding}`;
     body.appendChild(info);
   }
   else if (type === 'tus') {
-    title.textContent = 'TUS & 8 KLİNİK UZMANLIK MERKEZİ';
+    const body = openSidePanel('TUS & 8 KLİNİK UZMANLIK MERKEZİ');
     const curSp = SPECIALTIES[state.specialty];
     body.innerHTML = `
-      <div style="background:#080b12;border:2px solid var(--accent-purple);padding:9px;line-height:1.5;">
+      <div style="background:var(--bg-card);border:1.5px solid var(--accent-purple);border-radius:8px;padding:10px;line-height:1.55;font-size:12.5px;">
         <div><strong style="color:var(--accent-gold)">Mevcut Unvan:</strong> ${curSp.icon} ${curSp.title}</div>
         <div><strong style="color:var(--accent-green)">TUS Puanın:</strong> ${state.tusScore} Puan | <strong style="color:var(--accent-cyan)">İtibar:</strong> ${state.rep}/100</div>
-        <div style="font-size:10.5px;color:#ccc;margin-top:3px;">Her uzmanlık dalının kendine özel poliklinik sahne atmosferi ve 30 benzersiz branş vakası vardır!</div>
+        <div style="font-size:11px;color:#ced4da;margin-top:4px;">Her uzmanlık dalının kendine özel poliklinik atmosferi ve 30 benzersiz branş vakası vardır.</div>
       </div>
     `;
     addChoice(body, 'Hızlı TUS Denemesi Çöz (-300₺ -> +3 TUS Puanı)', () => {
       if (state.money >= 300) {
         state.money -= 300; state.tusScore += 3;
         addTx('TUS Deneme Sınavı & Soru Bankası', -300, 'neg');
-        playSfx('coin'); updateHud(); saveCareer(); openModal('tus');
+        playSfx('coin'); updateHud(); saveCareer(); openDrawer('tus');
       } else alert('Yetersiz bakiye!');
     }, 'purple');
 
@@ -1923,7 +2387,7 @@ function openModal(type) {
       const active = state.specialty === sp.id;
       const unlocked = state.tusScore >= sp.reqTus && state.rep >= sp.reqRep;
       const label = active
-        ? `${sp.icon} ${sp.title} [AKTİF • 30 VAKA HAVUZU ✓]`
+        ? `${sp.icon} ${sp.title} [AKTİF • 30 VAKA ✓]`
         : `${sp.icon} ${sp.title} (Şart: ${sp.reqTus} TUS & ${sp.reqRep} İtibar | +${sp.bonusPay}₺)`;
       addChoice(body, label, () => {
         if (active) return;
@@ -1933,13 +2397,13 @@ function openModal(type) {
         }
         state.specialty = sp.id;
         playSfx('coin'); updateHud(); saveCareer();
-        closeModal();
+        closeDrawer();
         nextPatient();
       }, active ? 'success' : (unlocked ? 'purple' : ''));
     });
   }
   else if (type === 'map') {
-    title.textContent = 'HASTANE & ŞEHİR HARİTASI';
+    const body = openSidePanel('HASTANE & ŞEHİR HARİTASI');
     [
       ['Acil Servis & Uzmanlık Polikliniği', 'er'],
       ['TUS & 8 Uzmanlık Kariyer Merkezi', 'tus_modal'],
@@ -1948,12 +2412,12 @@ function openModal(type) {
       ['Oto Galeri, Akaryakıt & Sanayi', 'dealer'],
       ['Kendi Evim (TUS Çalışma Masası)', 'home']
     ].forEach(([label, id]) => addChoice(body, label, () => {
-      if (id === 'tus_modal') openModal('tus');
+      if (id === 'tus_modal') openDrawer('tus');
       else goLocation(id);
     }));
   }
   else if (type === 'shop') {
-    title.textContent = 'MASA ÖZELLEŞTİRME DÜKKÂNI';
+    const body = openSidePanel('MASA ÖZELLEŞTİRME DÜKKÂNI');
     [
       ['thermos', 'Çelik Nöbet Termosu (400₺)', 400],
       ['cactus', 'Masaüstü Saksı Kaktüsü (250₺)', 250],
@@ -1965,16 +2429,13 @@ function openModal(type) {
         if (!owned && state.money >= cost) {
           state.money -= cost; state.upgrades[key] = true;
           addTx(`Masa Ekipmanı: ${label}`, -cost, 'neg');
-          playSfx('coin'); updateHud(); saveCareer(); openModal('shop');
+          playSfx('coin'); updateHud(); saveCareer(); openDrawer('shop');
         }
       }, owned ? 'success' : '');
     });
   }
 }
-function closeModal() {
-  if (mgLoopId) { cancelAnimationFrame(mgLoopId); mgLoopId = null; }
-  document.getElementById('modal').style.display = 'none';
-}
+
 function addChoice(parent, label, onClick, extraClass = '') {
   const b = document.createElement('button');
   b.className = 'choice-btn ' + extraClass;
@@ -1989,50 +2450,50 @@ function gameOver(reason) {
   addChoice(panel, 'Yeni Kariyer Başlat', () => location.reload(), 'danger');
 }
 
-/* ================= 16-BIT CLINICAL SCENE & 8-SPECIALTY ATMOSPHERES ================= */
+/* ================= HIGH-DETAIL 16-BIT PIXEL HOSPITAL GRAPHICS ================= */
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 let tick = 0;
 
 function drawRadiologyZoom(c, type) {
   const x = c.getContext('2d');
-  x.fillStyle = '#05080f'; x.fillRect(0, 0, 320, 185);
+  x.fillStyle = '#070b14'; x.fillRect(0, 0, 360, 190);
   x.strokeStyle = '#1b3a4b';
-  for (let i = 0; i < 320; i += 16) { x.beginPath(); x.moveTo(i, 0); x.lineTo(i, 185); x.stroke(); }
-  for (let j = 0; j < 185; j += 16) { x.beginPath(); x.moveTo(0, j); x.lineTo(320, j); x.stroke(); }
+  for (let i = 0; i < 360; i += 18) { x.beginPath(); x.moveTo(i, 0); x.lineTo(i, 190); x.stroke(); }
+  for (let j = 0; j < 190; j += 18) { x.beginPath(); x.moveTo(0, j); x.lineTo(360, j); x.stroke(); }
 
   if (type === 'ecg') {
     x.strokeStyle = '#51cf66'; x.lineWidth = 2.5;
     x.beginPath();
-    for (let px = 10; px < 310; px += 2) {
-      const m = px % 48;
-      let py = 102;
-      if (m > 8 && m < 14) py = 94;
+    for (let px = 12; px < 348; px += 2) {
+      const m = px % 52;
+      let py = 104;
+      if (m > 8 && m < 14) py = 95;
       else if (m >= 16 && m < 19) py = 40;
-      else if (m >= 19 && m < 23) py = 120;
-      else if (m >= 23 && m < 34) py = 72;
-      if (px === 10) x.moveTo(px, py); else x.lineTo(px, py);
+      else if (m >= 19 && m < 23) py = 124;
+      else if (m >= 23 && m < 36) py = 72;
+      if (px === 12) x.moveTo(px, py); else x.lineTo(px, py);
     }
     x.stroke();
   } else if (type === 'eye') {
-    x.fillStyle = '#d9480f'; x.beginPath(); x.arc(160, 92, 66, 0, Math.PI * 2); x.fill();
-    x.fillStyle = '#ffa8a8'; x.beginPath(); x.arc(160, 92, 56, 0, Math.PI * 2); x.fill();
-    x.fillStyle = '#ff5252'; x.beginPath(); x.arc(160, 92, 10, 0, Math.PI * 2); x.fill();
-    x.fillStyle = '#ffd43b'; x.beginPath(); x.arc(118, 92, 14, 0, Math.PI * 2); x.fill();
+    x.fillStyle = '#d9480f'; x.beginPath(); x.arc(180, 95, 68, 0, Math.PI * 2); x.fill();
+    x.fillStyle = '#ffa8a8'; x.beginPath(); x.arc(180, 95, 58, 0, Math.PI * 2); x.fill();
+    x.fillStyle = '#ff5252'; x.beginPath(); x.arc(180, 95, 11, 0, Math.PI * 2); x.fill();
+    x.fillStyle = '#fcc419'; x.beginPath(); x.arc(134, 95, 15, 0, Math.PI * 2); x.fill();
   } else if (type === 'leg') {
     x.fillStyle = '#e9ecef';
-    x.fillRect(142, 16, 18, 72); x.fillRect(146, 96, 18, 74);
-    x.fillStyle = '#3bc9db'; x.fillRect(168, 22, 8, 142);
-    x.strokeStyle = '#ff5252'; x.lineWidth = 2; x.strokeRect(134, 80, 42, 24);
+    x.fillRect(162, 16, 20, 74); x.fillRect(166, 98, 20, 76);
+    x.fillStyle = '#3bc9db'; x.fillRect(190, 22, 8, 144);
+    x.strokeStyle = '#ff6b6b'; x.lineWidth = 2; x.strokeRect(154, 82, 46, 24);
   } else if (type === 'brain') {
-    x.fillStyle = '#6c7a89'; x.beginPath(); x.ellipse(160, 92, 60, 72, 0, 0, Math.PI * 2); x.fill();
-    x.fillStyle = '#ff5252'; x.beginPath(); x.ellipse(108, 90, 14, 32, 0.15, 0, Math.PI * 2); x.fill();
+    x.fillStyle = '#6c7a89'; x.beginPath(); x.ellipse(180, 95, 62, 74, 0, 0, Math.PI * 2); x.fill();
+    x.fillStyle = '#ff6b6b'; x.beginPath(); x.ellipse(126, 92, 15, 34, 0.15, 0, Math.PI * 2); x.fill();
   } else {
-    x.fillStyle = '#3bc9db'; x.fillRect(154, 22, 12, 138);
+    x.fillStyle = '#3bc9db'; x.fillRect(174, 22, 12, 142);
     for (let r = 0; r < 5; r++) {
-      x.fillRect(102, 40 + r * 22, 48, 8); x.fillRect(170, 40 + r * 22, 48, 8);
+      x.fillRect(118, 40 + r * 22, 52, 8); x.fillRect(190, 40 + r * 22, 52, 8);
     }
-    x.fillStyle = 'rgba(255, 212, 59, 0.65)'; x.fillRect(104, 106, 44, 34);
+    x.fillStyle = 'rgba(252, 196, 25, 0.7)'; x.fillRect(120, 108, 48, 34);
   }
 }
 
@@ -2040,185 +2501,151 @@ function drawCarSprite(cx, cy, scale = 1) {
   ctx.save();
   ctx.translate(cx, cy);
   ctx.scale(scale, scale);
-  ctx.fillStyle = state.assets.carColor || '#ff5252';
-  ctx.fillRect(-52, -4, 104, 24);
-  ctx.fillRect(-32, -20, 62, 18);
+  ctx.fillStyle = 'rgba(0,0,0,0.4)'; ctx.fillRect(-66, 26, 136, 8);
+  ctx.fillStyle = state.assets.carColor || '#ff6b6b';
+  ctx.fillRect(-64, -4, 128, 26);
+  ctx.fillRect(-40, -22, 76, 20);
   ctx.fillStyle = '#3bc9db';
-  ctx.fillRect(-26, -16, 22, 12);
-  ctx.fillRect(2, -16, 22, 12);
-  ctx.fillStyle = '#ffd43b'; ctx.fillRect(46, 2, 6, 7);
-  ctx.fillStyle = '#ff5252'; ctx.fillRect(-52, 2, 5, 7);
-  ctx.fillStyle = '#111'; ctx.strokeStyle = '#fff';
-  ctx.fillRect(-38, 14, 20, 14); ctx.strokeRect(-38, 14, 20, 14);
-  ctx.fillRect(20, 14, 20, 14); ctx.strokeRect(20, 14, 20, 14);
+  ctx.fillRect(-32, -18, 28, 13);
+  ctx.fillRect(2, -18, 28, 13);
+  ctx.fillStyle = '#fcc419'; ctx.fillRect(56, 3, 8, 8);
+  ctx.fillStyle = '#ff6b6b'; ctx.fillRect(-64, 3, 6, 8);
+  ctx.fillStyle = '#111'; ctx.fillRect(-46, 15, 24, 16); ctx.fillRect(26, 15, 24, 16);
+  ctx.fillStyle = '#adb5bd'; ctx.fillRect(-40, 19, 12, 8); ctx.fillRect(32, 19, 12, 8);
   ctx.restore();
 }
 
 function renderLocationScene() {
   const loc = state.location;
-  ctx.fillStyle = '#07090e'; ctx.fillRect(0, 0, 340, 210);
+  ctx.fillStyle = '#0d1422'; ctx.fillRect(0, 0, 640, 240);
 
   if (loc === 'canteen') {
-    ctx.fillStyle = '#101622'; ctx.fillRect(0, 0, 340, 142);
-    ctx.strokeStyle = '#e9ecef'; ctx.lineWidth = 2;
-    ctx.strokeRect(18, 92, 120, 54);
-    ctx.fillStyle = '#ffd43b'; ctx.font = 'bold 9px monospace';
-    ctx.fillText('ÇAY 15₺ | KAHVE 45₺', 24, 42);
+    ctx.fillStyle = '#162033'; ctx.fillRect(0, 0, 640, 165);
+    ctx.fillStyle = '#24324d'; ctx.fillRect(40, 32, 190, 48);
+    ctx.fillStyle = '#fcc419'; ctx.font = 'bold 12px monospace';
+    ctx.fillText('KANTİN MENÜ: ÇAY 15₺ | KAHVE 45₺', 52, 60);
+    ctx.fillStyle = '#495057'; ctx.fillRect(36, 108, 200, 58);
     const st = state.activeStaffIdx !== null ? state.staff[state.activeStaffIdx] : state.staff[0];
-    const bob = Math.sin(tick * 0.08) * 1.5;
-    const sx = 225, sy = 68 + bob;
-    ctx.fillStyle = st.coat || '#fff'; ctx.fillRect(sx - 16, sy + 30, 36, 48);
-    ctx.fillStyle = '#f1c2a5'; ctx.fillRect(sx - 9, sy + 4, 24, 24);
-    ctx.fillStyle = st.hair || '#333'; ctx.fillRect(sx - 11, sy, 28, 8);
-    ctx.fillStyle = '#000'; ctx.fillRect(sx - 4, sy + 13, 3, 3); ctx.fillRect(sx + 7, sy + 13, 3, 3);
-    ctx.fillStyle = '#ffd43b'; ctx.fillText(st.name, sx - 36, sy - 6);
+    const bob = Math.sin(tick * 0.08) * 2;
+    const sx = 430, sy = 76 + bob;
+    ctx.fillStyle = st.coat || '#fff'; ctx.fillRect(sx - 22, sy + 36, 48, 56);
+    ctx.fillStyle = '#f1c2a5'; ctx.fillRect(sx - 12, sy + 6, 30, 30);
+    ctx.fillStyle = st.hair || '#333'; ctx.fillRect(sx - 14, sy, 34, 10);
+    ctx.fillStyle = '#000'; ctx.fillRect(sx - 5, sy + 16, 4, 4); ctx.fillRect(sx + 8, sy + 16, 4, 4);
+    ctx.fillStyle = '#fcc419'; ctx.fillText(st.name, sx - 45, sy - 8);
   }
   else if (loc === 'diner') {
-    ctx.fillStyle = '#17110c'; ctx.fillRect(0, 0, 340, 142);
-    ctx.strokeStyle = '#ffd43b'; ctx.strokeRect(40, 84, 150, 60);
-    ctx.fillStyle = '#ff922b'; ctx.fillRect(54, 76, 34, 10);
-    ctx.fillStyle = '#ff5252'; ctx.fillRect(102, 76, 34, 10);
+    ctx.fillStyle = '#241811'; ctx.fillRect(0, 0, 640, 165);
+    ctx.fillStyle = '#5c3c24'; ctx.fillRect(160, 104, 320, 62);
+    ctx.fillStyle = '#ff922b'; ctx.fillRect(210, 92, 54, 14);
+    ctx.fillStyle = '#ff6b6b'; ctx.fillRect(340, 92, 54, 14);
     ctx.fillStyle = '#fff';
-    ctx.fillRect(68, 62 - (tick % 14), 3, 5);
-    ctx.fillRect(116, 58 - (tick % 14), 3, 5);
+    ctx.fillRect(232, 74 - (tick % 16), 4, 7);
+    ctx.fillRect(362, 70 - (tick % 16), 4, 7);
   }
   else if (loc === 'dealer') {
-    ctx.fillStyle = '#0a1219'; ctx.fillRect(0, 0, 340, 142);
-    ctx.strokeStyle = '#51cf66'; ctx.strokeRect(20, 26, 155, 24);
-    ctx.fillStyle = '#51cf66'; ctx.font = 'bold 10px monospace';
-    ctx.fillText('GALERİ & OTO SANAYİ', 28, 42);
-    if (state.assets.car !== 'Yok (Belediye Otobüsü)') drawCarSprite(170, 126, 1.15);
-    else { ctx.fillStyle = '#fff'; ctx.fillText('Henüz aracın yok!', 95, 110); }
+    ctx.fillStyle = '#0f1c26'; ctx.fillRect(0, 0, 640, 165);
+    ctx.fillStyle = '#182b3a'; ctx.fillRect(30, 26, 260, 34);
+    ctx.fillStyle = '#51cf66'; ctx.font = 'bold 13px monospace';
+    ctx.fillText('AYDIN OTO GALERİ & MAHMUT USTA', 42, 47);
+    if (state.assets.car !== 'Yok (Belediye Otobüsü)') drawCarSprite(320, 142, 1.35);
+    else { ctx.fillStyle = '#fff'; ctx.fillText('Henüz aracın yok, galeri vitrinine göz at!', 175, 120); }
   }
   else if (loc === 'home') {
-    ctx.fillStyle = '#0f131f'; ctx.fillRect(0, 0, 340, 142);
-    ctx.strokeStyle = '#ffd43b'; ctx.strokeRect(28, 34, 96, 68);
-    if (state.assets.car !== 'Yok (Belediye Otobüsü)') drawCarSprite(76, 86, 0.45);
-    ctx.strokeStyle = '#51cf66';
-    ctx.strokeRect(175, 52, state.assets.homeLevel > 1 ? 115 : 74, state.assets.homeLevel > 1 ? 62 : 44);
+    ctx.fillStyle = '#151c2e'; ctx.fillRect(0, 0, 640, 165);
+    ctx.fillStyle = '#1e2942'; ctx.fillRect(50, 34, 150, 88);
+    if (state.assets.car !== 'Yok (Belediye Otobüsü)') drawCarSprite(125, 96, 0.55);
+    ctx.fillStyle = '#2b3a59'; ctx.fillRect(340, 56, state.assets.homeLevel > 1 ? 180 : 120, state.assets.homeLevel > 1 ? 76 : 54);
   }
+  ctx.fillStyle = '#1a2336'; ctx.fillRect(0, 165, 640, 75);
 }
 
-/* HER 8 UZMANLIK DALI İÇİN ÖZGÜN POLİKLİNİK / AMELİYATHANE SAHNE ATMOSFERİ */
-function drawSpecialtyBackdrop(spec) {
-  if (spec === 'ophth') {
-    // Karanlık Oftalmoloji Muayene Odası + Işıklı Snellen Eşeli + Biyomikroskop
-    ctx.fillStyle = '#050811'; ctx.fillRect(0, 0, 340, 140);
-    ctx.fillStyle = '#0a1224'; ctx.fillRect(16, 26, 44, 72);
-    ctx.strokeStyle = '#3bc9db'; ctx.lineWidth = 2; ctx.strokeRect(16, 26, 44, 72);
-    ctx.fillStyle = '#ffffff'; ctx.font = 'bold 11px monospace';
-    ctx.fillText('E', 34, 42);
-    ctx.font = 'bold 8px monospace'; ctx.fillText('F P', 30, 56);
-    ctx.font = 'bold 6px monospace'; ctx.fillText('T O Z', 28, 68);
-    ctx.fillText('L P E D', 25, 80);
-    ctx.fillStyle = '#091915'; ctx.fillRect(236, 32, 68, 44);
-    ctx.strokeStyle = '#51cf66'; ctx.strokeRect(236, 32, 68, 44);
-    ctx.fillStyle = '#51cf66'; ctx.fillText('SLIT-LAMP', 244, 52);
-    ctx.fillText('GİB: TONO', 244, 66);
+/* DETAYLI 16-BİT PİKSEL POLİKLİNİK ARKA PLANLARI (640x240) */
+function drawDetailedHospitalRoom(spec) {
+  // Duvar & Fayans Paneli
+  const wallColors = {
+    ophth: '#09101f', cardio: '#1a0d14', emerg: '#1c0f12', neuro: '#120e21',
+    ortho: '#101826', peds: '#0f1d29', ent: '#0d1a22', surg: '#0a1c19', none: '#101827'
+  };
+  ctx.fillStyle = wallColors[spec] || '#101827';
+  ctx.fillRect(0, 0, 640, 162);
+
+  // Alt Duvar Lambri / Fayans
+  ctx.fillStyle = 'rgba(255,255,255,0.04)';
+  ctx.fillRect(0, 108, 640, 54);
+  ctx.fillStyle = 'rgba(255,255,255,0.08)';
+  ctx.fillRect(0, 107, 640, 2);
+
+  // Sol Kapı (Camlı Poliklinik Kapısı)
+  const shakeX = state.doorThreat ? Math.sin(tick * 0.8) * 3 : 0;
+  ctx.fillStyle = '#1e293b'; ctx.fillRect(24 + shakeX, 34, 68, 128);
+  ctx.strokeStyle = '#475569'; ctx.lineWidth = 2; ctx.strokeRect(24 + shakeX, 34, 68, 128);
+  ctx.fillStyle = '#1d3557'; ctx.fillRect(36 + shakeX, 48, 44, 46);
+  ctx.fillStyle = '#fcc419'; ctx.fillRect(80 + shakeX, 102, 6, 12);
+  if (state.doorThreat) {
+    ctx.fillStyle = '#ff6b6b'; ctx.fillRect(48 + shakeX, 14, 22, 16);
+    ctx.fillStyle = '#fff'; ctx.font = 'bold 12px monospace'; ctx.fillText('!', 55 + shakeX, 26);
   }
-  else if (spec === 'cardio') {
-    // Koroner Yoğun Bakım + Telemetri Monitörü + Defibrilatör
-    ctx.fillStyle = '#12070b'; ctx.fillRect(0, 0, 340, 140);
-    ctx.fillStyle = '#1d0b12'; ctx.fillRect(16, 28, 62, 54);
-    ctx.strokeStyle = '#ff5252'; ctx.lineWidth = 2; ctx.strokeRect(16, 28, 62, 54);
-    ctx.fillStyle = '#ff5252'; ctx.font = 'bold 9px monospace';
-    ctx.fillText('TELEMETRİ', 22, 42);
+
+  // Orta Arka Plan: Uzmanlık Branşına Özel Tıbbi Ekipman Panosu
+  if (spec === 'ophth') {
+    ctx.fillStyle = '#0f172a'; ctx.fillRect(114, 34, 64, 92);
+    ctx.strokeStyle = '#3bc9db'; ctx.strokeRect(114, 34, 64, 92);
+    ctx.fillStyle = '#ffffff'; ctx.font = 'bold 14px monospace'; ctx.fillText('E', 141, 56);
+    ctx.font = 'bold 10px monospace'; ctx.fillText('F P', 136, 74);
+    ctx.font = 'bold 8px monospace'; ctx.fillText('T O Z', 133, 90);
+    ctx.fillText('L P E D', 128, 106);
+  } else if (spec === 'cardio') {
+    ctx.fillStyle = '#260e16'; ctx.fillRect(114, 38, 76, 60);
+    ctx.strokeStyle = '#ff6b6b'; ctx.strokeRect(114, 38, 76, 60);
+    ctx.fillStyle = '#ff6b6b'; ctx.font = 'bold 10px monospace'; ctx.fillText('TELEMETRİ', 122, 54);
     ctx.strokeStyle = '#51cf66'; ctx.beginPath();
-    for (let x = 20; x < 74; x += 3) {
-      const y = 62 + (((x + tick) % 18 === 0) ? -14 : 0);
-      if (x === 20) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    for (let x = 118; x < 184; x += 3) {
+      const y = 78 + (((x + tick) % 20 === 0) ? -16 : 0);
+      if (x === 118) ctx.moveTo(x, y); else ctx.lineTo(x, y);
     }
     ctx.stroke();
-    ctx.strokeStyle = '#ffd43b'; ctx.strokeRect(236, 30, 66, 44);
-    ctx.fillStyle = '#ffd43b'; ctx.fillText('DEFİB 200J', 242, 55);
-  }
-  else if (spec === 'emerg') {
-    // Kırmızı Alan Travma Resüsitasyon + Siren + Crash Cart
-    ctx.fillStyle = '#130909'; ctx.fillRect(0, 0, 340, 140);
+  } else if (spec === 'emerg') {
     const sirenOn = Math.floor(tick / 12) % 2 === 0;
-    ctx.fillStyle = sirenOn ? '#ff5252' : '#4a1111';
-    ctx.fillRect(24, 22, 34, 16);
-    ctx.strokeStyle = '#e9ecef'; ctx.strokeRect(24, 22, 34, 16);
-    ctx.fillStyle = '#ffd43b'; ctx.font = 'bold 9px monospace';
-    ctx.fillText('KIRMIZI ALAN', 14, 52);
-    ctx.strokeStyle = '#ff5252'; ctx.strokeRect(236, 30, 68, 44);
-    ctx.fillStyle = '#ff5252'; ctx.fillText('CRASH CART', 242, 55);
-  }
-  else if (spec === 'neuro') {
-    // İnme Merkezi + Beyin BT Negatoskopu + EEG
-    ctx.fillStyle = '#0c0917'; ctx.fillRect(0, 0, 340, 140);
-    ctx.strokeStyle = '#b197fc'; ctx.lineWidth = 2; ctx.strokeRect(16, 26, 56, 66);
-    ctx.beginPath(); ctx.ellipse(44, 58, 16, 22, 0, 0, Math.PI * 2); ctx.stroke();
-    ctx.fillStyle = '#b197fc'; ctx.font = 'bold 8px monospace';
-    ctx.fillText('BEYİN BT', 24, 86);
-    ctx.strokeStyle = '#3bc9db'; ctx.strokeRect(236, 30, 68, 44);
-    ctx.fillStyle = '#3bc9db'; ctx.fillText('EEG / NIHSS', 242, 55);
-  }
-  else if (spec === 'ortho') {
-    // Ortopedi & Alçı Odası + Kemik Röntgen Panosu
-    ctx.fillStyle = '#0b1017'; ctx.fillRect(0, 0, 340, 140);
-    ctx.strokeStyle = '#e9ecef'; ctx.lineWidth = 2; ctx.strokeRect(18, 26, 50, 68);
-    ctx.fillStyle = '#e9ecef';
-    ctx.fillRect(40, 34, 6, 22); ctx.fillRect(42, 60, 6, 22);
-    ctx.fillStyle = '#ffd43b'; ctx.font = 'bold 8px monospace';
-    ctx.fillText('ALÇI & ATEL', 238, 55);
-    ctx.strokeStyle = '#ffd43b'; ctx.strokeRect(234, 30, 72, 44);
-  }
-  else if (spec === 'peds') {
-    // Pediatri & Çocuk Acil + Yıldız/Gökkuşağı Süslemeleri + Tartı
-    ctx.fillStyle = '#0a141c'; ctx.fillRect(0, 0, 340, 140);
-    ctx.fillStyle = '#ffd43b'; ctx.font = 'bold 12px monospace';
-    ctx.fillText('★  ☆  ★', 18, 40);
-    ctx.fillStyle = '#3bc9db'; ctx.fillText('☆  ★  ☆', 22, 58);
-    ctx.strokeStyle = '#51cf66'; ctx.strokeRect(236, 30, 68, 44);
-    ctx.fillStyle = '#51cf66'; ctx.font = 'bold 8.5px monospace';
-    ctx.fillText('PEDİATRİ TARTI', 239, 55);
-  }
-  else if (spec === 'ent') {
-    // KBB Polikliniği + Odyometri Grafiği + Endoskopi Kulesi
-    ctx.fillStyle = '#081217'; ctx.fillRect(0, 0, 340, 140);
-    ctx.strokeStyle = '#3bc9db'; ctx.lineWidth = 2; ctx.strokeRect(16, 28, 58, 56);
-    ctx.fillStyle = '#3bc9db'; ctx.font = 'bold 8px monospace';
-    ctx.fillText('ODYOMETRİ', 22, 40);
-    ctx.strokeStyle = '#ff5252'; ctx.beginPath();
-    ctx.moveTo(22, 50); ctx.lineTo(42, 54); ctx.lineTo(66, 74); ctx.stroke();
-    ctx.strokeStyle = '#ffd43b'; ctx.strokeRect(236, 30, 68, 44);
-    ctx.fillStyle = '#ffd43b'; ctx.fillText('ENDOSKOPİ', 244, 55);
-  }
-  else if (spec === 'surg') {
-    // Genel Cerrahi + Ameliyathane Tavan Lambası + Steril Kule
-    ctx.fillStyle = '#061412'; ctx.fillRect(0, 0, 340, 140);
+    ctx.fillStyle = sirenOn ? '#ff6b6b' : '#5c1414';
+    ctx.fillRect(126, 26, 44, 18);
+    ctx.fillStyle = '#fcc419'; ctx.font = 'bold 10px monospace'; ctx.fillText('KIRMIZI ALAN', 114, 60);
+  } else if (spec === 'neuro') {
+    ctx.fillStyle = '#1b1433'; ctx.fillRect(114, 36, 70, 74);
+    ctx.strokeStyle = '#b197fc'; ctx.strokeRect(114, 36, 70, 74);
+    ctx.beginPath(); ctx.ellipse(149, 68, 18, 24, 0, 0, Math.PI * 2); ctx.stroke();
+    ctx.fillStyle = '#b197fc'; ctx.font = 'bold 9px monospace'; ctx.fillText('BEYİN BT', 127, 102);
+  } else if (spec === 'ortho') {
+    ctx.fillStyle = '#182236'; ctx.fillRect(114, 36, 68, 74);
+    ctx.strokeStyle = '#e9ecef'; ctx.strokeRect(114, 36, 68, 74);
+    ctx.fillStyle = '#e9ecef'; ctx.fillRect(144, 44, 8, 26); ctx.fillRect(146, 74, 8, 26);
+  } else if (spec === 'peds') {
+    ctx.fillStyle = '#fcc419'; ctx.font = 'bold 14px monospace'; ctx.fillText('★  ☆  ★', 116, 54);
+    ctx.fillStyle = '#3bc9db'; ctx.fillText('☆  ★  ☆', 120, 76);
+  } else if (spec === 'ent') {
+    ctx.fillStyle = '#122430'; ctx.fillRect(114, 36, 74, 66);
+    ctx.strokeStyle = '#3bc9db'; ctx.strokeRect(114, 36, 74, 66);
+    ctx.fillStyle = '#3bc9db'; ctx.font = 'bold 9px monospace'; ctx.fillText('ODYOMETRİ', 124, 50);
+    ctx.strokeStyle = '#ff6b6b'; ctx.beginPath(); ctx.moveTo(120, 62); ctx.lineTo(148, 68); ctx.lineTo(180, 92); ctx.stroke();
+  } else if (spec === 'surg') {
     ctx.strokeStyle = '#51cf66'; ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.arc(170, 14, 32, 0, Math.PI); ctx.stroke();
-    ctx.fillStyle = '#ffd43b'; ctx.fillRect(156, 16, 28, 4);
-    ctx.strokeStyle = '#51cf66'; ctx.strokeRect(16, 28, 56, 56);
-    ctx.fillStyle = '#51cf66'; ctx.font = 'bold 8px monospace';
-    ctx.fillText('STERİL ALAN', 20, 58);
-    ctx.strokeStyle = '#3bc9db'; ctx.strokeRect(236, 30, 68, 44);
-    ctx.fillStyle = '#3bc9db'; ctx.fillText('LAPAROSKOPİ', 240, 55);
+    ctx.beginPath(); ctx.arc(320, 14, 42, 0, Math.PI); ctx.stroke();
+    ctx.fillStyle = '#fcc419'; ctx.fillRect(302, 16, 36, 5);
   }
-  else {
-    // Standart Pratisyen Acil Odası
-    ctx.fillStyle = '#0a0e17'; ctx.fillRect(0, 0, 340, 140);
-    const shakeX = state.doorThreat ? Math.sin(tick * 0.8) * 3 : 0;
-    ctx.strokeStyle = '#e9ecef'; ctx.lineWidth = 2;
-    ctx.strokeRect(14 + shakeX, 32, 48, 108);
-    ctx.strokeStyle = '#3bc9db'; ctx.strokeRect(24 + shakeX, 44, 28, 30);
-    if (state.doorThreat) {
-      ctx.fillStyle = '#ff5252'; ctx.fillRect(30 + shakeX, 15, 16, 15);
-      ctx.fillStyle = '#fff'; ctx.font = 'bold 12px monospace'; ctx.fillText('!', 35 + shakeX, 27);
-    }
-    ctx.strokeStyle = '#51cf66';
-    ctx.strokeRect(236, 30, state.upgrades.dualMonitor ? 86 : 54, 42);
-    if (state.examDone.rad && state.currentPatient) {
-      ctx.fillStyle = '#51cf66'; ctx.fillRect(244, 38, 38, 26);
-    }
+
+  // Sağ Negatoskop / Radyoloji Ekranı & İlaç Dolabı
+  const negW = state.upgrades.dualMonitor ? 116 : 78;
+  ctx.fillStyle = '#0c1322'; ctx.fillRect(460, 34, negW, 56);
+  ctx.strokeStyle = '#3bc9db'; ctx.lineWidth = 2; ctx.strokeRect(460, 34, negW, 56);
+  if (state.examDone.rad && state.currentPatient) {
+    ctx.fillStyle = 'rgba(81, 207, 102, 0.25)'; ctx.fillRect(466, 40, negW - 12, 44);
+    ctx.fillStyle = '#51cf66'; ctx.font = 'bold 9px monospace'; ctx.fillText('GÖRÜNTÜ AKTİF', 470, 65);
   }
 }
 
 function renderScene() {
   tick++;
-  ctx.clearRect(0, 0, 340, 210);
+  ctx.clearRect(0, 0, 640, 240);
 
   if (state.location !== 'er') {
     renderLocationScene();
@@ -2226,86 +2653,93 @@ function renderScene() {
     return;
   }
 
-  // 1. Seçili uzmanlık dalının sahne atmosferi
-  drawSpecialtyBackdrop(state.specialty);
+  // 1. Zengin Poliklinik Sahnesi
+  drawDetailedHospitalRoom(state.specialty);
 
-  // 2. Hasta Sprite
+  // 2. Hasta Piksel Karakteri (Merkezde)
   const p = state.currentPatient;
   if (p) {
-    const bob = Math.sin(tick * 0.08) * 1.5;
-    const px = 148, py = 58 + bob;
-    ctx.fillStyle = p.appearance.shirt; ctx.fillRect(px - 18, py + 34, 44, 48);
-    ctx.strokeStyle = '#e9ecef'; ctx.lineWidth = 1.5; ctx.strokeRect(px - 18, py + 34, 44, 48);
-    ctx.fillStyle = p.appearance.skin; ctx.fillRect(px - 10, py + 4, 28, 28);
-    ctx.fillStyle = p.appearance.hair; ctx.fillRect(px - 12, py, 32, 9);
+    const bob = Math.sin(tick * 0.08) * 1.8;
+    const px = 290, py = 68 + bob;
+    // Gövde & Gölge
+    ctx.fillStyle = p.appearance.shirt; ctx.fillRect(px - 24, py + 40, 56, 54);
+    ctx.fillStyle = 'rgba(0,0,0,0.22)'; ctx.fillRect(px + 18, py + 40, 14, 54);
+    // Boyun & Kafa
+    ctx.fillStyle = p.appearance.skin; ctx.fillRect(px - 6, py + 32, 20, 10);
+    ctx.fillRect(px - 14, py + 4, 36, 32);
+    // Saç
+    ctx.fillStyle = p.appearance.hair; ctx.fillRect(px - 16, py - 1, 40, 11);
     if (p.appearance.flush) {
-      ctx.fillStyle = '#ff5252';
-      ctx.fillRect(px - 8, py + 20, 6, 4); ctx.fillRect(px + 10, py + 20, 6, 4);
+      ctx.fillStyle = 'rgba(255,107,107,0.7)';
+      ctx.fillRect(px - 11, py + 22, 8, 5); ctx.fillRect(px + 11, py + 22, 8, 5);
     }
     if (p.appearance.cyanosis) {
       ctx.fillStyle = '#748ffc';
-      ctx.fillRect(px - 1, py + 24, 10, 3);
+      ctx.fillRect(px - 2, py + 28, 12, 3);
     }
     const blink = (tick % 140) < 4;
     if (!blink) {
       ctx.fillStyle = '#ffffff';
-      ctx.fillRect(px - 5, py + 13, 6, 5); ctx.fillRect(px + 7, py + 13, 6, 5);
+      ctx.fillRect(px - 8, py + 14, 8, 6); ctx.fillRect(px + 8, py + 14, 8, 6);
       ctx.fillStyle = '#000000';
-      const p1 = p.appearance.pupils === 'miosis' ? 1 : 3;
-      const p2 = (p.appearance.pupils === 'anisocoria' || p.appearance.pupils === 'midriasis_fixed') ? 5 : p1;
-      ctx.fillRect(px - 3, py + 14, p1, p1); ctx.fillRect(px + 9, py + 14, p2, p2);
+      const p1 = p.appearance.pupils === 'miosis' ? 2 : 3;
+      const p2 = (p.appearance.pupils === 'anisocoria' || p.appearance.pupils === 'midriasis_fixed') ? 6 : p1;
+      ctx.fillRect(px - 5, py + 15, p1, p1); ctx.fillRect(px + 11, py + 15, p2, p2);
     } else {
       ctx.fillStyle = '#000000';
-      ctx.fillRect(px - 5, py + 15, 6, 2); ctx.fillRect(px + 7, py + 15, 6, 2);
+      ctx.fillRect(px - 8, py + 16, 8, 2); ctx.fillRect(px + 8, py + 16, 8, 2);
     }
     if (p.appearance.sweat) {
-      ctx.fillStyle = '#3bc9db'; ctx.fillRect(px + 21, py + 10 + (tick % 12) * 0.5, 3, 5);
+      ctx.fillStyle = '#3bc9db'; ctx.fillRect(px + 26, py + 10 + (tick % 12) * 0.5, 4, 6);
     }
   }
 
-  // 3. İntörn Hekim Sprite
+  // 3. İntörn Hekim Karakteri (Sağda)
   const intern = INTERNS[state.internIdx];
-  const ix = 264, iy = 82 + Math.cos(tick * 0.07) * 1;
-  ctx.fillStyle = '#f8f9fa'; ctx.fillRect(ix - 14, iy + 26, 34, 36);
-  ctx.fillStyle = intern.color; ctx.fillRect(ix - 4, iy + 26, 14, 36);
-  ctx.fillStyle = '#f1c2a5'; ctx.fillRect(ix - 7, iy + 2, 22, 22);
-  ctx.fillStyle = '#212529'; ctx.fillRect(ix - 8, iy - 1, 24, 7);
+  const ix = 510, iy = 92 + Math.cos(tick * 0.07) * 1.2;
+  ctx.fillStyle = '#f8f9fa'; ctx.fillRect(ix - 18, iy + 30, 44, 42);
+  ctx.fillStyle = intern.color; ctx.fillRect(ix - 5, iy + 30, 18, 42);
+  ctx.fillStyle = '#f1c2a5'; ctx.fillRect(ix - 10, iy + 3, 28, 26);
+  ctx.fillStyle = '#212529'; ctx.fillRect(ix - 11, iy - 1, 30, 8);
+  ctx.fillStyle = '#000'; ctx.fillRect(ix - 4, iy + 13, 3, 3); ctx.fillRect(ix + 7, iy + 13, 3, 3);
 
-  // 4. Klinik Muayene Masası
-  ctx.fillStyle = '#111622'; ctx.fillRect(0, 140, 340, 70);
-  ctx.fillStyle = '#e9ecef'; ctx.fillRect(0, 139, 340, 3);
+  // 4. Klinik Muayene Masası & Ekipmanlar
+  ctx.fillStyle = '#182234'; ctx.fillRect(0, 162, 640, 78);
+  ctx.fillStyle = '#364fc7'; ctx.fillRect(0, 160, 640, 3);
 
-  // Canlı EKG Monitörü
-  ctx.strokeStyle = '#e9ecef'; ctx.lineWidth = 2; ctx.strokeRect(14, 114, 54, 36);
-  ctx.fillStyle = '#05070c'; ctx.fillRect(16, 116, 50, 32);
+  // Vital EKG Monitörü
+  ctx.fillStyle = '#090d16'; ctx.fillRect(36, 134, 84, 46);
+  ctx.strokeStyle = '#4c6ef5'; ctx.lineWidth = 2; ctx.strokeRect(36, 134, 84, 46);
   ctx.fillStyle = '#51cf66';
-  const pulseX = (tick * 2) % 44;
-  ctx.fillRect(18 + pulseX, 130 - (pulseX > 18 && pulseX < 24 ? 8 : 0), 3, 3);
+  const pulseX = (tick * 2.5) % 72;
+  ctx.fillRect(42 + pulseX, 156 - (pulseX > 28 && pulseX < 36 ? 11 : 0), 4, 4);
 
   // Epikriz Dosyası
-  ctx.strokeStyle = '#ffd43b'; ctx.strokeRect(128, 150, 62, 42);
+  ctx.fillStyle = '#212d45'; ctx.fillRect(250, 174, 96, 52);
+  ctx.strokeStyle = '#fcc419'; ctx.strokeRect(250, 174, 96, 52);
   ctx.fillStyle = '#e9ecef';
-  ctx.fillRect(138, 160, 36, 2); ctx.fillRect(138, 166, 42, 2); ctx.fillRect(138, 172, 28, 2);
+  ctx.fillRect(264, 186, 56, 3); ctx.fillRect(264, 195, 68, 3); ctx.fillRect(264, 204, 44, 3);
 
   // Stetoskop
-  ctx.strokeStyle = state.upgrades.littmann ? '#ff5252' : '#3bc9db';
-  ctx.lineWidth = 2.5;
-  ctx.beginPath(); ctx.arc(216, 168, 12, 0, Math.PI * 1.4); ctx.stroke();
+  ctx.strokeStyle = state.upgrades.littmann ? '#ff6b6b' : '#3bc9db';
+  ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.arc(395, 194, 15, 0, Math.PI * 1.4); ctx.stroke();
 
-  // Termos
-  ctx.strokeStyle = state.upgrades.thermos ? '#51cf66' : '#ff922b';
-  ctx.strokeRect(256, 148, 14, 22);
-  ctx.fillStyle = '#fff';
-  ctx.fillRect(261, 138 - (tick % 10), 2, 4);
+  // Termos & Buhar
+  ctx.fillStyle = state.upgrades.thermos ? '#51cf66' : '#ff922b';
+  ctx.fillRect(465, 168, 18, 28);
+  ctx.fillStyle = 'rgba(255,255,255,0.75)';
+  ctx.fillRect(472, 156 - (tick % 12), 3, 5);
 
   if (state.upgrades.cactus) {
-    ctx.strokeStyle = '#51cf66'; ctx.strokeRect(86, 144, 8, 14);
-    ctx.strokeStyle = '#ff922b'; ctx.strokeRect(82, 158, 16, 14);
+    ctx.fillStyle = '#51cf66'; ctx.fillRect(164, 162, 10, 18);
+    ctx.fillStyle = '#d9480f'; ctx.fillRect(159, 180, 20, 16);
   }
 
   // Acil Çanta
-  ctx.strokeStyle = '#ff5252'; ctx.strokeRect(292, 156, 30, 22);
-  ctx.fillStyle = '#ff5252'; ctx.fillRect(305, 161, 4, 12); ctx.fillRect(301, 165, 12, 4);
+  ctx.fillStyle = '#2b1419'; ctx.fillRect(540, 176, 46, 32);
+  ctx.strokeStyle = '#ff6b6b'; ctx.strokeRect(540, 176, 46, 32);
+  ctx.fillStyle = '#ff6b6b'; ctx.fillRect(560, 183, 6, 18); ctx.fillRect(554, 189, 18, 6);
 
   requestAnimationFrame(renderScene);
 }
